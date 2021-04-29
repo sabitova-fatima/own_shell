@@ -9,7 +9,6 @@
 # include <signal.h>
 # include <dirent.h>
 
-# include "libft/libft.h"
-// # include "gnl/get_next_line.h"
+# include "libft.c"
 
 #endif
