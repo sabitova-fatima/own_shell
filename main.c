@@ -35,6 +35,7 @@ int main (int argc, char **argv, char **env)
     char    dir[4096];
 	char	*line;
     char    **command;
+    // char    **stroka;
 	char	*command_dir;
     char    *path;
 	pid_t	pid;
@@ -47,19 +48,23 @@ int main (int argc, char **argv, char **env)
         ft_putstr(dir);
         ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
         get_next_line(&line);
+        
+        // stroka = ft_strsplit(line, ';');
         command = ft_strsplit(line, ' ');
+        // printf("%s\n", command);
 
         // надо найти и считать с path
         path = "/bin";
-
+        // printf("%s\n", path);
         command_dir = ft_strjoin(ft_strjoin(path, "/"), command[0]);
-
+        // printf("%s\n", command_dir);
+        
         pid = fork();
         if (pid == 0)
-        execve(path, command, env);
+            execve(command_dir, command, env);
         wait(&pid);
 
-        free(line);
-        line = NULL;
+        // free(line);
+        // line = NULL;
 	}
 }
