@@ -30,45 +30,16 @@ int        get_next_line(char **line)
     return (rv ? 1 : 0);
 }
 
-void	proc_signal_handler(int signo)
-{
-	if (signo == SIGINT)
-	{
-		ft_putstr("\n");
-		signal(SIGINT, proc_signal_handler);
-	}
-}
-
-static int		run_cmd(char *path, char **command, char **env)
-{
-	pid_t	pid;
-
-	pid = fork();
-	signal(SIGINT, proc_signal_handler);
-	if (pid == 0)
-		execve(path, command, env);
-	else if (pid < 0)
-	{
-		free(path);
-		ft_putstr("Fork failed to create a new process.");
-		return (-1);
-	}
-	wait(&pid);
-	if (path)
-		free(path);
-	return (1);
-}
-
 int main (int argc, char **argv, char **env)
 {
-    char dir[4096];
-
-	int		r;
+    char    dir[4096];
 	char	*line;
     char    **command;
-	char	*bin_path;
+	char	*command_dir;
     char    *path;
-    int i = -1;
+	pid_t	pid;
+
+    // получаем директорию в виде строки
     getcwd(dir, 4096);
 
     while (1)
@@ -77,12 +48,17 @@ int main (int argc, char **argv, char **env)
         ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
         get_next_line(&line);
         command = ft_strsplit(line, ' ');
+
+        // надо найти и считать с path
         path = "/bin";
-        bin_path = ft_pathjoin(path, command[0]);
-        run_cmd(bin_path, command, env);
-        // printf("%s\n", command[0]);
-        if (command[0][0] == 'q')
-            exit(0);
+
+        command_dir = ft_strjoin(ft_strjoin(path, "/"), command[0]);
+
+        pid = fork();
+        if (pid == 0)
+        execve(path, command, env);
+        wait(&pid);
+
         free(line);
         line = NULL;
 	}
