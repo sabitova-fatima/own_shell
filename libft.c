@@ -231,16 +231,16 @@ char	*ft_strjoincl(char *s1, char *s2, int free_both)
 }
 
 
-char	*ft_strjoinchcl(char *s1, char c)
-{
-	char	*new;
+// char	*ft_strjoinchcl(char *s1, char c)
+// {
+// 	char	*new;
 
-	if (!(new = ft_strjoinch(s1, c)))
-		return (NULL);
-	free(s1);
-	s1 = NULL;
-	return (new);
-}
+// 	if (!(new = ft_strjoinch(s1, c)))
+// 		return (NULL);
+// 	free(s1);
+// 	s1 = NULL;
+// 	return (new);
+// }
 
 
 int		ft_strcmp(const char *s1, const char *s2)
