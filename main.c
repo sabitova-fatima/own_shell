@@ -50,6 +50,36 @@ char	*get_env_var(char *var, char **env)
 	return (NULL);
 }
 
+
+void	proc_signal_handler(int signo)
+{
+	if (signo == SIGINT)
+	{
+		ft_putstr("\n");
+		signal(SIGINT, proc_signal_handler);
+	}
+}
+
+static int		run_cmd(char *path, char **command, char **env)
+{
+	pid_t	pid;
+
+	pid = fork();
+	// signal(SIGINT, proc_signal_handler);
+	if (pid == 0)
+		execve(path, command, env);
+	else if (pid < 0)
+	{
+		free(path);
+		ft_putstr("Fork failed to create a new process.");
+		return (-1);
+	}
+	wait(&pid);
+	if (path)
+		free(path);
+	return (1);
+}
+
 int main (int argc, char **argv, char **env)
 {
     char dir[4096];
@@ -60,7 +90,7 @@ int main (int argc, char **argv, char **env)
 	char	*bin_path;
 
 
-    int i = 0;
+    int i = -1;
 
     getcwd(dir, 4096);
 
@@ -72,24 +102,11 @@ int main (int argc, char **argv, char **env)
 	r = get_next_line(&line);
    	command = ft_strsplit(line, ' ');
 
-    // printf("%s\n", line);
-    // printf("%s\n", commands[0]);
-
-    char    **path;
-	path = ft_strsplit(get_env_var("PATH", env), ':');
-
+    char    *path;
+	path = "/bin";
     
-    while (path && path[i])
-	{
-		if (ft_strstartswith(command[0], path[i]))
-			bin_path = ft_strdup(command[0]);
-		else
-			bin_path = ft_pathjoin(path[i], command[0]);
-        i++;
-    }
-    printf("%s\n", bin_path);
-
-    // run_cmd(ft_strdup(command[0]), command);
+    bin_path = ft_pathjoin(path, command[0]);
+    run_cmd(bin_path, command, env);
 
     free(line);
     line = NULL;
