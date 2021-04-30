@@ -30,12 +30,37 @@ int        get_next_line(char **line)
     return (rv ? 1 : 0);
 }
 
+
+char	*get_env_var(char *var, char **env)
+{
+	int		i;
+	char	*tmp;
+
+	i = -1;
+	while (env[++i])
+	{
+		tmp = ft_strjoinch(var, '=');
+		if (ft_strstartswith(env[i], tmp))
+		{
+			free(tmp);
+			return (ft_strchr(env[i], '=') + 1);
+		}
+		free(tmp);
+	}
+	return (NULL);
+}
+
 int main (int argc, char **argv, char **env)
 {
     char dir[4096];
 
 	int		r;
 	char	*line;
+    char    **command;
+	char	*bin_path;
+
+
+    int i = 0;
 
     getcwd(dir, 4096);
 
@@ -45,7 +70,27 @@ int main (int argc, char **argv, char **env)
     
 	line = NULL;
 	r = get_next_line(&line);
-    printf("%s\n", line);
+   	command = ft_strsplit(line, ' ');
+
+    // printf("%s\n", line);
+    // printf("%s\n", commands[0]);
+
+    char    **path;
+	path = ft_strsplit(get_env_var("PATH", env), ':');
+
+    
+    while (path && path[i])
+	{
+		if (ft_strstartswith(command[0], path[i]))
+			bin_path = ft_strdup(command[0]);
+		else
+			bin_path = ft_pathjoin(path[i], command[0]);
+        i++;
+    }
+    printf("%s\n", bin_path);
+
+    // run_cmd(ft_strdup(command[0]), command);
+
     free(line);
     line = NULL;
 }
