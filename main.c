@@ -6,6 +6,7 @@
 # include <signal.h>
 # include <dirent.h>
 # include <stdio.h>
+# include <fcntl.h>
 
 # include "minishell.h"
  
@@ -30,6 +31,22 @@ int        get_next_line(char **line)
     return (rv ? 1 : 0);
 }
 
+char* find_path(char **env)
+{
+    int i;
+
+    i = 0;
+
+    while (env[i])
+    {
+        // printf("%s\n\n\n", env[i]);
+        if (env[i][0] == 'P' && env[i][1] == 'A' 
+        && env[i][2] == 'T' && env[i][3] == 'H')
+        return(env[i]);
+        i++;   
+    }
+}
+
 int main (int argc, char **argv, char **env)
 {
     char    dir[4096];
@@ -37,12 +54,26 @@ int main (int argc, char **argv, char **env)
     char    **command;
     // char    **stroka;
 	char	*command_dir;
+	// char	*tmp;
     char    *path;
+    char    **paths;
 	pid_t	pid;
+
+    int i = 0;
 
     // получаем директорию в виде строки
     getcwd(dir, 4096);
 
+    path = find_path(env);
+    // printf("PATH IS: %s\n", path);
+
+    paths = ft_strsplit(path, ':');
+    // while (paths[i])
+    // {
+    //     printf("paths %d %s\n\n", i, paths[i]);
+    //     i++;
+    // }
+int fd;
     while (1)
 	{
         ft_putstr(dir);
@@ -54,9 +85,20 @@ int main (int argc, char **argv, char **env)
         // printf("%s\n", command);
 
         // надо найти и считать с path
-        path = "/bin";
-        // printf("%s\n", path);
-        command_dir = ft_strjoin(ft_strjoin(path, "/"), command[0]);
+        // while (paths[i])
+        // {
+        //     command_dir = ft_strjoin(ft_strjoin(paths[i], "/"), command[0]);
+        //     // printf("%s\n", tmp);
+        //     i++;
+        //     fd = open(command_dir, O_RDONLY);
+        //     if (fd > 0)
+        //     break ;
+        //     // printf("fd: %d", fd);
+        // }
+        command_dir = ft_strjoin(ft_strjoin("/usr/bin", "/"), command[0]);
+
+        // printf("tmp: %s\n", command_dir);
+        // command_dir = ft_strjoin(ft_strjoin(path, "/"), command[0]);
         // printf("%s\n", command_dir);
         
         pid = fork();
