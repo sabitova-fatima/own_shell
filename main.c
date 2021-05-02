@@ -31,7 +31,7 @@ int        get_next_line(char **line)
     return (rv ? 1 : 0);
 }
 
-char* find_path(char **env)
+char* find_dir(char **env)
 {
     int i;
 
@@ -49,64 +49,43 @@ char* find_path(char **env)
 
 int main (int argc, char **argv, char **env)
 {
-    char    dir[4096];
+    char    dir_name[4096];
 	char	*line;
     char    **command;
-    // char    **stroka;
 	char	*command_dir;
-	// char	*tmp;
-    char    *path;
-    char    **paths;
+    char    *dir;
+    char    **dirs;
 	pid_t	pid;
 
     int i = 0;
 
-    // получаем директорию в виде строки
-    getcwd(dir, 4096);
+    getcwd(dir_name, 4096);
 
-    path = find_path(env);
-    // printf("PATH IS: %s\n", path);
-
-    paths = ft_strsplit(path, ':');
-    // while (paths[i])
-    // {
-    //     printf("paths %d %s\n\n", i, paths[i]);
-    //     i++;
-    // }
-int fd;
+    dir = find_dir(env);
+    dirs = ft_strsplit(dir, ':');
+    int fd;
     while (1)
 	{
-        ft_putstr(dir);
+        ft_putstr(dir_name);
         ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
         get_next_line(&line);
-        
-        // stroka = ft_strsplit(line, ';');
+
         command = ft_strsplit(line, ' ');
-        // printf("%s\n", command);
-
-        // надо найти и считать с path
-        // while (paths[i])
-        // {
-        //     command_dir = ft_strjoin(ft_strjoin(paths[i], "/"), command[0]);
-        //     // printf("%s\n", tmp);
-        //     i++;
-        //     fd = open(command_dir, O_RDONLY);
-        //     if (fd > 0)
-        //     break ;
-        //     // printf("fd: %d", fd);
-        // }
-        command_dir = ft_strjoin(ft_strjoin("/usr/bin", "/"), command[0]);
-
-        // printf("tmp: %s\n", command_dir);
-        // command_dir = ft_strjoin(ft_strjoin(path, "/"), command[0]);
-        // printf("%s\n", command_dir);
-        
+        while (dirs[i])
+        {
+            command_dir = ft_strjoin(ft_strjoin(dirs[i], "/"), command[0]);
+            i++;
+            fd = open(command_dir, O_RDONLY);
+            if (fd > 0)
+            {
+                // close(fd);
+                break ;
+            }
+        }
+        i = 0;
         pid = fork();
         if (pid == 0)
             execve(command_dir, command, env);
         wait(&pid);
-
-        // free(line);
-        // line = NULL;
 	}
 }
