@@ -10,6 +10,8 @@
 
 # include "minishell.h"
  
+// экзаменационный гнл, хаха
+
 int        get_next_line(char **line)
 {
     char    c;
@@ -31,6 +33,7 @@ int        get_next_line(char **line)
     return (rv ? 1 : 0);
 }
 
+// порезать бы функцию на два ..
 int my_echo (char **command, char *line)
 {
     char *trimmed_line;
@@ -38,10 +41,8 @@ int my_echo (char **command, char *line)
     int i = 0;
     int flag;
     int len;
-    // 0 when there is -n
+    // flag is 0 when there is -n
     len = ft_strlen(line);
-
-// char	*ft_substr(char const *s, unsigned int start, int len)
 
     flag = ft_strcmp(command[1], "-n");
     while (line[i])
@@ -79,10 +80,16 @@ int my_echo (char **command, char *line)
     return (1);
 }
 
+// умеет переходить и без начальной /
+// умышленно не умеет работать без аргументов, потому что сабж этого не требует
+// может и научится, когда сделаю env глобальной переменной
+
 int my_cd(char **command)
 {
     char *path;
 
+    if (!command[1])
+        ft_putstr("Provide a directory\n");
     if (command[1][0] != '/')
         path = ft_strjoin("/", command[1]);
     else
@@ -157,7 +164,7 @@ int start_own_function (char **command, char **env, char *line)
     return (0);
 }
 
-char* find_dir(char **env)
+char* find_path(char **env)
 {
     int i;
 
@@ -172,6 +179,22 @@ char* find_dir(char **env)
     }
 }
 
+// да, максимально бестолковые функции, ай ноу
+// char* find_home(char **env)
+// {
+//     int i;
+
+//     i = 0;
+
+//     while (env[i])
+//     {
+//         if (env[i][0] == 'H' && env[i][1] == 'O' 
+//         && env[i][2] == 'M' && env[i][3] == 'E')
+//         return(env[i]);
+//         i++;   
+//     }
+// }
+
 int main (int argc, char **argv, char **env)
 {
     char    dir_name[4096];
@@ -185,10 +208,12 @@ int main (int argc, char **argv, char **env)
     int     is_own;
     int     i;
     
+    // ооо да, я знаю, что переменных больше 5, извиняйте
+
     i = 0;
 
     is_own = 0;
-    dir = find_dir(env);
+    dir = find_path(env);
     dirs = ft_strsplit(dir, ':');
 
     while (1)
@@ -199,6 +224,8 @@ int main (int argc, char **argv, char **env)
     
         get_next_line(&line);
         command = ft_strsplit(line, ' ');
+
+        // передаю в функцию все, что может пригодиться :)
         is_own = start_own_function(command, env, line);
         if (is_own == 0)
         {
