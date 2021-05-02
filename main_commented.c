@@ -14,8 +14,10 @@ int        get_next_line(char **line)
 {
     char    c;
     char    *buf;
-    int        rv;
-    int        i = 0;
+    int     rv;
+    int     i;
+    
+    i = 0;
 
     if (!(buf = (char*)malloc(10000)))
         return (-1);

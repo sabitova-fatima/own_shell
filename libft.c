@@ -1,9 +1,9 @@
 # include <unistd.h>
 
-void	ft_bzero(void *s, size_t n)
+void	ft_bzero(void *s, int n)
 {
 	char	*ptr;
-	size_t	i;
+	int	i;
 
 	if (!n)
 		return ;
@@ -13,7 +13,7 @@ void	ft_bzero(void *s, size_t n)
 		*(ptr + i++) = 0;
 }
 
-char	*ft_strnew(size_t size)
+char	*ft_strnew(int size)
 {
 	char	*str;
 
@@ -24,9 +24,9 @@ char	*ft_strnew(size_t size)
 	return (str);
 }
 
-size_t		ft_strlen(const char *s)
+int		ft_strlen(const char *s)
 {
-	size_t		i;
+	int		i;
 
 	i = -1;
 	while (*(s + ++i))
@@ -118,7 +118,7 @@ char	**ft_strsplit(char const *s, char c)
 
 char	*ft_strdup(const char *s1)
 {
-	size_t	len;
+	int	len;
 	char	*str;
 	char	*tmp;
 
@@ -136,10 +136,10 @@ char	*ft_strdup(const char *s1)
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*new_str;
-	size_t	i;
-	size_t	j;
-	size_t	s1_len;
-	size_t	s2_len;
+	int	i;
+	int	j;
+	int	s1_len;
+	int	s2_len;
 
 	if (!s1)
 		return (NULL);
@@ -157,4 +157,38 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (++j < s2_len)
 		*(new_str + i++) = *(s2 + j);
 	return (new_str);
+}
+
+
+// int ft_strcmp(const char *s1, const char *s2)
+// {
+// 	int   i;
+// 	unsigned char *one;
+// 	unsigned char *two;
+	
+// 	i = 0;
+	
+// 	if (!s1 || !s2)
+// 		return (-1);
+
+// 	one = (unsigned char *)s1;
+// 	two = (unsigned char *)s2;
+	
+// 	while ((one[i] || two[i]))
+// 	{
+// 		if (one[i] != two[i]);
+// 		return (one[i] - two[i]);
+// 		i++;
+// 	}
+// 	return (0);
+// }
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int i;
+
+	i = 0;
+	while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0')
+		i++;
+	return (s1[i] - s2[i]);
 }

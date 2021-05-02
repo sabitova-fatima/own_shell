@@ -31,6 +31,67 @@ int        get_next_line(char **line)
     return (rv ? 1 : 0);
 }
 
+int my_echo (char **command)
+{
+    printf("Here will be my own echo\n");
+    return (1);
+}
+
+int my_cd (char **command)
+{
+    printf("Here will be my own cd\n");
+    return (1);
+}
+
+int my_pwd (char **command)
+{
+    printf("Here will be my own pwd\n");
+    return (1);
+}
+
+int my_export (char **command)
+{
+    printf("Here will be my own export\n");
+    return (1);
+}
+
+int my_unset (char **command)
+{
+    printf("Here will be my own unset\n");
+    return (1);
+}
+
+int my_env (char **command)
+{
+    printf("Here will be my own env\n");
+    return (1);
+}
+
+int my_exit (char **command)
+{
+    printf("Here will be my own exit\n");
+    return (1);
+}
+
+int start_own_function (char **command)
+{
+    if (ft_strcmp("echo", command[0]) == 0)
+        return(my_echo(command));
+    if (ft_strcmp("cd", command[0]) == 0)
+        return(my_cd(command));
+    if (ft_strcmp("pwd", command[0]) == 0)
+        return(my_pwd(command));
+    if (ft_strcmp("export", command[0]) == 0)
+        return(my_export(command));
+    if (ft_strcmp("unset", command[0]) == 0)
+        return(my_unset(command));
+    if (ft_strcmp("env", command[0]) == 0)
+        return(my_env(command));
+    if (ft_strcmp("exit", command[0]) == 0)
+        return(my_exit(command));
+    return (0);
+}
+
 char* find_dir(char **env)
 {
     int i;
@@ -56,8 +117,8 @@ int main (int argc, char **argv, char **env)
     char    *dir;
     char    **dirs;
 	pid_t	pid;
-    int fd;
-
+    int     fd;
+    int is_own;
     int i = 0;
 
     getcwd(dir_name, 4096);
@@ -71,15 +132,19 @@ int main (int argc, char **argv, char **env)
         get_next_line(&line);
         command = ft_strsplit(line, ' ');
 
-        while (dirs[i])
+        is_own = start_own_function (command);
+        if (is_own == 0)
         {
-            command_dir = ft_strjoin(ft_strjoin(dirs[i], "/"), command[0]);
-            fd = open(command_dir, O_RDONLY);
-            i++;
-            if (fd >= 0)
+            while (dirs[i])
             {
-                // close(fd); - почему ломается, если раскомментить?
-                break ;
+                command_dir = ft_strjoin(ft_strjoin(dirs[i], "/"), command[0]);
+                fd = open(command_dir, O_RDONLY);
+                i++;
+                if (fd >= 0)
+                {
+                    // close(fd); - почему ломается, если раскомментить?
+                    break ;
+                }
             }
         }
         i = 0;
@@ -87,7 +152,7 @@ int main (int argc, char **argv, char **env)
         if (pid == 0)
             execve(command_dir, command, env);
         wait(&pid);
-    if (fd < 0)
-        ft_putstr("program not fround\n");
+        if (fd < 0)
+            ft_putstr("program not fround\n");
 	}
 }
