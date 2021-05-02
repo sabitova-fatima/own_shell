@@ -24,7 +24,7 @@ char	*ft_strnew(int size)
 	return (str);
 }
 
-int		ft_strlen(const char *s)
+int		ft_strlen(char const *s)
 {
 	int		i;
 
@@ -191,4 +191,28 @@ int	ft_strcmp(char *s1, char *s2)
 	while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0')
 		i++;
 	return (s1[i] - s2[i]);
+}
+
+char	*ft_substr(char const *s, unsigned int start, int len)
+{
+	int	i;
+	int	j;
+	char	*str;
+
+	str = (char*)malloc(sizeof(*s) * (len + 1));
+	if (!str)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		if (i >= start && j < len)
+		{
+			str[j] = s[i];
+			j++;
+		}
+		i++;
+	}
+	str[j] = 0;
+	return (str);
 }

@@ -1,4 +1,4 @@
-echo -n
+echo -n +
 cd +
 pwd +
 export

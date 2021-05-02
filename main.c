@@ -31,14 +31,57 @@ int        get_next_line(char **line)
     return (rv ? 1 : 0);
 }
 
-int my_echo (char **command)
+int my_echo (char **command, char *line)
 {
-    printf("Here will be my own echo\n");
+    char *trimmed_line;
+    int start;
+    int i = 0;
+    int flag;
+    int len;
+    // 0 when there is -n
+    len = ft_strlen(line);
+
+// char	*ft_substr(char const *s, unsigned int start, int len)
+
+    flag = ft_strcmp(command[1], "-n");
+    while (line[i])
+    {
+        if (flag != 0 && line[i] == 'o')
+        {
+            i = i + 1;
+            while (line[i] == ' ')
+                i++;
+            start = i;
+            break;
+        }
+        if (flag == 0 && line[i] == '-' && line[i + 1] == 'n')
+        {
+            i = i + 2;
+            while (line[i] == ' ')
+                i++;
+            start = i;
+        }
+        i++;
+    }
+    trimmed_line = ft_substr(line, start, len);
+    // printf("trimmed_line: %s\n", trimmed_line);
+    
+    if (flag == 0)
+    {
+        ft_putstr(trimmed_line);
+        return (1);
+    }
+    else
+    {
+        ft_putstr(trimmed_line);
+        ft_putchar('\n');
+        return (1);
+    }
     return (1);
 }
 
 // добавить возможность писать без начальной /
-// проверять наличие директории и выводить ошибку 
+// cd без аргументов = HOME - добавить
 
 int my_cd (char **command)
 {
@@ -96,10 +139,10 @@ int my_exit (char **command)
     exit(0);
 }
 
-int start_own_function (char **command, char **env)
+int start_own_function (char **command, char **env, char *line)
 {
     if (ft_strcmp("echo", command[0]) == 0)
-        return(my_echo(command));
+        return(my_echo(command, line));
     if (ft_strcmp("cd", command[0]) == 0)
         return(my_cd(command));
     if (ft_strcmp("pwd", command[0]) == 0)
@@ -158,7 +201,7 @@ int main (int argc, char **argv, char **env)
     
         get_next_line(&line);
         command = ft_strsplit(line, ' ');
-        is_own = start_own_function(command, env);
+        is_own = start_own_function(command, env, line);
         if (is_own == 0)
         {
             while (dirs[i])
