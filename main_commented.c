@@ -60,11 +60,17 @@ int main (int argc, char **argv, char **env)
 
     int i = 0;
 
+    // получаем название директории, в которой находимся 
     getcwd(dir_name, 4096);
+
+    // получаем переменную PATH целиком
     dir = find_dir(env);
+
+    // двумерный массив с директориями в которых лежат бинарники
     dirs = ft_strsplit(dir, ':');
     while (1)
 	{
+        // выводим то, что до курсора
         ft_putstr(dir_name);
         ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
     
@@ -73,7 +79,11 @@ int main (int argc, char **argv, char **env)
 
         while (dirs[i])
         {
+            // получаем команду типа /bin/ls
             command_dir = ft_strjoin(ft_strjoin(dirs[i], "/"), command[0]);
+
+            // пытаемся открыть бинарник, чтобы проверить в той ли папке он лежит
+            // если fd > 0, значит, он там. Прерываем цикл
             fd = open(command_dir, O_RDONLY);
             i++;
             if (fd >= 0)
