@@ -56,14 +56,18 @@ int main (int argc, char **argv, char **env)
     char    *dir;
     char    **dirs;
 	pid_t	pid;
+    int fd;
 
     int i = 0;
 
+    // получаем название директории, в которой находимся в 
     getcwd(dir_name, 4096);
 
+    // получаем переменную PATH целиком
     dir = find_dir(env);
+
+    // двумерный массив с 
     dirs = ft_strsplit(dir, ':');
-    int fd;
     while (1)
 	{
         ft_putstr(dir_name);
