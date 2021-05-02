@@ -64,8 +64,7 @@ int my_echo (char **command, char *line)
         i++;
     }
     trimmed_line = ft_substr(line, start, len);
-    // printf("trimmed_line: %s\n", trimmed_line);
-    
+
     if (flag == 0)
     {
         ft_putstr(trimmed_line);
@@ -80,12 +79,15 @@ int my_echo (char **command, char *line)
     return (1);
 }
 
-// добавить возможность писать без начальной /
-// cd без аргументов = HOME - добавить
-
-int my_cd (char **command)
+int my_cd(char **command)
 {
-    if (chdir(command[1]) == 0)
+    char *path;
+
+    if (command[1][0] != '/')
+        path = ft_strjoin("/", command[1]);
+    else
+        path = command[1];
+    if (chdir(path) == 0)
         return (1);
     else
     {
@@ -96,7 +98,6 @@ int my_cd (char **command)
 
 int my_pwd (char **command)
 {
-    // printf("Here will be my own pwd\n");
     char    dir_name[4096];
     getcwd(dir_name, 4096);
 
@@ -119,7 +120,6 @@ int my_unset (char **command)
 
 int my_env (char **command, char **env)
 {
-    // printf("Here will be my own env\n");
     int i;
 
     i = 0;
@@ -134,8 +134,7 @@ int my_env (char **command, char **env)
 
 int my_exit (char **command)
 {
-    // printf("Here will be my own exit\n");
-    // return (1);
+    // add free?
     exit(0);
 }
 
@@ -166,7 +165,6 @@ char* find_dir(char **env)
 
     while (env[i])
     {
-        // printf("%s\n\n\n", env[i]);
         if (env[i][0] == 'P' && env[i][1] == 'A' 
         && env[i][2] == 'T' && env[i][3] == 'H')
         return(env[i]);
@@ -185,13 +183,13 @@ int main (int argc, char **argv, char **env)
 	pid_t	pid;
     int     fd;
     int     is_own;
-    int     i = 0;
+    int     i;
+    
+    i = 0;
 
     is_own = 0;
     dir = find_dir(env);
     dirs = ft_strsplit(dir, ':');
-
-    // int n = chdir("/home/fatima");
 
     while (1)
 	{
@@ -224,6 +222,4 @@ int main (int argc, char **argv, char **env)
         if (fd < 0)
             ft_putstr("program not fround :(\n");
 	}
-
-
 }
