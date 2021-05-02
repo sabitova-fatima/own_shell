@@ -66,23 +66,29 @@ int main (int argc, char **argv, char **env)
     // получаем переменную PATH целиком
     dir = find_dir(env);
 
-    // двумерный массив с 
+    // двумерный массив с директориями в которых лежат бинарники
     dirs = ft_strsplit(dir, ':');
     while (1)
 	{
+        // выводим то, что до курсора
         ft_putstr(dir_name);
         ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
+    
         get_next_line(&line);
-
         command = ft_strsplit(line, ' ');
+
         while (dirs[i])
         {
+            // получаем команду типа /bin/ls
             command_dir = ft_strjoin(ft_strjoin(dirs[i], "/"), command[0]);
-            i++;
+
+            // пытаемся открыть бинарник, чтобы проверить в той ли папке он лежит
+            // если fd > 0, значит, он там. Прерываем цикл
             fd = open(command_dir, O_RDONLY);
-            if (fd > 0)
+            i++;
+            if (fd >= 0)
             {
-                // close(fd);
+                // close(fd); - почему ломается, если раскомментить?
                 break ;
             }
         }
@@ -91,5 +97,7 @@ int main (int argc, char **argv, char **env)
         if (pid == 0)
             execve(command_dir, command, env);
         wait(&pid);
+    if (fd < 0)
+        ft_putstr("program not fround\n");
 	}
 }
