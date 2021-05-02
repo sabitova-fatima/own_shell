@@ -37,10 +37,18 @@ int my_echo (char **command)
     return (1);
 }
 
+// добавить возможность писать без начальной /
+// проверять наличие директории и выводить ошибку 
+
 int my_cd (char **command)
 {
-    printf("Here will be my own cd\n");
-    return (1);
+    if (chdir(command[1]) == 0)
+        return (1);
+    else
+    {
+        ft_putstr("Directory not found\n");
+        return (-1);
+    }
 }
 
 int my_pwd (char **command)
@@ -75,9 +83,9 @@ int my_env (char **command, char **env)
     while (env[i])
     {
         ft_putstr(env[i]);
+        ft_putchar('\n');
         i++;
     }
-    ft_putchar('\n');
     return (1);
 }
 
@@ -137,17 +145,19 @@ int main (int argc, char **argv, char **env)
     int     i = 0;
 
     is_own = 0;
-    getcwd(dir_name, 4096);
     dir = find_dir(env);
     dirs = ft_strsplit(dir, ':');
+
+    // int n = chdir("/home/fatima");
+
     while (1)
 	{
+        getcwd(dir_name, 4096);
         ft_putstr(dir_name);
         ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
     
         get_next_line(&line);
         command = ft_strsplit(line, ' ');
-
         is_own = start_own_function(command, env);
         if (is_own == 0)
         {
@@ -171,4 +181,6 @@ int main (int argc, char **argv, char **env)
         if (fd < 0)
             ft_putstr("program not fround :(\n");
 	}
+
+
 }

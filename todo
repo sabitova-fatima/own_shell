@@ -1,7 +1,7 @@
 echo -n
-cd
+cd +
 pwd +
 export
 unset
-env +
+env - дописать с аргументами!
 exit +
