@@ -1,7 +1,7 @@
 echo -n
 cd
-pwd
+pwd +
 export
 unset
-env
-exit
+env +
+exit +

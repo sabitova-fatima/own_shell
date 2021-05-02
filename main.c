@@ -45,7 +45,12 @@ int my_cd (char **command)
 
 int my_pwd (char **command)
 {
-    printf("Here will be my own pwd\n");
+    // printf("Here will be my own pwd\n");
+    char    dir_name[4096];
+    getcwd(dir_name, 4096);
+
+    ft_putstr(dir_name);
+    ft_putchar('\n');
     return (1);
 }
 
@@ -61,19 +66,29 @@ int my_unset (char **command)
     return (1);
 }
 
-int my_env (char **command)
+int my_env (char **command, char **env)
 {
-    printf("Here will be my own env\n");
+    // printf("Here will be my own env\n");
+    int i;
+
+    i = 0;
+    while (env[i])
+    {
+        ft_putstr(env[i]);
+        i++;
+    }
+    ft_putchar('\n');
     return (1);
 }
 
 int my_exit (char **command)
 {
-    printf("Here will be my own exit\n");
-    return (1);
+    // printf("Here will be my own exit\n");
+    // return (1);
+    exit(0);
 }
 
-int start_own_function (char **command)
+int start_own_function (char **command, char **env)
 {
     if (ft_strcmp("echo", command[0]) == 0)
         return(my_echo(command));
@@ -86,7 +101,7 @@ int start_own_function (char **command)
     if (ft_strcmp("unset", command[0]) == 0)
         return(my_unset(command));
     if (ft_strcmp("env", command[0]) == 0)
-        return(my_env(command));
+        return(my_env(command, env));
     if (ft_strcmp("exit", command[0]) == 0)
         return(my_exit(command));
     return (0);
@@ -118,9 +133,10 @@ int main (int argc, char **argv, char **env)
     char    **dirs;
 	pid_t	pid;
     int     fd;
-    int is_own;
-    int i = 0;
+    int     is_own;
+    int     i = 0;
 
+    is_own = 0;
     getcwd(dir_name, 4096);
     dir = find_dir(env);
     dirs = ft_strsplit(dir, ':');
@@ -132,7 +148,7 @@ int main (int argc, char **argv, char **env)
         get_next_line(&line);
         command = ft_strsplit(line, ' ');
 
-        is_own = start_own_function (command);
+        is_own = start_own_function(command, env);
         if (is_own == 0)
         {
             while (dirs[i])
@@ -153,6 +169,6 @@ int main (int argc, char **argv, char **env)
             execve(command_dir, command, env);
         wait(&pid);
         if (fd < 0)
-            ft_putstr("program not fround\n");
+            ft_putstr("program not fround :(\n");
 	}
 }
