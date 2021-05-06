@@ -10,6 +10,7 @@
 
 # include "minishell.h"
  
+// exam gnl :)
 int        get_next_line(char **line)
 {
     char    c;
@@ -33,6 +34,7 @@ int        get_next_line(char **line)
     return (rv ? 1 : 0);
 }
 
+// парсит PATH и возвращает строку с директорией
 char* find_dir(char **env)
 {
     int i;
