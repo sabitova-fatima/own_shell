@@ -1,5 +1,5 @@
 # include <unistd.h>
-
+# include <stdlib.h>
 void	ft_bzero(void *s, int n)
 {
 	char	*ptr;
@@ -116,7 +116,7 @@ char	**ft_strsplit(char const *s, char c)
 	return (spt);
 }
 
-char	*ft_strdup(const char *s1)
+char	*ft_strdup1(const char *s1)
 {
 	int	len;
 	char	*str;
@@ -133,31 +133,31 @@ char	*ft_strdup(const char *s1)
 	return (tmp);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	char	*new_str;
-	int	i;
-	int	j;
-	int	s1_len;
-	int	s2_len;
+// char	*ft_strjoin(char const *s1, char const *s2)
+// {
+// 	char	*new_str;
+// 	int	i;
+// 	int	j;
+// 	int	s1_len;
+// 	int	s2_len;
 
-	if (!s1)
-		return (NULL);
-	if (!s2)
-		return (ft_strdup(s1));
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	new_str = ft_strnew(s1_len + s2_len + 1);
-	if (!new_str)
-		return (NULL);
-	i = -1;
-	j = -1;
-	while (++i < s1_len)
-		*(new_str + i) = *(s1 + i);
-	while (++j < s2_len)
-		*(new_str + i++) = *(s2 + j);
-	return (new_str);
-}
+// 	if (!s1)
+// 		return (NULL);
+// 	if (!s2)
+// 		return (ft_strdup1(s1));
+// 	s1_len = ft_strlen(s1);
+// 	s2_len = ft_strlen(s2);
+// 	new_str = ft_strnew(s1_len + s2_len + 1);
+// 	if (!new_str)
+// 		return (NULL);
+// 	i = -1;
+// 	j = -1;
+// 	while (++i < s1_len)
+// 		*(new_str + i) = *(s1 + i);
+// 	while (++j < s2_len)
+// 		*(new_str + i++) = *(s2 + j);
+// 	return (new_str);
+// }
 
 int	ft_strcmp(char *s1, char *s2)
 {

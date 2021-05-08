@@ -9,29 +9,152 @@
 # include <fcntl.h>
 
 # include "minishell.h"
- 
-// экзаменационный гнл, хаха
+# include "get_next_line.h"
 
-int        get_next_line(char **line)
+int w_count(char *s)
 {
-    char    c;
-    char    *buf;
-    int        rv;
-    int        i = 0;
+	int i;
+	int count;
+	char q;
 
-    if (!(buf = (char*)malloc(10000)))
-        return (-1);
-    *line = buf;
-    while ((rv = read(0, &c, 1)) > 0 && c != '\n' && c != '\0')
-    {
-        buf[i] = c;
-        i++;
-    }
-    buf[i] = '\0';
-    if (rv == -1)
-        return (-1);
-    return (rv ? 1 : 0);
+	i = 0;
+	count = 0;
+	while (s[i])
+	{
+		if (s[i] == ';')
+			count++;
+		else if (s[i] && s[i+1] == '\0')
+			count++;
+		else if (s[i] == '\\' && (s[i + 1] == ';' || s[i + 1] == '\'' ||
+								  s[i + 1] == '"' || s[i + 1] == '\\'))
+		{
+			if (!s[i+2])
+				count++;
+			i++;
+		}
+		else if (s[i] == '\'' || s[i] == '"')
+		{
+			q = s[i];
+			i++;
+			while (s[i] && s[i] != q)
+			{
+				if (s[i] == '\\' && q == '"' &&
+					(s[i+1] == '"' || s[i+1] == '\\'))
+					i++;
+				i++;
+			}
+			if (!s[i+1])
+				count++;
+		}
+		i++;
+	}
+	return (count);
 }
+
+char **split_semicolon(char *s, int count)
+{
+	char **arr;
+	int i;
+	int j;
+	char q;
+
+
+	arr = (char**)malloc(sizeof(char *) * count + 10);
+	if (!arr)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		j = 0;
+		while (s[j] && s[j] != ';')
+		{
+			if (s[j] == '\\' && (s[j + 1] == ';' || s[j + 1] == '\'' ||
+								 s[j + 1] == '"' || s[j + 1] == '\\'))
+				j++;
+			else if (s[j] == '\'' || s[j] == '"')
+			{
+				q = s[j];
+				j++;
+				while (s[j] && s[j] != q)
+				{
+					if (s[j] == '\\' && q == '"' &&
+						(s[j+1] == '"' || s[j+1] == '\\'))
+						j++;
+					j++;
+				}
+			}
+			j++;
+		}
+		arr[i] = ft_strdup(s, j);
+		s += j+1;
+		i++;
+	}
+	arr[i] = NULL;
+	return (arr);
+}
+
+char ***split_spaces(char **arr, int count)
+{
+	char ***new;
+	int i;
+
+	new = (char ***)malloc(sizeof(char **) * count +10);
+	i = 0;
+	while (i < count)
+	{
+		new[i] = ft_split(arr[i], ' ');
+		i++;
+	}
+	new[i] = NULL;
+	return (new);
+}
+
+char ***super_split(char *s)
+{
+	int count;
+	char **array;
+	char ***new;
+
+	count = w_count(s);
+//	printf("%d\n", count);
+	array = split_semicolon(s, count);
+	if (!array)
+		return (NULL);
+	new = split_spaces(array, count);
+	if (!new)
+		return (NULL);
+	return (new);
+}
+
+// int main(int argc, char **argv, char **env)
+// {
+// 	int i;
+// 	int j;
+// 	char *s;
+// 	char ***new;
+
+// 	while (get_next_line(0, &s))
+// 	{
+// 		new = super_split(s);
+// 		if (!new)
+// 			printf("error\n");
+
+// 		i = 0;
+// 		while (new[i])
+// 		{
+// 			j = 0;
+// 			while (new[i][j])
+// 			{
+// 				write(1, "a\n", 2);
+// 				printf("%s\n", new[i][j]);
+// 				write(1, "X\n", 2);
+// 				j++;
+// 			}
+// 			i++;
+// 		}
+// 	}
+// }
+
 
 // порезать бы функцию на два ..
 int my_echo (char **command, char *line)
@@ -177,6 +300,7 @@ char* find_path(char **env)
         return(env[i]);
         i++;   
     }
+    return (NULL);
 }
 
 // да, максимально бестолковые функции, ай ноу
@@ -208,6 +332,11 @@ int main (int argc, char **argv, char **env)
     int     is_own;
     int     i;
     
+
+	int j = 0;
+	
+	char ***new;
+
     // ооо да, я знаю, что переменных больше 5, извиняйте
 
     i = 0;
@@ -222,27 +351,51 @@ int main (int argc, char **argv, char **env)
         ft_putstr(dir_name);
         ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
     
-        get_next_line(&line);
+        // get_next_line(0, &line);
         command = ft_strsplit(line, ' ');
 
         // передаю в функцию все, что может пригодиться :)
         is_own = start_own_function(command, env, line);
         if (is_own == 0)
         {
-            while (dirs[i])
-            {
-                command_dir = ft_strjoin(ft_strjoin(dirs[i], "/"), command[0]);
-                fd = open(command_dir, O_RDONLY);
-                i++;
-                if (fd >= 0)
-                {
-                    // close(fd); - почему ломается, если раскомментить?
-                    break ;
-                }
-            }
+            // while (dirs[i])
+            // {
+            //     command_dir = ft_strjoin(ft_strjoin(dirs[i], "/"), command[0]);
+            //     fd = open(command_dir, O_RDONLY);
+            //     i++;
+            //     if (fd >= 0)
+            //     {
+            //         // close(fd); - почему ломается, если раскомментить?
+            //         break ;
+            //     }
+            // }
+
+			while (get_next_line(0, &line))
+			{
+				new = super_split(line);
+				if (!new)
+					printf("error\n");
+
+				i = 0;
+				while (new[i])
+				{
+					j = 0;
+					while (new[i][j])
+					{
+						// write(1, "a\n", 2);
+						printf("%s\n", new[i][j]);
+						// write(1, "X\n", 2);
+						j++;
+					}
+					i++;
+				}
+			}
+
         }
         i = 0;
         pid = fork();
+
+        printf("pid = %d\n", pid);
         if (pid == 0)
             execve(command_dir, command, env);
         wait(&pid);
