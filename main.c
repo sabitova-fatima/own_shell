@@ -324,7 +324,6 @@ char* find_path(char **env)
 
 void put_prompt(char *dir_name)
 {
-    getcwd(dir_name, 4096);
     ft_putstr(dir_name);
     ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
 }
@@ -366,6 +365,7 @@ int main (int argc, char **argv, char **env)
     int     m;
     
     dir_name = malloc(4096);
+    getcwd(dir_name, 4096);
 
     i = 0;
 
@@ -397,6 +397,7 @@ int main (int argc, char **argv, char **env)
             i++;
         }
 	}
+    // free (dir_name);
 }
 
 // int start_builtin(char **dirs, )
