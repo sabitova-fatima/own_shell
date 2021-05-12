@@ -212,8 +212,11 @@ int my_cd(char **command)
     char *path;
 
     if (!command[1])
+    {
         ft_putstr("Provide a directory\n");
-    if (command[1][0] != '/')
+        return (1);
+    }
+    else if (command[1][0] != '/')
         path = ft_strjoin("/", command[1]);
     else
         path = command[1];
@@ -319,87 +322,79 @@ char* find_path(char **env)
 //     }
 // }
 
+void put_prompt(char *dir_name)
+{
+    getcwd(dir_name, 4096);
+    ft_putstr(dir_name);
+    ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
+}
+
+char *find_dir_path(char **command, char **dirs)
+{
+    int fd;
+    int m = 0;
+    char *command_dir;
+    while (dirs[m])
+    {
+        command_dir = ft_strjoin(ft_strjoin(dirs[m], "/"), command[0]);
+        fd = open(command_dir, O_RDONLY);
+        m++;
+        if (fd >= 0)
+            break ;
+    }
+    if (fd < 0)
+    {
+        ft_putstr("program not found :(\n");
+        return (NULL);
+    }
+    return (command_dir);
+}
+
 int main (int argc, char **argv, char **env)
 {
-    char    dir_name[4096];
+    char *dir_name;
 	char	*line;
     char    **command;
 	char	*command_dir;
     char    *dir;
     char    **dirs;
-	pid_t	pid;
     int     fd;
     int     is_own;
     int     i;
+	char    ***new;
+	pid_t	pid;
+    int     m;
     
-
-	int j = 0;
-	
-	char ***new;
-
-    // ооо да, я знаю, что переменных больше 5, извиняйте
+    dir_name = malloc(4096);
 
     i = 0;
 
     is_own = 0;
-    dir = find_path(env);
-    dirs = ft_strsplit(dir, ':');
+    dir = find_path(env); // переменная path
+    dirs = ft_strsplit(dir, ':'); // переменная path разделенная 
 
     while (1)
 	{
-        getcwd(dir_name, 4096);
-        ft_putstr(dir_name);
-        ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
-    
-        // get_next_line(0, &line);
-        command = ft_strsplit(line, ' ');
+        put_prompt(dir_name);
 
-        // передаю в функцию все, что может пригодиться :)
-        is_own = start_own_function(command, env, line);
-        if (is_own == 0)
-        {
-            // while (dirs[i])
-            // {
-            //     command_dir = ft_strjoin(ft_strjoin(dirs[i], "/"), command[0]);
-            //     fd = open(command_dir, O_RDONLY);
-            //     i++;
-            //     if (fd >= 0)
-            //     {
-            //         // close(fd); - почему ломается, если раскомментить?
-            //         break ;
-            //     }
-            // }
-
-			while (get_next_line(0, &line))
-			{
-				new = super_split(line);
-				if (!new)
-					printf("error\n");
-
-				i = 0;
-				while (new[i])
-				{
-					j = 0;
-					while (new[i][j])
-					{
-						// write(1, "a\n", 2);
-						printf("%s\n", new[i][j]);
-						// write(1, "X\n", 2);
-						j++;
-					}
-					i++;
-				}
-			}
-
-        }
+        get_next_line(0, &line);
+        new = super_split(line);
+        
         i = 0;
-        pid = fork();
+        while (new[i])
+        {
+            command = new[i];
 
-        printf("pid = %d\n", pid);
-        if (pid == 0)
-            execve(command_dir, command, env);
-        wait(&pid);
-        if (fd < 0)
-            ft_putstr("program not fround :(\n");
+            is_own = start_own_function(command, env, line);
+            if (is_own == 0)
+            {
+                command_dir = find_dir_path(command, dirs);
+                pid = fork();
+                if (pid == 0 && command_dir)
+                    execve(command_dir, command, env);
+                wait(&pid);
+            }
+            i++;
+        }
 	}
 }
