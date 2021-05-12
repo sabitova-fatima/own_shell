@@ -352,7 +352,7 @@ char *find_dir_path(char **command, char **dirs)
 
 int main (int argc, char **argv, char **env)
 {
-    char *dir_name;
+    char    *dir_name;
 	char	*line;
     char    **command;
 	char	*command_dir;
@@ -398,3 +398,5 @@ int main (int argc, char **argv, char **env)
         }
 	}
 }
+
+// int start_builtin(char **dirs, )
