@@ -308,8 +308,7 @@ char* find_path(char **env)
 
 void put_prompt(void)
 {
-    char *dir_name;
-    dir_name = malloc(4096);
+    char dir_name[4096 + 1];
     getcwd(dir_name, 4096);
     ft_putstr(dir_name);
     ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
