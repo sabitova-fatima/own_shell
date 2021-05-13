@@ -322,8 +322,11 @@ char* find_path(char **env)
 //     }
 // }
 
-void put_prompt(char *dir_name)
+void put_prompt(void)
 {
+    char *dir_name;
+    dir_name = malloc(4096);
+    getcwd(dir_name, 4096);
     ft_putstr(dir_name);
     ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
 }
@@ -347,6 +350,16 @@ char *find_dir_path(char **command, char **dirs)
         return (NULL);
     }
     return (command_dir);
+}
+
+void	ctrl_c(int signo)
+{
+	if (signo == SIGINT)
+	{
+		ft_putstr("\n");
+		put_prompt();
+		signal(SIGINT, ctrl_c);
+	}
 }
 
 int main (int argc, char **argv, char **env)
@@ -375,8 +388,8 @@ int main (int argc, char **argv, char **env)
 
     while (1)
 	{
-        put_prompt(dir_name);
-
+        put_prompt();
+        signal(SIGINT, ctrl_c); // для crtl c
         get_next_line(0, &line);
         new = super_split(line);
         
@@ -397,7 +410,5 @@ int main (int argc, char **argv, char **env)
             i++;
         }
 	}
-    // free (dir_name);
+    free (dir_name);
 }
-
-// int start_builtin(char **dirs, )
