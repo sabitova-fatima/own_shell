@@ -306,22 +306,6 @@ char* find_path(char **env)
     return (NULL);
 }
 
-// да, максимально бестолковые функции, ай ноу
-// char* find_home(char **env)
-// {
-//     int i;
-
-//     i = 0;
-
-//     while (env[i])
-//     {
-//         if (env[i][0] == 'H' && env[i][1] == 'O' 
-//         && env[i][2] == 'M' && env[i][3] == 'E')
-//         return(env[i]);
-//         i++;   
-//     }
-// }
-
 void put_prompt(void)
 {
     char *dir_name;
