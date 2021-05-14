@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "minishell.h"
 
 int		clear(t_list **all_data, int fd, char *buf, int return_value)
 {
@@ -70,30 +70,27 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char	*ft_strdup(const char *s, int len)
+char	*ft_strdup(char *s, int len)
 {
 	int		i;
+	int 	j;
 	char	*b;
 
-	i = 0;
 	if (!s)
 		return (NULL);
-	while (s[i])
-		i++;
+	i = ft_strlen(s);
 	if (len != -1 && len < i)
 		i = len;
-	b = (char*)malloc(sizeof(char) * (i + 10));
+	b = (char *)malloc(sizeof(char) * (i + 1));
 	if (!b)
-		return (0);
-	int j = 0;
-	while (j < i)
-	{
+		return (NULL);
+	j = -1;
+	while (++j < i)
 		b[j] = s[j];
-		j++;
-	}
 	b[j] = '\0';
 	return (b);
 }
+
 
 char	*ft_strjoin(char *s1, char *s2)
 {
@@ -107,7 +104,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		i++;
 	while (s2[j])
 		j++;
-	if (!(new = (char*)malloc((i + j) + 10)))
+	if (!(new = (char*)malloc((i + j) + 1)))
 		return (NULL);
 	i = 0;
 	while (s1[i])
@@ -118,6 +115,27 @@ char	*ft_strjoin(char *s1, char *s2)
 	j = 0;
 	while (s2[j])
 		new[i++] = s2[j++];
+	new[i] = '\0';
+	return (new);
+}
+
+char	*ft_strjoin_char(char *s1, char c)
+{
+	char	*new;
+	int		i;
+
+	i = 0;
+	while (s1[i])
+		i++;
+	if (!(new = (char*)malloc((i + 1) + 1)))
+		return (NULL);
+	i = 0;
+	while (s1[i])
+	{
+		new[i] = s1[i];
+		i++;
+	}
+	new[i++] = c;
 	new[i] = '\0';
 	return (new);
 }

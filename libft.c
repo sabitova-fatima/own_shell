@@ -1,5 +1,5 @@
-# include <unistd.h>
-# include <stdlib.h>
+#include "minishell.h"
+
 void	ft_bzero(void *s, int n)
 {
 	char	*ptr;

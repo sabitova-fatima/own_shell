@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "minishell.h"
 
 t_list		*find_ptr(t_list **all_data, int fd)
 {

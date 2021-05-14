@@ -1,12 +1,10 @@
 NAME 		= minishell
-SRCS 		= main.c get_next_line.c get_next_line_utils.c ft_split.c
+SRCS 		= main.c get_next_line.c get_next_line_utils.c ft_split.c libft.c my_functions.c
 CFLAGS 		= -Wall -Wextra -Werror -I. 
 CC			= gcc
 RM			= rm -rf
 
-all:	$(NAME)
-
-$(NAME): 
+all:
 		$(CC) $(SRCS) -o $(NAME)
 
 clean:
