@@ -42,6 +42,7 @@ int 			into_quotes(char *s, int i);
 int 			into_command_split(char *s, int *i, int w_count, char c);
 int 			into_command_split2(char *s, int letter, char c);
 char 			*join_char(char *s, char c);
+char 			***super_split(char *s);
 
 // libft
 void			ft_bzero(void *s, int n);
