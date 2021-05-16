@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "fcntl.h": "c",
-        "dirent.h": "c"
+        "dirent.h": "c",
+        "minishell.h": "c"
     }
 }
