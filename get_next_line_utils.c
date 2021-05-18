@@ -91,7 +91,6 @@ char	*ft_strdup(char *s, int len)
 	return (b);
 }
 
-
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*new;
@@ -119,23 +118,3 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (new);
 }
 
-char	*ft_strjoin_char(char *s1, char c)
-{
-	char	*new;
-	int		i;
-
-	i = 0;
-	while (s1[i])
-		i++;
-	if (!(new = (char*)malloc((i + 1) + 1)))
-		return (NULL);
-	i = 0;
-	while (s1[i])
-	{
-		new[i] = s1[i];
-		i++;
-	}
-	new[i++] = c;
-	new[i] = '\0';
-	return (new);
-}

@@ -1,5 +1,22 @@
 #include "minishell.h"
 
+// int main(int argc, char **argv, char **env)
+// {
+// 	int i;
+// 	int j;
+// 	char *s;
+// 	char ****all;
+// 	int ****fd;
+
+// 	while (get_next_line(0, &s))
+// 	{
+// 		all = super_split(s, env, &fd);
+// 		free(s);
+// 	}
+// }
+
+#include "minishell.h"
+
 int start_own_function (char **command, char **env, char *line)
 {
     if (ft_strcmp("echo", command[0]) == 0)
@@ -90,13 +107,17 @@ int main (int argc, char **argv, char **env)
 	char	*command_dir;
     char    *dir;
     char    **dirs;
-    int     fd;
+    // int     fd_to_read;
     int     is_own;
     int     i;
 	char    ***new;
 	pid_t	pid;
     int     m;
     
+	char *s;
+	char ****all;
+	int ****fd;
+
     dir_name = malloc(4096);
     getcwd(dir_name, 4096);
 
@@ -112,7 +133,8 @@ int main (int argc, char **argv, char **env)
         signal(SIGINT, ctrl_c); // для crtl c
         signal(SIGQUIT, ctrl_slash); // для crtl /
         get_next_line(0, &line);
-        new = super_split(line);
+        // new = super_split(line);
+        super_split(s, env, &fd);
         
         i = 0;
         while (new[i])
@@ -133,3 +155,4 @@ int main (int argc, char **argv, char **env)
 	}
     free (dir_name);
 }
+
