@@ -24,15 +24,15 @@ char	*ft_strnew(int size)
 	return (str);
 }
 
-int		ft_strlen(char const *s)
-{
-	int		i;
+// int		ft_strlen(char const *s)
+// {
+// 	int		i;
 
-	i = -1;
-	while (*(s + ++i))
-		;
-	return (i);
-}
+// 	i = -1;
+// 	while (*(s + ++i))
+// 		;
+// 	return (i);
+// }
 
 void	ft_putchar(char c)
 {
@@ -116,7 +116,7 @@ char	**ft_strsplit(char const *s, char c)
 	return (spt);
 }
 
-char	*ft_strdup1(const char *s1)
+char	*ft_strdup1(char *s1)
 {
 	int	len;
 	char	*str;
