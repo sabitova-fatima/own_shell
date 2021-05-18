@@ -40,7 +40,7 @@ void put_prompt(void)
     char dir_name[4096 + 1];
     getcwd(dir_name, 4096);
     ft_putstr(dir_name);
-    ft_putstr(" \033[0m\033[33msh>\033[0m$ ");
+    ft_putstr(" \033[0m\033[33me-bash>\033[0m$ ");
 }
 
 char *find_dir_path(char **command, char **dirs)
@@ -64,43 +64,76 @@ char *find_dir_path(char **command, char **dirs)
     return (command_dir);
 }
 
-void	ctrl_c(int signo)
-{
-	if (signo == SIGINT)
-	{
-		ft_putstr("\n");
-		put_prompt();
-		signal(SIGINT, ctrl_c);
-	}
-}
+// void	ctrl_c(int signo)
+// {
+// 	if (signo == SIGINT)
+// 	{
+// 		ft_putstr("\n");
+// 		put_prompt();
+// 		signal(SIGINT, ctrl_c);
+// 	}
+// }
 
-void	ctrl_slash(int signo)
+// void	ctrl_slash(int signo)
+// {
+// 	if (signo == SIGQUIT)
+// 	{
+// 		exit(0);
+// 	}
+// }
+
+char **cut_command(char ** command)
 {
-	if (signo == SIGQUIT)
-	{
-		exit(0);
-	}
+    int i;
+    int j;
+
+    i = 0;
+    int len = 0;
+
+    char ** res;
+    while (command[i] || command[i + 1])
+    {
+        i++;
+        len++;
+    }
+    res = malloc (sizeof(char *) * (len + 1));
+    i = 0;
+    j = 0;
+
+    while (i < len)
+    {
+        if (command[i])
+        {
+            res[j] = command[i];
+            i++;
+            j++;
+        }
+        i++;
+    }
+    res[j] = NULL;
+    return (res);
 }
 
 int main (int argc, char **argv, char **env)
 {
+	pid_t	pid;
     char    *dir_name;
 	char	*line;
     char    **command;
 	char	*command_dir;
     char    *dir;
     char    **dirs;
-    int     fd;
     int     is_own;
-    int     i;
-	char    ***new;
-	pid_t	pid;
+	char    ****new;
     int     m;
-    
-    dir_name = malloc(4096);
-    getcwd(dir_name, 4096);
+    int     ****fd;
 
-    i = 0;
+    int     i;
+    int     j;
+
+
+    // dir_name = malloc(4096);
+    // getcwd(dir_name, 4096);
 
     is_own = 0;
     dir = find_path(env); // переменная path
@@ -109,27 +142,52 @@ int main (int argc, char **argv, char **env)
     while (1)
 	{
         put_prompt();
-        signal(SIGINT, ctrl_c); // для crtl c
-        signal(SIGQUIT, ctrl_slash); // для crtl /
+        // signal(SIGINT, ctrl_c); // для crtl c
+        // signal(SIGQUIT, ctrl_slash); // для crtl /
         get_next_line(0, &line);
-        new = super_split(line);
+        // new = super_split(line);
+        new = super_split(line, env, &fd);
+
         
         i = 0;
-        while (new[i])
+        j = 0;
+        while (new[j])
         {
-            command = new[i];
-
-            is_own = start_own_function(command, env, line);
-            if (is_own == 0)
+            i = 0;
+            while (new[j][i])
             {
-                command_dir = find_dir_path(command, dirs);
-                pid = fork();
-                if (pid == 0 && command_dir)
-                    execve(command_dir, command, env);
-                wait(&pid);
+                command = cut_command(new[j][i]);
+
+                is_own = start_own_function(command, env, line);
+                if (is_own == 0)
+                {
+                    command_dir = find_dir_path(command, dirs);
+                    pid = fork();
+                    if (pid == 0 && command_dir)
+                        execve(command_dir, command, env);
+                    wait(&pid);
+                }
+                i++;
             }
-            i++;
+            j++;
         }
 	}
-    free (dir_name);
+    // free (dir_name);
 }
+
+
+
+// int main(int argc, char **argv, char **env)
+// {
+// 	int i;
+// 	int j;
+// 	char *s;
+// 	char ****all;
+// 	int ****fd;
+
+// 	while (get_next_line(0, &s))
+// 	{
+// 		all = super_split(s, env, &fd);
+// 		free(s);
+// 	}
+// }

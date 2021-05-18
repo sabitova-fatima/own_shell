@@ -159,8 +159,8 @@ char ****super_split(char *s, char **env, int *****fd)
 			k = -1;
 			while(all[i][j][++k])
 			{
-				printf("%i:d j:%d k:%d before clear [%s]\n", i,j,k,
-				all[i][j][k]);
+				// printf("%i:d j:%d k:%d before clear [%s]\n", i,j,k,
+				// all[i][j][k]);
 			}
 		}
 	}
@@ -183,8 +183,8 @@ char ****super_split(char *s, char **env, int *****fd)
 			k = -1;
 			while(all[i][j][++k])
 			{
-				printf("%i:d j:%d k:%d after clear [%s]\n", i,j,k,
-					   all[i][j][k]);
+				// printf("%i:d j:%d k:%d after clear [%s]\n", i,j,k,
+					//    all[i][j][k]);
 			}
 		}
 	}
