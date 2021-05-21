@@ -8,7 +8,11 @@ char *cleaner_semicolon_pipe(char *s)
 	new = "";
 	i = -1;
 	while(s[++i])
+	{
 		new = join_char(new, s[i]);
+		if (!new)
+			return (NULL);
+	}
 	i = 0;
 	while(new[i])
 		i++;

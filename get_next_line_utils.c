@@ -12,10 +12,10 @@
 
 #include "minishell.h"
 
-int		clear(t_list **all_data, int fd, char *buf, int return_value)
+int	clear(t_list **all_data, int fd, char *buf, int return_value)
 {
-	t_list *tmp;
-	t_list *pmt;
+	t_list	*tmp;
+	t_list	*pmt;
 
 	if (*all_data)
 	{
@@ -41,7 +41,7 @@ int		clear(t_list **all_data, int fd, char *buf, int return_value)
 
 t_list	*ft_lstnew(int content)
 {
-	t_list *new;
+	t_list	*new;
 
 	new = malloc(sizeof(t_list));
 	if (!new)
@@ -52,19 +52,19 @@ t_list	*ft_lstnew(int content)
 	return (new);
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(char *s, char c)
 {
 	int	i;
 
 	i = 0;
 	if (!s)
 		return (NULL);
-	if (s[0] == '\0' && s[0] == (unsigned char)c)
-		return ((char *)&s[0]);
+	if (s[0] == '\0' && s[0] == c)
+		return (&s[0]);
 	while (s[i])
 	{
-		if (s[i] == (unsigned char)c)
-			return ((char *)&s[i]);
+		if (s[i] == c)
+			return (&s[i]);
 		i++;
 	}
 	return (NULL);
@@ -79,7 +79,7 @@ char	*ft_strdup(char *s, int len)
 	if (!s)
 		return (NULL);
 	i = ft_strlen(s);
-	if (len != -1 && len < i)
+	if (len != -1 && len <= i)
 		i = len;
 	b = (char *)malloc(sizeof(char) * (i + 1));
 	if (!b)
@@ -103,7 +103,8 @@ char	*ft_strjoin(char *s1, char *s2)
 		i++;
 	while (s2[j])
 		j++;
-	if (!(new = (char*)malloc((i + j) + 1)))
+	new = (char *)malloc((i + j) + 1);
+	if (!new)
 		return (NULL);
 	i = 0;
 	while (s1[i])

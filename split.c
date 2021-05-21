@@ -1,57 +1,58 @@
 #include "minishell.h"
 
-int into_command_split(char *s, int *i, int w_count, char *c)
+int count_spaces(char *s, char *c)
 {
-	if (s[*i] != c[0] && s[*i] != c[1] && s[*i] != '"' && s[*i] != '\'' &&
-		(s[(*i) + 1] == c[0] || s[(*i) + 1] == c[1] || !s[(*i) + 1]))
-		w_count++;
-	else if (s[*i] == '\\' && s[(*i) + 1])
+	int i;
+	int w_count;
+
+	i = -1;
+	w_count = 0;
+	while (s[++i])
 	{
-		if (!s[(*i) + 2] || s[(*i) + 2] == c[0] || s[(*i) + 2] == c[1])
+		if (s[i] != c[0] && s[i] != c[1] && s[i] != '"' && s[i] != '\'' &&
+			(s[i + 1] == c[0] || s[i + 1] == c[1] || !s[i + 1]))
 			w_count++;
-		(*i)++;
-	}
-	else if (s[*i] == '"' || s[*i] == '\'')
-	{
-		*i = into_quotes(s, *i);
-		if (s[(*i) + 1] == c[0] || s[(*i) + 1] == c[1] || !s[(*i) + 1])
-			w_count++;
+		else if (s[i] == '\\' && s[i + 1])
+		{
+			if (!s[i + 2] || s[i + 2] == c[0] || s[i + 2] == c[1])
+				w_count++;
+			i++;
+		}
+		else if (s[i] == '"' || s[i] == '\'')
+		{
+			i = into_quotes(s, i);
+			if (s[i + 1] == c[0] || s[i + 1] == c[1] || !s[i + 1])
+				w_count++;
+		}
 	}
 	return (w_count);
 }
 
-int into_command_split2(char *s, int letter, char *c)
+int count_letters(char *s, char *c)
 {
 	char q;
+	int letter;
 
-	if (s[letter] != '"' && s[letter] != '\'')
+	letter = 0;
+	skip_spaces(s, &letter);
+	while (s[letter] && s[letter] != c[0] && s[letter] != c[1])
 	{
-		while (s[letter] != c[0] && s[letter] != c[1] && s[letter] &&
-			   s[letter] != '"' && s[letter] != '\'')
+		while (s[letter] != '"' && s[letter] != '\'' && s[letter] != c[0]
+		&& s[letter] != c[1] && s[letter])
 		{
 			if (s[letter] == '\\' && s[letter + 1])
 				letter++;
 			letter++;
 		}
-	}
-	if (s[letter] == '"' || s[letter] == '\'')
-	{
-		q = s[letter];
-		letter = into_quotes(s, letter);
-		if (s[letter] == q)
-			letter++;
+		if (s[letter] == '"' || s[letter] == '\'')
+		{
+			q = s[letter];
+			letter = into_quotes(s, letter);
+			if (s[letter] == q)
+				letter++;
+		}
 	}
 	return (letter);
-}
-
-void	freedom(char **arr, int w_count)
-{
-	int	i;
-
-	i = 0;
-	while (i < w_count)
-		free(arr[i++]);
-	free(arr);
 }
 
 char	**ft_split2(char *s, int w_count, char *c, char **arr)
@@ -63,38 +64,32 @@ char	**ft_split2(char *s, int w_count, char *c, char **arr)
 	i = -1;
 	while (++i < w_count)
 	{
-		letter = 0;
-		j = 0;
-		skip_spaces(s, &letter);
-		while (s[letter] && s[letter] != c[0] && s[letter] != c[1])
-			letter = into_command_split2(s, letter, c);
+		letter = count_letters(s, c);
 		arr[i] = (char *)malloc(sizeof(char) * (letter + 1));
 		if (!arr[i])
 		{
-			freedom(arr, i);
+			freedom_2d(arr);
 			return (NULL);
 		}
+		j = 0;
 		while (j < letter)
 			arr[i][j++] = *s++;
 		arr[i][j] = '\0';
-//		printf("word |%s|\n", arr[i]);
+//		printf("word <%s>\n", arr[i]);
 	}
 	arr[i] = NULL;
 	return (arr);
 }
 
-char		**ft_split(char *s, char *c, int *help2)
+char		**ft_split(char *s, int *help2)
 {
 	char	**arr;
 	int		w_count;
-	int		i;
+	char 	c[2];
 
-	i = -1;
-	w_count = 0;
-	if (!s)
-		return (NULL);
-	while (s[++i])
-		w_count = into_command_split(s, &i, w_count, c);
+	c[0] = ' ';
+	c[1] = '	';
+	w_count = count_spaces(s, c);
 //	printf("words in command: %d\n", w_count);
 	*help2 = w_count;
 	arr = (char **)malloc(sizeof(char *) * (w_count + 1));
@@ -104,4 +99,30 @@ char		**ft_split(char *s, char *c, int *help2)
 	return (arr);
 }
 
+char ***split_spaces(char **arr, int *help3, int **help2)
+{
+	char ***new;
+	int i;
 
+	i = 0;
+	while (arr[i])
+		i++;
+	new = (char ***)malloc(sizeof(char **) * (i + 1));
+	if (!new)
+		return (NULL);
+	*help3 = i;
+	*help2 = (int *)malloc(sizeof(int) * i);
+	i = -1;
+	while (arr[++i])
+	{
+//		printf("before split <%s>\n", arr[i]);
+		new[i] = ft_split(arr[i], &(*help2)[i]);
+		if (!new[i])
+		{
+			freedom_3d(new);
+			return (NULL);
+		}
+	}
+	new[i] = NULL;
+	return (new);
+}

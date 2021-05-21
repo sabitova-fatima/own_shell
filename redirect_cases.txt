@@ -1,0 +1,13 @@
+command not found, but file created
+hitomi>5
+hitomi >5
+hitomi> 5
+hitomi > 5
+hitomi rr>4
+hitomi rr > 4
+hitomi > '5'
+hitomi ls re owerefd>12
+ls > \11
+ls > \"
+ls>11>12 - syntax error  (после названия файла c цифрами не может идти сразу >)
+>123

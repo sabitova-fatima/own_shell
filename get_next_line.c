@@ -12,9 +12,20 @@
 
 #include "minishell.h"
 
-t_list		*find_ptr(t_list **all_data, int fd)
+char	*ft_empty(void)
 {
-	t_list *tmp;
+	char	*empty;
+
+	empty = (char *)malloc(sizeof(char));
+	if (!empty)
+		return (NULL);
+	empty[0] = '\0';
+	return (empty);
+}
+
+t_list	*find_ptr(t_list **all_data, int fd)
+{
+	t_list	*tmp;
 
 	if (!(*all_data))
 		return (*all_data = ft_lstnew(fd));
@@ -32,20 +43,16 @@ t_list		*find_ptr(t_list **all_data, int fd)
 
 static char	*do_ostatok(t_list *fd_data, char **line)
 {
-	char *empty;
-	char *next_line;
+	char	*next_line;
 
 	if (fd_data->ostatok == NULL)
-	{
-		if (!(empty = (char *)malloc(sizeof(char))))
-			return (NULL);
-		empty[0] = '\0';
-		return (empty);
-	}
-	if ((next_line = ft_strchr(fd_data->ostatok, '\n')))
+		return (ft_empty());
+	next_line = ft_strchr(fd_data->ostatok, '\n');
+	if (next_line)
 	{
 		*next_line++ = '\0';
-		if (!((*line) = ft_strdup(fd_data->ostatok, -1)))
+		*line = ft_strdup(fd_data->ostatok, -1);
+		if (!(*line))
 			return (NULL);
 		next_line = ft_strdup(next_line, -1);
 		free(fd_data->ostatok);
@@ -59,17 +66,20 @@ static char	*do_ostatok(t_list *fd_data, char **line)
 
 static int	boss_reader(char *buf, t_list *fd_data, char **line)
 {
-	char *this_line;
-	char *tmp;
+	char	*this_line;
+	char	*tmp;
 
-	if ((this_line = ft_strchr(buf, '\n')))
+	this_line = ft_strchr(buf, '\n');
+	if (this_line)
 	{
 		*this_line++ = '\0';
-		if (!(fd_data->ostatok = ft_strdup(this_line, -1)))
-			return (0);
+		fd_data->ostatok = ft_strdup(this_line, -1);
+//		if (!fd_data->ostatok)
+//			return (0);
 	}
 	tmp = *line;
-	if (!(*line = ft_strjoin(*line, buf)))
+	*line = ft_strjoin(*line, buf);
+	if (!(*line))
 		return (0);
 	free(tmp);
 	tmp = NULL;
@@ -83,35 +93,43 @@ static int	read_buf(t_list **all_data, char **line, int fd, t_list *fd_data)
 	long long		bytes;
 
 	bytes = 0;
-	if (!(buf = (char *)malloc(sizeof(char) * buff_size + 1)))
+	buf = (char *)malloc(sizeof(char) * buff_size + 1);
+	if (!buf)
 		return (clear(all_data, fd, buf, -1));
-	while ((fd_data->ostatok == NULL) && (bytes = read(fd, buf, BUFFER_SIZE)))
+	while (fd_data->ostatok == NULL)
 	{
+		bytes = read(fd, buf, 10);
+		if (!bytes)
+			break ;
 		if (bytes < 0)
 			return (clear(all_data, fd, buf, -1));
 		buf[bytes] = '\0';
 		if (!boss_reader(buf, fd_data, line))
 			return (clear(all_data, fd, buf, -1));
 	}
-	if (bytes < buff_size && (fd_data->ostatok) == NULL)
+	if (bytes < buff_size && !(fd_data->ostatok))
 		return (clear(all_data, fd, buf, 0));
 	free(buf);
 	return (1);
 }
 
-int			get_next_line(int fd, char **line)
+int	get_next_line(int fd, char **line)
 {
 	static t_list	*all_data;
 	t_list			*fd_data;
 	const long long buff_size = BUFFER_SIZE;
 	char			test[1];
+	int a;
 
-	if (fd < 0 || buff_size <= 0 || !line || read(fd, test, 0) < 0 ||
-		!(fd_data = find_ptr(&all_data, fd)))
+	if (fd < 0 || buff_size <= 0 || !line || read(fd, test, 0) < 0
+		|| !(fd_data = find_ptr(&all_data, fd)))
 		return (-1);
-	if (!(*line = do_ostatok(fd_data, line)))
+	*line = do_ostatok(fd_data, line);
+	if (!(*line))
 		return (clear(&(all_data), fd, NULL, -1));
-	return (read_buf(&(all_data), line, fd, fd_data));
+	a = read_buf(&(all_data), line, fd, fd_data);
+//	free(fd_data->ostatok);
+	return(a);
 }
 
 
