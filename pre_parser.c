@@ -67,9 +67,9 @@ int check_empty_commands(char **arr, int pipes)
 		}
 		else
 		{
-			if (arr[i][j] == '|' || (!arr[i][j] && i > 0))
+			if (arr[i][j] == '|' || arr[i][j] == ';' || (!arr[i][j] && i > 0))
 				printf("syntax error near ; or |\n");
-			if (arr[i][j] == '|' || (!arr[i][j] && i > 0))
+			if (arr[i][j] == '|' || arr[i][j] == ';' || (!arr[i][j] && i > 0))
 				return (1);
 		}
 	}

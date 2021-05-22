@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int **create_two(int help)
+int **create_2d(int help)
 {
 	int **fd_dva_new;
 	int i;
@@ -17,7 +17,7 @@ int **create_two(int help)
 	return (fd_dva_new);
 }
 
-int ***create_three(int help3, int *help2)
+int ***create_3d(int help3, int *help2)
 {
 	int ***fd_three_new;
 	int i;
@@ -25,11 +25,9 @@ int ***create_three(int help3, int *help2)
 	fd_three_new = (int ***)malloc(sizeof(int **) * (help3 + 1));
 	i = -1;
 	while(++i < help3)
-		fd_three_new[i] = create_two(help2[i]);
+		fd_three_new[i] = create_2d(help2[i]);
 	fd_three_new[i] = NULL;
-	i = 0;
-	while(fd_three_new[i])
-		i++;
+
 	return (fd_three_new);
 }
 

@@ -84,13 +84,18 @@ int cleaner(char **s, char **env)
 	while(s[++i])
 	{
 		new = "";
+		printf("before semi_clean [%s]\n", s[i]);
 		s[i] = cleaner_semicolon_pipe(s[i]);
+
 		j = 0;
 		skip_spaces(s[i], &j);
+		printf("after semi_clean [%s]\n", s[i] + j);
 		while(s[i][j])
 			j = into_cleaner(s, i, j, &new, env);
-		free(s[i]);
-		s[i] = new;
+		printf("new semi_clean [%s]\n", new);
+
+//		free(s[i]);
+//		s[i] = new;
 	}
 	return (0);
 }

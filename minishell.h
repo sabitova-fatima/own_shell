@@ -119,13 +119,16 @@ int 			into_dollar(char *s, char **new, int *j, char **env);
 int 			into_dollar2(char *s, int *j, char **new, char **env);
 
 //UTILS3
-int 			**create_two(int help);
-int				 ***create_three(int help3, int *help2);
+int 			**create_2d(int help);
+int				 ***create_3d(int help3, int *help2);
 
 //UTILS4
 void			freedom_2d(char **arr);
 void 			freedom_3d(char ***arr);
-
+void 			freedom_4d(char ****arr);
+void			freedom_2d_int(int **arr);
+void 			freedom_3d_int(int ***arr);
+void 			freedom_4d_int(int ****arr);
 
 
 #endif

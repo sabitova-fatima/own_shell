@@ -13,6 +13,11 @@ int main(int argc, char **argv, char **env)
 	{
 		all = super_split(s, env, &fd);
 		free(s);
+		if (all)
+		{
+			freedom_4d(all);
+			freedom_4d_int(fd);
+		}
 	}
 
 }
