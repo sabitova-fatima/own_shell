@@ -45,8 +45,10 @@ int check_empty_redirect(char **arr)
 	}
 	return (0);
 }
+//			printf("no pipes: [%s] %d\n", arr[i], i);
+//			printf("with pipes: [%s] %d\n", arr[i], i);
 
-int check_empty_commands(char **arr)
+int check_empty_commands(char **arr, int pipes)
 {
 	int i;
 	int j;
@@ -56,10 +58,19 @@ int check_empty_commands(char **arr)
 	{
 		j = 0;
 		skip_spaces(arr[i], &j);
-		if ((arr[i][j] == ';' || arr[i][j] == '|' || !arr[i][j]) && i > 0)
+		if (!pipes)
 		{
-			printf("syntax error near ; or |\n");
-			return (1);
+			if (arr[i][j] == ';')
+				printf("syntax error near ; or |\n");
+			if (arr[i][j] == ';')
+				return (1);
+		}
+		else
+		{
+			if (arr[i][j] == '|' || (!arr[i][j] && i > 0))
+				printf("syntax error near ; or |\n");
+			if (arr[i][j] == '|' || (!arr[i][j] && i > 0))
+				return (1);
 		}
 	}
 	return (0);
@@ -102,9 +113,13 @@ int pre_parser(char **arr)
 	i = -1;
 	while(new[++i])
 	{
-		if (check_empty_redirect(new[i]) || check_empty_commands(new[i])
-		|| check_opened_quotes(new[i]))
+		if (check_empty_redirect(new[i]) || check_empty_commands(new[i], 1)
+		|| check_opened_quotes(new[i]) || check_empty_commands(arr, 0))
+		{
+			freedom_3d(new);
+			freedom_2d(arr);
 			return (1);
+		}
 	}
 	freedom_3d(new);
 	return (0);

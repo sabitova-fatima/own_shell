@@ -95,7 +95,7 @@ int 			cleaner(char **s, char **env);
 
 //PRE PARSER
 int 			check_empty_redirect(char **arr);
-int 			check_empty_commands(char **arr);
+int 			check_empty_commands(char **arr, int pipes);
 int 			check_opened_quotes(char **array);
 int 			pre_parser(char **arr);
 int				into_check_empty_redirect(char *s,  int j);

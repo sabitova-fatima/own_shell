@@ -9,7 +9,7 @@ int pre_cleaner(char **s)
 	i = -1;
 	while(s[++i])
 	{
-		printf("small string: [%s]\n", s[i]);
+//		printf("small string: [%s]\n", s[i]);
 		quotes = 0;
 		j = 0;
 		skip_spaces(s[i], &j);

@@ -20,7 +20,6 @@ char ****split_4d(char ***new, int *****fd_four)
 		all[i] = split_spaces(new[i], &help3, &help2);
 		fd_four_new[i] = create_three(help3, help2);
 	}
-
 	fd_four_new[i] = NULL;
 	i = 0;
 	while(fd_four_new[i])
@@ -29,27 +28,7 @@ char ****split_4d(char ***new, int *****fd_four)
 	*fd_four = fd_four_new;
 	return(all);
 }
-void	freedom_2dd(char **arr)
-{
-	int	i;
 
-//	i = 0;
-//	while (arr[i] || arr[i + 1])
-//	{
-//		if (arr[i])
-//			free(arr[i]);
-//		else if (arr[i + 1])
-//			free(arr[i + 1]);
-//		i++;
-//	}
-	i = -1;
-	while(arr[++i])
-	{
-//		printf("arr[%d] [%s]\n", i, arr[i]);
-		free(arr[i]);
-	}
-	free(arr);
-}
 char ****super_split(char *s, char **env, int *****fd)
 {
 	char **array;
@@ -58,18 +37,18 @@ char ****super_split(char *s, char **env, int *****fd)
 //	int i;
 //	int j;
 //	int k;
-//	int ****fd_four;
+	int ****fd_four;
 
 	array = split_semicolon(s);
 	if (!array)
 		return (NULL);
 	if (pre_parser(array))
 		return (NULL);
-
 	new = split_pipes(array);
 	freedom_2d(array);
+	all = split_4d(new, &fd_four);
 	freedom_3d(new);
-//	all = split_4d(new, &fd_four);
+
 //	*fd = fd_four;
 //	int tri = 0;
 //	int dva = 0;
