@@ -29,7 +29,27 @@ char ****split_4d(char ***new, int *****fd_four)
 	*fd_four = fd_four_new;
 	return(all);
 }
+void	freedom_2dd(char **arr)
+{
+	int	i;
 
+//	i = 0;
+//	while (arr[i] || arr[i + 1])
+//	{
+//		if (arr[i])
+//			free(arr[i]);
+//		else if (arr[i + 1])
+//			free(arr[i + 1]);
+//		i++;
+//	}
+	i = -1;
+	while(arr[++i])
+	{
+//		printf("arr[%d] [%s]\n", i, arr[i]);
+		free(arr[i]);
+	}
+	free(arr);
+}
 char ****super_split(char *s, char **env, int *****fd)
 {
 	char **array;
@@ -45,10 +65,9 @@ char ****super_split(char *s, char **env, int *****fd)
 		return (NULL);
 	if (pre_parser(array))
 		return (NULL);
-////
-////
+
 //	new = split_pipes(array);
-	freedom_2d(array);
+	freedom_2dd(array);
 //	all = split_4d(new, &fd_four);
 //	*fd = fd_four;
 //	int tri = 0;

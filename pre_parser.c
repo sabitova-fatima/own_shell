@@ -17,8 +17,6 @@ int into_check_empty_redirect(char *s, int j)
 			return (-1);
 		}
 	}
-	if (s[j] != '"' && s[j] != '\'')
-		j++;
 	return (j);
 }
 
@@ -30,11 +28,10 @@ int check_empty_redirect(char **arr)
 	i = -1;
 	while (arr[++i])
 	{
-		printf("ss [%s]\n", arr[i]);
 		j = -1;
 		while(arr[i][++j])
 		{
-			while (arr[i][j] != '"' && arr[i][j] != '\'' && arr[i][j])
+			if (arr[i][j] != '"' && arr[i][j] != '\'')
 			{
 				j = into_check_empty_redirect(arr[i], j);
 				if (j == -1)
@@ -42,6 +39,8 @@ int check_empty_redirect(char **arr)
 			}
 			if (arr[i][j] == '"' || arr[i][j] == '\'')
 				j = into_quotes(arr[i], j);
+			if (!arr[i][j])
+				break;
 		}
 	}
 	return (0);
@@ -109,5 +108,3 @@ int pre_parser(char **arr)
 	freedom_3d(new);
 	return (0);
 }
-
-//hello  | my | friend
