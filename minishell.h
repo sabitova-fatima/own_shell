@@ -67,6 +67,8 @@ int 			count_spaces(char *s, char *c);
 int 			count_letters(char *s, char *c);
 char			**ft_split2(char *s, int w_count, char *c, char **arr);
 char 			***split_spaces(char **arr, int *help3, int **help2);
+int				 count_spaces_help(char *s, int i, int *w_count, char *c);
+
 
 //SPLITE PIPE
 char			**ft_split_pipe(char *s);
@@ -100,7 +102,7 @@ int				into_check_empty_redirect(char *s,  int j);
 
 //PRE_CLEANER
 int 			pre_cleaner(char **s);
-int 			into_pre_cleaner(char *s, int j, char **new, int *quotes);
+int 			into_pre_cleaner(char *s, int j, int *quotes);
 char			*ft_strjoin_char(char *s1, char c);
 char 			*join_char(char *s, char c);
 

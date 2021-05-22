@@ -1,5 +1,26 @@
 #include "minishell.h"
 
+int count_spaces_help(char *s, int i, int *w_count, char *c)
+{
+	if (s[i] != c[0] && s[i] != c[1] && s[i] != '"' && s[i] != '\'' &&
+		(s[i + 1] == c[0] || s[i + 1] == c[1] || !s[i + 1]))
+		(*w_count)++;
+	else if (s[i] == '\\' && s[i + 1])
+	{
+		if (!s[i + 2] || s[i + 2] == c[0] || s[i + 2] == c[1])
+			(*w_count)++;
+		i++;
+	}
+	else if (s[i] == '"' || s[i] == '\'')
+	{
+		i = into_quotes(s, i);
+		if ((s[i] && (s[i + 1] == c[0] || s[i + 1] == c[1] || !s[i + 1]))
+			|| !s[i])
+			(*w_count)++;
+	}
+	return (i);
+}
+
 int count_spaces(char *s, char *c)
 {
 	int i;
@@ -9,21 +30,9 @@ int count_spaces(char *s, char *c)
 	w_count = 0;
 	while (s[++i])
 	{
-		if (s[i] != c[0] && s[i] != c[1] && s[i] != '"' && s[i] != '\'' &&
-			(s[i + 1] == c[0] || s[i + 1] == c[1] || !s[i + 1]))
-			w_count++;
-		else if (s[i] == '\\' && s[i + 1])
-		{
-			if (!s[i + 2] || s[i + 2] == c[0] || s[i + 2] == c[1])
-				w_count++;
-			i++;
-		}
-		else if (s[i] == '"' || s[i] == '\'')
-		{
-			i = into_quotes(s, i);
-			if (s[i + 1] == c[0] || s[i + 1] == c[1] || !s[i + 1])
-				w_count++;
-		}
+		i = count_spaces_help(s, i, &w_count, c);
+		if (!s[i])
+			break;
 	}
 	return (w_count);
 }
@@ -75,7 +84,7 @@ char	**ft_split2(char *s, int w_count, char *c, char **arr)
 		while (j < letter)
 			arr[i][j++] = *s++;
 		arr[i][j] = '\0';
-//		printf("word <%s>\n", arr[i]);
+//		printf("word [%s]\n", arr[i]);
 	}
 	arr[i] = NULL;
 	return (arr);
@@ -115,7 +124,7 @@ char ***split_spaces(char **arr, int *help3, int **help2)
 	i = -1;
 	while (arr[++i])
 	{
-//		printf("before split <%s>\n", arr[i]);
+//		printf("before split spaces [%s]\n", arr[i]);
 		new[i] = ft_split(arr[i], &(*help2)[i]);
 		if (!new[i])
 		{

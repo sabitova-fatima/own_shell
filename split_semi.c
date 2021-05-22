@@ -9,22 +9,21 @@ int w_count(char *s)
 	count = 0;
 	while (s[++i])
 	{
-		if (s[i] == ';')
+		if (s[i] == ';' || (s[i] && !s[i+1]))
 			count++;
-		else if (s[i] && !s[i+1])
-			count++;
-		else if (s[i] == '\\' && s[i + 1])
+		else if (s[i] == '\\' && s[i++ + 1])
 		{
-			if (!s[i + 2])
+			if (!s[i + 1])
 				count++;
-			i++;
 		}
 		else if (s[i] == '\'' || s[i] == '"')
 		{
 			i = into_quotes(s, i);
-			if (!s[i+1])
+			if (s[i] && !s[i + 1] || !s[i])
 				count++;
 		}
+		if (!s[i])
+			break;
 	}
 	return (count);
 }
@@ -37,6 +36,8 @@ int into_semicolon(char *s, int i)
 			i++;
 		else if (s[i] == '\'' || s[i] == '"')
 			i = into_quotes(s, i);
+		if (!s[i])
+			break;
 	}
 	if (s[i] == ';')
 		i++;

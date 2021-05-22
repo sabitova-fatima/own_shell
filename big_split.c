@@ -66,8 +66,9 @@ char ****super_split(char *s, char **env, int *****fd)
 	if (pre_parser(array))
 		return (NULL);
 
-//	new = split_pipes(array);
-	freedom_2dd(array);
+	new = split_pipes(array);
+	freedom_2d(array);
+	freedom_3d(new);
 //	all = split_4d(new, &fd_four);
 //	*fd = fd_four;
 //	int tri = 0;

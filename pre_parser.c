@@ -56,7 +56,7 @@ int check_empty_commands(char **arr)
 	{
 		j = 0;
 		skip_spaces(arr[i], &j);
-		if (arr[i][j] == ';' || arr[i][j] == '|' || !arr[i][j])
+		if ((arr[i][j] == ';' || arr[i][j] == '|' || !arr[i][j]) && i > 0)
 		{
 			printf("syntax error near ; or |\n");
 			return (1);
@@ -81,10 +81,13 @@ int check_opened_quotes(char **array)
 		if (pre_cleaner(new[i]))
 		{
 			printf("not closed quotes\n");
+			freedom_3d(new);
+			free(help2);
 			return (1);
 		}
 	}
-//	freedom_3d(new);
+	freedom_3d(new);
+	free(help2);
 	return (0);
 }
 
@@ -99,11 +102,9 @@ int pre_parser(char **arr)
 	i = -1;
 	while(new[++i])
 	{
-		check_empty_redirect(new[i]);
-		check_empty_commands(new[i]);
-//		if (check_empty_redirect(new[i]) || check_empty_commands(new[i])
-//		|| check_opened_quotes(new[i]))
-//			return (1);
+		if (check_empty_redirect(new[i]) || check_empty_commands(new[i])
+		|| check_opened_quotes(new[i]))
+			return (1);
 	}
 	freedom_3d(new);
 	return (0);

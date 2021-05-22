@@ -15,6 +15,8 @@ int count_pipe(char *s)
 			i++;
 		else if (s[i] == '"' || s[i] == '\'')
 			i = into_quotes(s, i);
+		if (!s[i])
+			break;
 	}
 	return (p_count);
 }

@@ -4,27 +4,29 @@ int pre_cleaner(char **s)
 {
 	int i;
 	int j;
-	char *new;
 	int quotes;
 
 	i = -1;
 	while(s[++i])
 	{
-		new = "";
+		printf("small string: [%s]\n", s[i]);
 		quotes = 0;
 		j = 0;
 		skip_spaces(s[i], &j);
 		while(s[i][j])
-			j = into_pre_cleaner(s[i], j, &new, &quotes) + 1;
+		{
+			j = into_pre_cleaner(s[i], j, &quotes);
+			if (!s[i][j])
+				break;
+			j++;
+		}
 		if (quotes)
 			return (1);
-		free(s[i]);
-		s[i] = new;
 	}
 	return (0);
 }
 
-int into_pre_cleaner(char *s, int j, char **new, int *quotes)
+int into_pre_cleaner(char *s, int j, int *quotes)
 {
 	char q;
 
@@ -32,7 +34,6 @@ int into_pre_cleaner(char *s, int j, char **new, int *quotes)
 	{
 		if (s[j] == '\\' && s[j + 1])
 			j++;
-		*new = join_char(*new, s[j]);
 		j++;
 	}
 	if (s[j] == '"' || s[j] == '\'')
@@ -44,7 +45,7 @@ int into_pre_cleaner(char *s, int j, char **new, int *quotes)
 			if (s[j] == '\\' && q == '"' &&
 				(s[j+1] == '\\' || s[j+1] == '"'))
 				j++;
-			*new = join_char(*new, s[j++]);
+			j++;
 		}
 		if ((s[j] == '"' && q == '"') ||
 			(s[j] == '\'' && q =='\''))
