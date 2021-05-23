@@ -3,10 +3,12 @@
 void	freedom_2d(char **arr)
 {
 	int	i;
+	int j;
 
 	i = -1;
 	while(arr[++i])
 	{
+		j = 0;
 //		printf("arr[%d] [%s]\n", i, arr[i]);
 		free(arr[i]);
 	}

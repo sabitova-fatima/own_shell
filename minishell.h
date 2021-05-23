@@ -87,10 +87,10 @@ int 			w_count(char *s);
 //char 			***split_spaces_pre(char **arr, int *help3, int **help2);
 
 //CLEANER
-char 			*cleaner_semicolon_pipe(char *s);
+char 			*cleaner_semicolon_pipe_space(char *s, int j);
 int 			into_quotes_cleaner(char *s, int *j, char **new, char **env);
 int 			into_redirect(char **s, int i, int j, char **new);
-int 			into_cleaner(char **s, int i, int j, char **new, char **env);
+int 			cleaner_other(char *s, int j, char **new, char **env);
 int 			cleaner(char **s, char **env);
 
 //PRE PARSER
@@ -114,7 +114,7 @@ int				ft_strlen(char *s);
 
 //UTILS2
 char 			*search_env(char *dollar, char **env);
-int				ft_strncmp_env(char *s1, char *s2, int n, int *j);
+int				ft_strncmp_env(char *s1, char *s2, int *j);
 int 			into_dollar(char *s, char **new, int *j, char **env);
 int 			into_dollar2(char *s, int *j, char **new, char **env);
 

@@ -75,15 +75,12 @@ char	*ft_strjoin_char(char *s1, char c)
 
 char *join_char(char *s, char c)
 {
-	char *tmp;
 	char *new;
 
-	tmp = s;
 	if (!s)
 		return (NULL);
 	new = ft_strjoin_char(s, c);
-	if (ft_strlen(tmp))
-		free(tmp);
+		free(s);
 	return (new);
 
 }

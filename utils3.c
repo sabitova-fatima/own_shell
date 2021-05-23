@@ -27,7 +27,6 @@ int ***create_3d(int help3, int *help2)
 	while(++i < help3)
 		fd_three_new[i] = create_2d(help2[i]);
 	fd_three_new[i] = NULL;
-
 	return (fd_three_new);
 }
 
