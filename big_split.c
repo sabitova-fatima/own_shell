@@ -82,7 +82,7 @@ char ****super_split(char *s, char **env, int *****fd)
 		j = -1;
 		while(all[i][++j])
 		{
-			if (cleaner(all[i][j], env))
+			if (cleaner(all[i][j], i, j, env, fd))
 				return (NULL);
 		}
 	}

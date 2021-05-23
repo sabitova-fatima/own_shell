@@ -6,8 +6,6 @@
 
 
 
-
-
 command not found, but file created
 hitomi>5
 hitomi >5

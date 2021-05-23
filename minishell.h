@@ -89,9 +89,9 @@ int 			w_count(char *s);
 //CLEANER
 char 			*cleaner_semicolon_pipe_space(char *s, int j);
 int 			into_quotes_cleaner(char *s, int *j, char **new, char **env);
-int 			into_redirect(char **s, int i, int j, char **new);
+//int 			into_redirect(char **s, int i, int j, char **new);
 int 			cleaner_other(char *s, int j, char **new, char **env);
-int 			cleaner(char **s, char **env);
+int 			cleaner(char **s, int w, int h, char **env, int *****fd);
 
 //PRE PARSER
 int 			check_empty_redirect(char **arr);

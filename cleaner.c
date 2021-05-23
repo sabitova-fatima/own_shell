@@ -49,16 +49,26 @@ int into_quotes_cleaner(char *s, int *j, char **new, char **env)
 	return (++(*j));
 }
 
-int into_redirect(char **s, int i, int j, char **new)
+void into_redirect(char *s, int i, int j, int w, int h, int *****fd, char **env)
 {
-	int fd;
+	int fd_new;
+	char *new;
 
-	fd = open(s[i+1], O_RDWR | O_CREAT | O_TRUNC, 0666);
-	if (!fd)
-		return (-1);
-//	j++;
+	while(s[j])
+	{
+		new = (char *)malloc(1);
+		new[0] = '\0';
+		j = cleaner_other(s, j, &new, env);
+		printf("redir [%s]\n", new);
+		fd_new = open(new, O_RDWR | O_CREAT | O_TRUNC, 0666);
+		free(new);
+		printf("%d\n", fd_new);
+		if (!s[j++])
+			break;
+	}
+	(*fd)[w][h][i][1] = fd_new;
+	printf("final fd %d\n", (*fd)[w][h][i][1] );
 
-	return (j);
 }
 
 int cleaner_other(char *s, int j, char **new, char **env)
@@ -74,8 +84,8 @@ int cleaner_other(char *s, int j, char **new, char **env)
 			j++;
 		if ((s[j] == '"' || s[j] == '\'') && s[j-1] != '\\')
 			break;
-//		if (s[j] == '>' || s[j] == '<')
-//			j = into_redirect(s, i, j, new);
+		if (s[j] == '>' || s[j] == '<')
+			break;
 		*new = join_char(*new, s[j++]);
 	}
 	if (s[j] == '"' || s[j] == '\'')
@@ -83,7 +93,7 @@ int cleaner_other(char *s, int j, char **new, char **env)
 	return (j);
 }
 
-int cleaner(char **s, char **env)
+int cleaner(char **s, int w, int h, char **env, int *****fd)
 {
 	int i;
 	int j;
@@ -92,7 +102,6 @@ int cleaner(char **s, char **env)
 	i = -1;
 	while(s[++i])
 	{
-//		new = "";
 		new = (char *)malloc(1);
 		new[0] = '\0';
 		printf("[%s]", s[i]);
@@ -101,8 +110,10 @@ int cleaner(char **s, char **env)
 		s[i] = cleaner_semicolon_pipe_space(s[i], j);
 		printf(" --- [%s]", s[i]);
 		j = 0;
-		while(s[i][j])
+		while(s[i][j] && s[i][j] != '>' && s[i][j] != '<')
 			j = cleaner_other(s[i], j, &new, env);
+		if (s[i][j] == '>')
+			into_redirect(s[i], i, j+1, w, h, fd, env);
 		printf(" >>> [%s]\n", new);
 		free(s[i]);
 		s[i] = new;
