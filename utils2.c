@@ -1,84 +1,41 @@
 #include "minishell.h"
 
-int	ft_strncmp_env(char *s1, char *s2, int *j)
+int	**create_2d(int help)
 {
-	int			i;
-	int 		len;
+	int	**fd_dva_new;
+	int	i;
 
-	len = ft_strlen(s2);
+	fd_dva_new = (int **)malloc(sizeof(int *) * (help + 1));
 	i = -1;
-	while (++i < len && (s1[i] || s2[i]))
+	while (++i < help)
 	{
-		if (s1[i] != s2[i])
-			return (s1[i] - s2[i]);
-		(*j)++;
+		fd_dva_new[i] = (int *) malloc(sizeof(int) * 2);
+		fd_dva_new[i][0] = 0;
+		fd_dva_new[i][1] = 1;
 	}
-	if (s1[i] != '=')
-		return (1);
-	return (0);
+	fd_dva_new[i] = NULL;
+	return (fd_dva_new);
 }
 
-char *search_env(char *dollar, char **env)
+int	***create_3d(int help3, int *help2)
 {
-	int i;
-	int j;
-	char *env_print;
+	int	***fd_three_new;
+	int	i;
+
+	fd_three_new = (int ***)malloc(sizeof(int **) * (help3 + 1));
+	i = -1;
+	while (++i < help3)
+		fd_three_new[i] = create_2d(help2[i]);
+	fd_three_new[i] = NULL;
+	return (fd_three_new);
+}
+
+void	freedom_4d_int(int ****arr)
+{
+	int	i;
 
 	i = -1;
-	env_print = "";
-	while (env[++i])
-	{
-		j = 0;
-		if (!ft_strncmp_env(env[i], dollar, &j))
-			env_print = env[i] + j + 1;
-	}
-	return (env_print);
+	while (arr[++i])
+		freedom_3d_int(arr[i]);
+	free(arr);
 }
-
-int into_dollar2(char *s, int *j, char **new, char **env)
-{
-	char *dollar;
-	char *tmp;
-
-	if (s[*j] == '$' && s[(*j)+1] != '\\' && s[(*j) + 1] &&
-		   s[(*j) + 1] != '$')
-	{
-		(*j)++;
-		dollar = (char *)malloc(1);
-		dollar[0] = '\0';
-		while (s[*j] != '$' && s[*j] != '\\' && s[*j] && s[*j] != '"'
-			   && s[*j] != '\'')
-			dollar = join_char(dollar, s[(*j)++]);
-		tmp = *new;
-		*new = ft_strjoin(*new, search_env(dollar, env));
-		free(tmp);
-		free(dollar);
-	}
-	return (*j);
-}
-
-int into_dollar(char *s, char **new, int *j, char **env)
-{
-	if (*j > 0 && s[*j] == '$' && s[(*j) - 1] == '\\')
-	{
-		*new = join_char(*new, s[(*j)++]);
-		return (*j);
-	}
-	while (s[*j] == '$')
-	{
-		if (!s[(*j) + 1])
-		{
-			*new = join_char(*new, s[(*j)++]);
-			return (*j);
-		}
-		if (s[*j] == '$' && s[(*j) + 1] == '?')
-			*new = join_char(*new, s[(*j)++]);
-		if (s[*j] == '$' && s[(*j)+1] == '$')
-			*new = join_char(*new, s[(*j)++]);
-		*j = into_dollar2(s, j, new, env);
-		if (s[*j] == '$' && s[(*j) + 1] == '\\')
-			*new = join_char(*new, s[(*j)++]);
-	}
-	return (*j);
-}
-

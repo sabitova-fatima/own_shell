@@ -1,23 +1,23 @@
 #include "minishell.h"
 
-int pre_cleaner(char **s)
+int	pre_cleaner(char **s)
 {
-	int i;
-	int j;
-	int quotes;
+	int	i;
+	int	j;
+	int	quotes;
 
 	i = -1;
-	while(s[++i])
+	while (s[++i])
 	{
 //		printf("small string: [%s]\n", s[i]);
 		quotes = 0;
 		j = 0;
 		skip_spaces(s[i], &j);
-		while(s[i][j])
+		while (s[i][j])
 		{
 			j = into_pre_cleaner(s[i], j, &quotes);
 			if (!s[i][j])
-				break;
+				break ;
 			j++;
 		}
 		if (quotes)
@@ -26,9 +26,9 @@ int pre_cleaner(char **s)
 	return (0);
 }
 
-int into_pre_cleaner(char *s, int j, int *quotes)
+int	into_pre_cleaner(char *s, int j, int *quotes)
 {
-	char q;
+	char	q;
 
 	while (s[j] != '"' && s[j] != '\'' && s[j])
 	{
@@ -42,13 +42,12 @@ int into_pre_cleaner(char *s, int j, int *quotes)
 		q = s[j++];
 		while (s[j] != q && s[j])
 		{
-			if (s[j] == '\\' && q == '"' &&
-				(s[j+1] == '\\' || s[j+1] == '"'))
+			if (s[j] == '\\' && q == '"' && \
+			(s[j + 1] == '\\' || s[j + 1] == '"'))
 				j++;
 			j++;
 		}
-		if ((s[j] == '"' && q == '"') ||
-			(s[j] == '\'' && q =='\''))
+		if ((s[j] == '"' && q == '"') || (s[j] == '\'' && q == '\''))
 			(*quotes)--;
 	}
 	return (j);
@@ -73,14 +72,13 @@ char	*ft_strjoin_char(char *s1, char c)
 	return (new);
 }
 
-char *join_char(char *s, char c)
+char	*join_char(char *s, char c)
 {
-	char *new;
+	char	*new;
 
 	if (!s)
 		return (NULL);
 	new = ft_strjoin_char(s, c);
-		free(s);
+	free(s);
 	return (new);
-
 }

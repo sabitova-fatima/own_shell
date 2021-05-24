@@ -1,9 +1,9 @@
 #include "minishell.h"
 
-int count_pipe(char *s)
+int	count_pipe(char *s)
 {
-	int i;
-	int p_count;
+	int	i;
+	int	p_count;
 
 	i = -1;
 	p_count = 1;
@@ -16,21 +16,21 @@ int count_pipe(char *s)
 		else if (s[i] == '"' || s[i] == '\'')
 			i = into_quotes(s, i);
 		if (!s[i])
-			break;
+			break ;
 	}
 	return (p_count);
 }
 
-int count_letters_pipe(char *s)
+int	count_letters_pipe(char *s)
 {
-	char q;
-	int letter;
+	char	q;
+	int		letter;
 
 	letter = 0;
 	skip_spaces(s, &letter);
 	while (s[letter] && s[letter] != '|')
 	{
-		while (s[letter] != '"' && s[letter] != '\'' && s[letter] != '|'
+		while (s[letter] != '"' && s[letter] != '\'' && s[letter] != '|' \
 		       && s[letter])
 		{
 			if (s[letter] == '\\' && s[letter + 1])
@@ -52,9 +52,9 @@ int count_letters_pipe(char *s)
 
 char	**ft_split2_pipe(char *s, int p_count, char **arr)
 {
-	int i;
-	int j;
-	int letter;
+	int	i;
+	int	j;
+	int	letter;
 
 	i = -1;
 	while (++i < p_count)
@@ -76,7 +76,7 @@ char	**ft_split2_pipe(char *s, int p_count, char **arr)
 	return (arr);
 }
 
-char		**ft_split_pipe(char *s)
+char	**ft_split_pipe(char *s)
 {
 	char	**arr;
 	int		p_count;
@@ -90,13 +90,13 @@ char		**ft_split_pipe(char *s)
 	return (arr);
 }
 
-char ***split_pipes(char **arr)
+char	***split_pipes(char **arr)
 {
-	char ***new;
-	int i;
+	char	***new;
+	int		i;
 
 	i = 0;
-	while(arr[i])
+	while (arr[i])
 		i++;
 	new = (char ***)malloc(sizeof(char **) * (i + 1));
 	if (!new)

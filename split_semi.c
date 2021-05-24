@@ -1,15 +1,15 @@
 #include "minishell.h"
 
-int w_count(char *s)
+int	w_count(char *s)
 {
-	int i;
-	int count;
+	int	i;
+	int	count;
 
 	i = -1;
 	count = 0;
 	while (s[++i])
 	{
-		if (s[i] == ';' || (s[i] && !s[i+1]))
+		if (s[i] == ';' || (s[i] && !s[i + 1]))
 			count++;
 		else if (s[i] == '\\' && s[i++ + 1])
 		{
@@ -23,12 +23,12 @@ int w_count(char *s)
 				count++;
 		}
 		if (!s[i])
-			break;
+			break ;
 	}
 	return (count);
 }
 
-int into_semicolon(char *s, int i)
+int	into_semicolon(char *s, int i)
 {
 	while (s[++i] && s[i] != ';')
 	{
@@ -37,19 +37,19 @@ int into_semicolon(char *s, int i)
 		else if (s[i] == '\'' || s[i] == '"')
 			i = into_quotes(s, i);
 		if (!s[i])
-			break;
+			break ;
 	}
 	if (s[i] == ';')
 		i++;
 	return (i);
 }
 
-char **split_semicolon(char *s)
+char	**split_semicolon(char *s)
 {
-	int count;
-	char **arr;
-	int i;
-	int j;
+	int		count;
+	char	**arr;
+	int		i;
+	int		j;
 
 	count = w_count(s);
 	arr = (char **)malloc(sizeof(char *) * (count + 1));

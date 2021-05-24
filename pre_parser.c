@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-int into_check_empty_redirect(char *s, int j)
+int	into_check_empty_redirect(char *s, int j)
 {
-	if (s[j] == '\\' && s[j+1])
+	if (s[j] == '\\' && s[j + 1])
 		j++;
 	if (s[j] == '>' || s[j] == '<')
 	{
@@ -10,7 +10,7 @@ int into_check_empty_redirect(char *s, int j)
 		if (s[j] == '>')
 			j++;
 		skip_spaces(s, &j);
-		if (!s[j] || (s[j] == '\\' && !s[j+1]) ||
+		if (!s[j] || (s[j] == '\\' && !s[j + 1]) || \
 			s[j] == '>' || s[j] == '<')
 		{
 			printf("syntax error near > or <\n");
@@ -20,16 +20,16 @@ int into_check_empty_redirect(char *s, int j)
 	return (j);
 }
 
-int check_empty_redirect(char **arr)
+int	check_empty_redirect(char **arr)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = -1;
 	while (arr[++i])
 	{
 		j = -1;
-		while(arr[i][++j])
+		while (arr[i][++j])
 		{
 			if (arr[i][j] != '"' && arr[i][j] != '\'')
 			{
@@ -40,21 +40,19 @@ int check_empty_redirect(char **arr)
 			if (arr[i][j] == '"' || arr[i][j] == '\'')
 				j = into_quotes(arr[i], j);
 			if (!arr[i][j])
-				break;
+				break ;
 		}
 	}
 	return (0);
 }
-//			printf("no pipes: [%s] %d\n", arr[i], i);
-//			printf("with pipes: [%s] %d\n", arr[i], i);
 
-int check_empty_commands(char **arr, int pipes)
+int	check_empty_commands(char **arr, int pipes)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = -1;
-	while(arr[++i])
+	while (arr[++i])
 	{
 		j = 0;
 		skip_spaces(arr[i], &j);
@@ -76,12 +74,12 @@ int check_empty_commands(char **arr, int pipes)
 	return (0);
 }
 
-int check_opened_quotes(char **array)
+int	check_opened_quotes(char **array)
 {
-	char ***new;
-	int i;
-	int *help2;
-	int help3;
+	char	***new;
+	int		i;
+	int		*help2;
+	int		help3;
 
 	i = -1;
 	new = split_spaces(array, &help3, &help2);
@@ -102,18 +100,18 @@ int check_opened_quotes(char **array)
 	return (0);
 }
 
-int pre_parser(char **arr)
+int	pre_parser(char **arr)
 {
-	char ***new;
-	int i;
+	char	***new;
+	int		i;
 
 	new = split_pipes(arr);
 	if (!new)
 		return (1);
 	i = -1;
-	while(new[++i])
+	while (new[++i])
 	{
-		if (check_empty_redirect(new[i]) || check_empty_commands(new[i], 1)
+		if (check_empty_redirect(new[i]) || check_empty_commands(new[i], 1) \
 		|| check_opened_quotes(new[i]) || check_empty_commands(arr, 0))
 		{
 			freedom_3d(new);

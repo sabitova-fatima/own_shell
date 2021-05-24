@@ -1,6 +1,8 @@
 NAME 		= minishell
 SRC 		= big_split.c \
 			cleaner.c \
+			cleaner_utils.c \
+			freedoms.c \
 			get_next_line.c \
 			get_next_line_utils.c \
 			main_khouten.c \
@@ -12,9 +14,7 @@ SRC 		= big_split.c \
 			split_pre.c \
 			split_semi.c \
 			utils.c \
-			utils2.c \
-			utils3.c \
-			utils4.c
+			utils2.c
 
 #OBJ = $(SRC:.c=.o)
 
