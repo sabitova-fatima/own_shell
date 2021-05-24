@@ -6,6 +6,7 @@ SRC 		= big_split.c \
 			main_khouten.c \
 			pre_cleaner.c \
 			pre_parser.c \
+			redirect.c \
 			split.c \
 			split_pipe.c \
 			split_pre.c \

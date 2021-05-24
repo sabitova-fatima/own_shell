@@ -1,11 +1,14 @@
 #include "minishell.h"
 
-char *cleaner_semicolon_pipe_space(char *s, int j)
+char *cleaner_semicolon_pipe_space(char *s)
 {
 	char *new;
+	int j;
 
 	new = (char *)malloc(1);
 	new[0] = '\0';
+	j = 0;
+	skip_spaces(s, &j);
 	while(s[j])
 	{
 		new = join_char(new, s[j]);
@@ -22,7 +25,6 @@ char *cleaner_semicolon_pipe_space(char *s, int j)
 		new[j-1] = 6;
 	free(s);
 	return (new);
-
 }
 
 int into_quotes_cleaner(char *s, int *j, char **new, char **env)
@@ -49,28 +51,6 @@ int into_quotes_cleaner(char *s, int *j, char **new, char **env)
 	return (++(*j));
 }
 
-void into_redirect(char *s, int i, int j, int w, int h, int *****fd, char **env)
-{
-	int fd_new;
-	char *new;
-
-	while(s[j])
-	{
-		new = (char *)malloc(1);
-		new[0] = '\0';
-		j = cleaner_other(s, j, &new, env);
-		printf("redir [%s]\n", new);
-		fd_new = open(new, O_RDWR | O_CREAT | O_TRUNC, 0666);
-		free(new);
-		printf("%d\n", fd_new);
-		if (!s[j++])
-			break;
-	}
-	(*fd)[w][h][i][1] = fd_new;
-	printf("final fd %d\n", (*fd)[w][h][i][1] );
-
-}
-
 int cleaner_other(char *s, int j, char **new, char **env)
 {
 	while (s[j] != '"' && s[j] != '\'' && s[j])
@@ -93,31 +73,47 @@ int cleaner_other(char *s, int j, char **new, char **env)
 	return (j);
 }
 
-int cleaner(char **s, int w, int h, char **env, int *****fd)
+int main_cleaning(char *s,char **new, char **env, int *help_var)
+{
+	int j;
+
+	j = 0;
+	while(s[j] && s[j] != '>' && s[j] != '<')
+		j = cleaner_other(s, j, new, env);
+	if (((s[j] == '>' || s[j] == '<') && s[j + 1]&& s[j+1]!='>')
+		|| (s[j] == '>' && s[j+1] == '>' && s[j+2]))
+		j = current_redirect(s, j + 1, env, help_var);
+	return (j);
+}
+
+
+int cleaner(char **s, int *w_h, char **env, int *****fd)
 {
 	int i;
 	int j;
 	char *new;
+	int help_var[4];
 
 	i = -1;
+	set_helpvar(help_var, fd, i, w_h);
 	while(s[++i])
 	{
 		new = (char *)malloc(1);
 		new[0] = '\0';
-		printf("[%s]", s[i]);
-		j = 0;
-		skip_spaces(s[i], &j);
-		s[i] = cleaner_semicolon_pipe_space(s[i], j);
-		printf(" --- [%s]", s[i]);
-		j = 0;
-		while(s[i][j] && s[i][j] != '>' && s[i][j] != '<')
-			j = cleaner_other(s[i], j, &new, env);
-		if (s[i][j] == '>')
-			into_redirect(s[i], i, j+1, w, h, fd, env);
-		printf(" >>> [%s]\n", new);
+//		printf("[%s]", s[i]);
+		s[i] = cleaner_semicolon_pipe_space(s[i]);
+//		printf(" --- [%s]", s[i]);
+		j = main_cleaning(s[i], &new, env, help_var);
+		clean_filename(i, help_var, &new);
+		if ((s[i][j] == '>' || s[i][j] == '<') && !s[i][j + 1])
+			next_redirect(s[i + 1], env, help_var, s[i][j]);
+		if (s[i][j] == '>' && s[i][j+1] == '>' && !s[i][j + 2])
+			next_redirect(s[i + 1], env, help_var, 5);
 		free(s[i]);
 		s[i] = new;
+//		printf(" >>> [%s]\n", s[i]);
 	}
+	set_helpvar(help_var, fd, i, w_h);
 	return (0);
 }
 

@@ -87,11 +87,19 @@ int 			w_count(char *s);
 //char 			***split_spaces_pre(char **arr, int *help3, int **help2);
 
 //CLEANER
-char 			*cleaner_semicolon_pipe_space(char *s, int j);
+char 			*cleaner_semicolon_pipe_space(char *s);
 int 			into_quotes_cleaner(char *s, int *j, char **new, char **env);
-//int 			into_redirect(char **s, int i, int j, char **new);
 int 			cleaner_other(char *s, int j, char **new, char **env);
-int 			cleaner(char **s, int w, int h, char **env, int *****fd);
+int 			cleaner(char **s, int *w_h, char **env, int *****fd);
+
+
+//REDIRECT
+void 			next_redirect(char *s, char **env, int *help_var, char sign);
+int 			current_redirect(char *s, int j, char **env, int *help_var);
+void 			clean_filename(int i, int *help_var, char **new);
+void 			set_helpvar(int *help_var, int *****fd, int i, int *w_h);
+void 			open_close(int *help_var, char *filename);
+
 
 //PRE PARSER
 int 			check_empty_redirect(char **arr);
@@ -105,7 +113,6 @@ int 			pre_cleaner(char **s);
 int 			into_pre_cleaner(char *s, int j, int *quotes);
 char			*ft_strjoin_char(char *s1, char c);
 char 			*join_char(char *s, char c);
-
 
 //UTILS
 int 			into_quotes(char *s, int i);

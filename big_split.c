@@ -32,6 +32,7 @@ char ****super_split(char *s, char **env, int *****fd)
 	int i;
 	int j;
 	int k;
+	int help[2];
 
 	array = split_semicolon(s);
 	if (!array)
@@ -82,7 +83,9 @@ char ****super_split(char *s, char **env, int *****fd)
 		j = -1;
 		while(all[i][++j])
 		{
-			if (cleaner(all[i][j], i, j, env, fd))
+			help[0] = i;
+			help[1] = j;
+			if (cleaner(all[i][j], help, env, fd))
 				return (NULL);
 		}
 	}
@@ -95,6 +98,8 @@ char ****super_split(char *s, char **env, int *****fd)
 			k = -1;
 			while(all[i][j][++k])
 			{
+				printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][k][0], (*fd)
+				[i][j][k][1]);
 //				 printf("%i:d j:%d k:%d after clear [%s]\n", i,j,k,
 //					    all[i][j][k]);
 			}
