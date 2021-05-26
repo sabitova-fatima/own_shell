@@ -118,7 +118,6 @@ int main (int argc, char **argv, char **env)
 {
 	pid_t	pid;
     char    *dir_name;
-	char	*line;
     char    **command;
 	char	*command_dir;
     char    *dir;
@@ -131,24 +130,52 @@ int main (int argc, char **argv, char **env)
     int     i;
     int     j;
 
+    char *temp;
+    char *temp_2 = malloc(1000);
+    temp = malloc(2);
+    char *line;
+    char str[2000];
+    int l;
+    struct termios term; // структура терминала
+    char *term_name = "xterm-256color"; // env | grep TERM
 
-    // dir_name = malloc(4096);
-    // getcwd(dir_name, 4096);
 
+    tcgetattr(0, &term); // получаем значения терминала
+    term.c_lflag &= ~(ECHO); // пишем в них
+    term.c_lflag &= ~(ICANON); // неканонич режим 
+    tcsetattr(0, TCSANOW, &term); // записываем обратно в терм
+
+    tgetent(0, term_name); // запуск термкапа (аналог - terminfo)
+
+    line = malloc(1000);
+    line[0] = '\0';
+    str[0] = '\0';
     is_own = 0;
     dir = find_path(env); // переменная path
     dirs = ft_strsplit(dir, ':'); // переменная path разделенная 
-
     while (1)
 	{
         put_prompt();
-        // signal(SIGINT, ctrl_c); // для crtl c
-        // signal(SIGQUIT, ctrl_slash); // для crtl /
-        get_next_line(0, &line);
-        // new = super_split(line);
+        line[0] = '\0';
+        while (1)
+        {
+            str[0] = '\0';
+            l = read(0, str, 100);
+            if (!ft_strcmp(str, "\e[A"))
+                printf("previous\n");
+            else if (!ft_strcmp(str, "\e[B"))
+                printf("next\n");
+            else
+                write(1, str, l);
+            temp[0] = str[0];
+            temp[1] = '\0';
+            line = ft_strjoin(line, temp);
+            if (str[0] =='\n')
+                break;
+        }
+        line = ft_substr(line, 0, ft_strlen(line)-1);
         new = super_split(line, env, &fd);
 
-        
         i = 0;
         j = 0;
         while (new[j])
@@ -156,8 +183,8 @@ int main (int argc, char **argv, char **env)
             i = 0;
             while (new[j][i])
             {
-                command = cut_command(new[j][i]);
-
+                // command = cut_command(new[j][i]);
+                command = new[j][i];
                 is_own = start_own_function(command, env, line);
                 if (is_own == 0)
                 {
@@ -174,20 +201,3 @@ int main (int argc, char **argv, char **env)
 	}
     // free (dir_name);
 }
-
-
-
-// int main(int argc, char **argv, char **env)
-// {
-// 	int i;
-// 	int j;
-// 	char *s;
-// 	char ****all;
-// 	int ****fd;
-
-// 	while (get_next_line(0, &s))
-// 	{
-// 		all = super_split(s, env, &fd);
-// 		free(s);
-// 	}
-// }
