@@ -51,7 +51,9 @@ char *find_dir_path(char **command, char **dirs)
     while (dirs[m])
     {
         command_dir = ft_strjoin(ft_strjoin(dirs[m], "/"), command[0]);
+        // printf("\n\n\ncommand_dir from fnction: %s\n\n\n", command_dir);
         fd = open(command_dir, O_RDONLY);
+        // printf("\n\n\nfd: %d\n\n\n", fd);
         m++;
         if (fd >= 0)
             break ;
@@ -114,45 +116,50 @@ char **cut_command(char ** command)
     return (res);
 }
 
-int main (int argc, char **argv, char **env)
+int start_builtin(char **command, char **dirs, char **env)
 {
+    char *command_dir;
 	pid_t	pid;
-    char    *dir_name;
-    char    **command;
-	char	*command_dir;
-    char    *dir;
-    char    **dirs;
-    int     is_own;
-	char    ****new;
-    int     m;
-    int     ****fd;
 
-    int     i;
-    int     j;
+    command_dir = find_dir_path(command, dirs);
+    pid = fork();
+    if (pid == 0 && command_dir)
+        execve(command_dir, command, env);
+    wait(&pid);
+    return (1);
+}
 
-    char *temp;
-    char *temp_2 = malloc(1000);
-    temp = malloc(2);
-    char *line;
-    char str[2000];
-    int l;
-    struct termios term; // структура терминала
-    char *term_name = "xterm-256color"; // env | grep TERM
-
+int start_term(void)
+{
+    struct  termios term;
 
     tcgetattr(0, &term); // получаем значения терминала
     term.c_lflag &= ~(ECHO); // пишем в них
     term.c_lflag &= ~(ICANON); // неканонич режим 
     tcsetattr(0, TCSANOW, &term); // записываем обратно в терм
+    tgetent(0, "xterm-256color"); // запуск термкапа (аналог - terminfo)
+    return (1);
+}
 
-    tgetent(0, term_name); // запуск термкапа (аналог - terminfo)
+int main (int argc, char **argv, char **env)
+{
+    struct  termios term;
+	char    ****new;
+    int     ****fd;
+    char    **command;
+    char    **dirs;
+	char	*command_dir;
+    char    *line;
+    char    temp[2];
+    int     i;
+    int     j;
+    char    str[2000];
+    int     len_read;
 
     line = malloc(1000);
-    line[0] = '\0';
-    str[0] = '\0';
-    is_own = 0;
-    dir = find_path(env); // переменная path
-    dirs = ft_strsplit(dir, ':'); // переменная path разделенная 
+    dirs = ft_strsplit(find_path(env), ':');
+    if (!start_term())
+        write(1, "term error", 10);
     while (1)
 	{
         put_prompt();
@@ -160,13 +167,13 @@ int main (int argc, char **argv, char **env)
         while (1)
         {
             str[0] = '\0';
-            l = read(0, str, 100);
+            len_read = read(0, str, 100);
             if (!ft_strcmp(str, "\e[A"))
                 printf("previous\n");
             else if (!ft_strcmp(str, "\e[B"))
                 printf("next\n");
             else
-                write(1, str, l);
+                write(1, str, len_read);
             temp[0] = str[0];
             temp[1] = '\0';
             line = ft_strjoin(line, temp);
@@ -185,19 +192,13 @@ int main (int argc, char **argv, char **env)
             {
                 // command = cut_command(new[j][i]);
                 command = new[j][i];
-                is_own = start_own_function(command, env, line);
-                if (is_own == 0)
-                {
-                    command_dir = find_dir_path(command, dirs);
-                    pid = fork();
-                    if (pid == 0 && command_dir)
-                        execve(command_dir, command, env);
-                    wait(&pid);
-                }
+                if (!start_own_function(command, env, line))
+                    start_builtin(command, dirs, env);
                 i++;
             }
             j++;
         }
 	}
-    // free (dir_name);
 }
+
+
