@@ -66,23 +66,24 @@ char *find_dir_path(char **command, char **dirs)
     return (command_dir);
 }
 
-// void	ctrl_c(int signo)
-// {
-// 	if (signo == SIGINT)
-// 	{
-// 		ft_putstr("\n");
-// 		put_prompt();
-// 		signal(SIGINT, ctrl_c);
-// 	}
-// }
+void	ctrl_c(int signo)
+{
+	if (signo == SIGINT)
+	{
+		ft_putstr("\n");
+		put_dirname();
+        ft_putstr(" \033[0m\033[33me-bash>\033[0m$ ");
+		signal(SIGINT, ctrl_c);
+	}
+}
 
-// void	ctrl_slash(int signo)
-// {
-// 	if (signo == SIGQUIT)
-// 	{
-// 		exit(0);
-// 	}
-// }
+void	ctrl_slash(int signo)
+{
+	if (signo == SIGQUIT)
+	{
+		exit(0);
+	}   
+}
 
 char **cut_command(char ** command)
 {
@@ -143,6 +144,7 @@ int main (int argc, char **argv, char **env)
     dirs = ft_strsplit(find_path(env), ':');
     while (1)
 	{
+        signal(SIGINT, ctrl_c);
         put_dirname();
         input = readline(" \033[0m\033[33me-bash>\033[0m$ ");
         new = super_split(input, env, &fd);
@@ -161,7 +163,7 @@ int main (int argc, char **argv, char **env)
             }
             j++;
         }
+        if (input && input[0])
+            add_history(input);
 	}
 }
-
-
