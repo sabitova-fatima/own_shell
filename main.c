@@ -77,14 +77,12 @@ void	ctrl_c(int signo)
 	}
 }
 
-void	ctrl_c_2(int signo)
+void	ctrl_c_kid(int signo)
 {
 	if (signo == SIGINT)
 	{
 		ft_putstr("\n");
-		// put_dirname();
-        // ft_putstr(" \033[0m\033[33me-bash>\033[0m$ ");
-		signal(SIGINT, ctrl_c_2);
+		signal(SIGINT, ctrl_c_kid);
 	}
 }
 
@@ -134,12 +132,12 @@ int start_builtin(char **command, char **dirs, char **env)
 	pid_t	pid;
 
     command_dir = find_dir_path(command, dirs);
-    // signal(SIGQUIT, ctrl_slash);
-    signal(SIGINT, ctrl_c_2);
+    signal(SIGINT, ctrl_c_kid);
     pid = fork();
     if (pid == 0 && command_dir)
         execve(command_dir, command, env);
     wait(&pid);
+    signal(SIGQUIT, ctrl_slash);
     return (1);
 }
 
