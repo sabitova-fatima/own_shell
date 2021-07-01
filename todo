@@ -23,5 +23,8 @@ export
 env
 
 ctrl \ - ничего не делает (французы обещали исправить, говорят), но только в родителе
-ctrl c
+ctrl c - сделано в родителе
 ctrl d
+
+12]    32679 segmentation fault  ./minishell - незакрытые скобки 
+(echo ")
