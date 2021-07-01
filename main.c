@@ -1,5 +1,8 @@
 #include "minishell.h"
 
+#include <readline/readline.h>
+#include <readline/history.h>
+
 int start_own_function (char **command, char **env, char *line)
 {
     if (ft_strcmp("echo", command[0]) == 0)
@@ -40,7 +43,7 @@ void put_prompt(void)
     char dir_name[4096 + 1];
     getcwd(dir_name, 4096);
     ft_putstr(dir_name);
-    ft_putstr(" \033[0m\033[33me-bash>\033[0m$ ");
+    // ft_putstr(" \033[0m\033[33me-bash>\033[0m$ ");
 }
 
 char *find_dir_path(char **command, char **dirs)
@@ -51,9 +54,7 @@ char *find_dir_path(char **command, char **dirs)
     while (dirs[m])
     {
         command_dir = ft_strjoin(ft_strjoin(dirs[m], "/"), command[0]);
-        // printf("\n\n\ncommand_dir from fnction: %s\n\n\n", command_dir);
         fd = open(command_dir, O_RDONLY);
-        // printf("\n\n\nfd: %d\n\n\n", fd);
         m++;
         if (fd >= 0)
             break ;
@@ -156,6 +157,8 @@ int main (int argc, char **argv, char **env)
     char    str[2000];
     int     len_read;
 
+    char* input;
+
     line = malloc(1000);
     dirs = ft_strsplit(find_path(env), ':');
     if (!start_term())
@@ -163,25 +166,28 @@ int main (int argc, char **argv, char **env)
     while (1)
 	{
         put_prompt();
-        line[0] = '\0';
-        while (1)
-        {
-            str[0] = '\0';
-            len_read = read(0, str, 100);
-            if (!ft_strcmp(str, "\e[A"))
-                printf("previous\n");
-            else if (!ft_strcmp(str, "\e[B"))
-                printf("next\n");
-            else
-                write(1, str, len_read);
-            temp[0] = str[0];
-            temp[1] = '\0';
-            line = ft_strjoin(line, temp);
-            if (str[0] =='\n')
-                break;
-        }
+        input = readline(" \033[0m\033[33me-bash>\033[0m$ ");
+        // line[0] = '\0';
+        // while (1)
+        // {
+        //     str[0] = '\0';
+        //     len_read = read(0, str, 100);
+        //     if (!ft_strcmp(str, "\e[A"))
+        //         printf("previous\n");
+        //     else if (!ft_strcmp(str, "\e[B"))
+        //         printf("next\n");
+        //     else
+        //         write(1, str, len_read);
+        //     temp[0] = str[0];
+        //     temp[1] = '\0';
+        //     line = ft_strjoin(line, temp);
+        //     if (str[0] =='\n')
+        //         break;
+        // }
         line = ft_substr(line, 0, ft_strlen(line)-1);
-        new = super_split(line, env, &fd);
+        // printf("input: %s\n", input);
+        // printf("line: %s\n", line);
+        new = super_split(input, env, &fd);
 
         i = 0;
         j = 0;
@@ -190,7 +196,6 @@ int main (int argc, char **argv, char **env)
             i = 0;
             while (new[j][i])
             {
-                // command = cut_command(new[j][i]);
                 command = new[j][i];
                 if (!start_own_function(command, env, line))
                     start_builtin(command, dirs, env);

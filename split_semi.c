@@ -19,7 +19,7 @@ int	w_count(char *s)
 		else if (s[i] == '\'' || s[i] == '"')
 		{
 			i = into_quotes(s, i);
-			if (s[i] && !s[i + 1] || !s[i])
+			if ((s[i] && !s[i + 1]) || !s[i])
 				count++;
 		}
 		if (!s[i])

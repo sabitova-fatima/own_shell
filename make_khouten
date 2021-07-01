@@ -1,13 +1,11 @@
 NAME 		= minishell
-SRCS 		= main.c \
-			libft.c \
-			my_functions.c  \
-			big_split.c \
+SRC 		= big_split.c \
 			cleaner.c \
 			cleaner_utils.c \
 			freedoms.c \
 			get_next_line.c \
 			get_next_line_utils.c \
+			main_khouten.c \
 			pre_cleaner.c \
 			pre_parser.c \
 			redirect.c \
@@ -17,21 +15,21 @@ SRCS 		= main.c \
 			split_semi.c \
 			utils.c \
 			utils2.c
-CFLAGS 		= -Wall -Wextra -Werror -I. 
+
+#OBJ = $(SRC:.c=.o)
+
+#CFLAGS 		=  -Wall -Wextra -Werror
 CC			= gcc
 RM			= rm -rf
 
 all:
-		$(CC) -ltermcap -L/usr/include -lreadline $(SRCS) -o $(NAME)
-
+		$(CC) $(SRC) -o $(NAME) -g && ./$(NAME)
+val:
+		$(CC) $(SRC) -o $(NAME) -g && valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME)
 clean:
-		$(RM) $(OBJS)
-
-fclean:	clean
 		$(RM) $(NAME)
+#re:		clean all
 
-re:		fclean all
-
-.PHONY:	all clean fclean re bonus
+.PHONY:	all clean  re
 
 

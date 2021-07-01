@@ -17,6 +17,8 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <string.h>
+#include <term.h>
+#include <termios.h>
 
 # define BUFFER_SIZE 10
 

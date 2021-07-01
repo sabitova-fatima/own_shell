@@ -44,6 +44,7 @@ int my_echo (char **command, char *line)
         return (1);
     }
     return (1);
+    // write("in progress ...")
 }
 
 // умеет переходить и без начальной /
