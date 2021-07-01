@@ -38,12 +38,11 @@ char* find_path(char **env)
     return (NULL);
 }
 
-void put_prompt(void)
+void put_dirname(void)
 {
     char dir_name[4096 + 1];
     getcwd(dir_name, 4096);
     ft_putstr(dir_name);
-    // ft_putstr(" \033[0m\033[33me-bash>\033[0m$ ");
 }
 
 char *find_dir_path(char **command, char **dirs)
@@ -130,17 +129,17 @@ int start_builtin(char **command, char **dirs, char **env)
     return (1);
 }
 
-int start_term(void)
-{
-    struct  termios term;
+// int start_term(void)
+// {
+//     struct  termios term;
 
-    tcgetattr(0, &term); // получаем значения терминала
-    term.c_lflag &= ~(ECHO); // пишем в них
-    term.c_lflag &= ~(ICANON); // неканонич режим 
-    tcsetattr(0, TCSANOW, &term); // записываем обратно в терм
-    tgetent(0, "xterm-256color"); // запуск термкапа (аналог - terminfo)
-    return (1);
-}
+//     tcgetattr(0, &term); // получаем значения терминала
+//     term.c_lflag &= ~(ECHO); // пишем в них
+//     term.c_lflag &= ~(ICANON); // неканонич режим 
+//     tcsetattr(0, TCSANOW, &term); // записываем обратно в терм
+//     tgetent(0, "xterm-256color"); // запуск термкапа (аналог - terminfo)
+//     return (1);
+// }
 
 int main (int argc, char **argv, char **env)
 {
@@ -156,37 +155,13 @@ int main (int argc, char **argv, char **env)
     int     j;
     char    str[2000];
     int     len_read;
+    char    *input;
 
-    char* input;
-
-    line = malloc(1000);
     dirs = ft_strsplit(find_path(env), ':');
-    if (!start_term())
-        write(1, "term error", 10);
     while (1)
 	{
-        put_prompt();
+        put_dirname();
         input = readline(" \033[0m\033[33me-bash>\033[0m$ ");
-        // line[0] = '\0';
-        // while (1)
-        // {
-        //     str[0] = '\0';
-        //     len_read = read(0, str, 100);
-        //     if (!ft_strcmp(str, "\e[A"))
-        //         printf("previous\n");
-        //     else if (!ft_strcmp(str, "\e[B"))
-        //         printf("next\n");
-        //     else
-        //         write(1, str, len_read);
-        //     temp[0] = str[0];
-        //     temp[1] = '\0';
-        //     line = ft_strjoin(line, temp);
-        //     if (str[0] =='\n')
-        //         break;
-        // }
-        line = ft_substr(line, 0, ft_strlen(line)-1);
-        // printf("input: %s\n", input);
-        // printf("line: %s\n", line);
         new = super_split(input, env, &fd);
 
         i = 0;

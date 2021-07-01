@@ -5,46 +5,45 @@ int my_echo (char **command, char *line)
     char *trimmed_line;
     int start;
     int i = 0;
-    int flag;
+    // int flag;
     int len;
     // flag is 0 when there is -n
     len = ft_strlen(line);
 
-    flag = ft_strcmp(command[1], "-n");
+    // flag = ft_strcmp(command[1], "-n");
     while (line[i])
     {
-        if (flag != 0 && line[i] == 'o')
-        {
+        // if (flag != 0 && line[i] == 'o')
+        // {
             i = i + 1;
             while (line[i] == ' ')
                 i++;
             start = i;
             break;
-        }
-        if (flag == 0 && line[i] == '-' && line[i + 1] == 'n')
-        {
-            i = i + 2;
-            while (line[i] == ' ')
-                i++;
-            start = i;
-        }
+        // }
+        // if (flag == 0 && line[i] == '-' && line[i + 1] == 'n')
+        // {
+        //     i = i + 2;
+        //     while (line[i] == ' ')
+        //         i++;
+        //     start = i;
+        // }
         i++;
     }
     trimmed_line = ft_substr(line, start, len);
 
-    if (flag == 0)
-    {
-        ft_putstr(trimmed_line);
-        return (1);
-    }
-    else
-    {
+    // if (flag == 0)
+    // {
+    //     ft_putstr(trimmed_line);
+    //     return (1);
+    // }
+    // else
+    // {
         ft_putstr(trimmed_line);
         ft_putchar('\n');
         return (1);
-    }
+    // }
     return (1);
-    // write("in progress ...")
 }
 
 // умеет переходить и без начальной /
