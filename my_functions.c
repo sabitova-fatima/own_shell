@@ -78,7 +78,7 @@ int my_pwd (char **command)
     return (1);
 }
 
-int my_export (char **command)
+int my_export (char **command, char **env)
 {
     printf("Here will be my own export\n");
     return (1);

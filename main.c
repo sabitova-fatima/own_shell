@@ -12,7 +12,7 @@ int start_own_function (char **command, char **env, char *line)
     if (ft_strcmp("pwd", command[0]) == 0)
         return(my_pwd(command));
     if (ft_strcmp("export", command[0]) == 0)
-        return(my_export(command));
+        return(my_export(command, env));
     if (ft_strcmp("unset", command[0]) == 0)
         return(my_unset(command));
     if (ft_strcmp("env", command[0]) == 0)
