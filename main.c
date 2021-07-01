@@ -129,32 +129,15 @@ int start_builtin(char **command, char **dirs, char **env)
     return (1);
 }
 
-// int start_term(void)
-// {
-//     struct  termios term;
-
-//     tcgetattr(0, &term); // получаем значения терминала
-//     term.c_lflag &= ~(ECHO); // пишем в них
-//     term.c_lflag &= ~(ICANON); // неканонич режим 
-//     tcsetattr(0, TCSANOW, &term); // записываем обратно в терм
-//     tgetent(0, "xterm-256color"); // запуск термкапа (аналог - terminfo)
-//     return (1);
-// }
-
 int main (int argc, char **argv, char **env)
 {
-    struct  termios term;
 	char    ****new;
     int     ****fd;
     char    **command;
     char    **dirs;
-	char	*command_dir;
     char    *line;
-    char    temp[2];
     int     i;
     int     j;
-    char    str[2000];
-    int     len_read;
     char    *input;
 
     dirs = ft_strsplit(find_path(env), ':');
@@ -172,7 +155,7 @@ int main (int argc, char **argv, char **env)
             while (new[j][i])
             {
                 command = new[j][i];
-                if (!start_own_function(command, env, line))
+                if (!start_own_function(command, env, input))
                     start_builtin(command, dirs, env);
                 i++;
             }
