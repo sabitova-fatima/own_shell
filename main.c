@@ -72,7 +72,7 @@ void	ctrl_c(int signo)
 		ft_putstr("\n");
 		put_dirname();
         ft_putstr(" \033[0m\033[33me-bash>\033[0m$ ");
-		// signal(SIGINT, ctrl_c);
+		signal(SIGINT, ctrl_c);
 	}
 }
 
@@ -88,9 +88,16 @@ void	ctrl_c_kid(int signo)
 void	ctrl_slash(int signo)
 {
 	if (signo == SIGQUIT)
+		signal(SIGQUIT, ctrl_slash);
+}
+
+void	ctrl_slash_kid(int signo)
+{
+	if (signo == SIGQUIT)
 	{
-		exit(0);
-	}   
+        ft_putstr("\n");
+		signal(SIGQUIT, ctrl_slash_kid);
+	}
 }
 
 char **cut_command(char ** command)
@@ -127,9 +134,10 @@ char **cut_command(char ** command)
 
 int start_builtin(char **command, char **dirs, char **env)
 {
-    char *command_dir;
+    char    *command_dir;
 	pid_t	pid;
 
+    signal(SIGQUIT, ctrl_slash_kid);
     command_dir = find_dir_path(command, dirs);
     signal(SIGINT, ctrl_c_kid);
     if (command_dir != NULL)
@@ -137,7 +145,6 @@ int start_builtin(char **command, char **dirs, char **env)
     if (pid == 0 && command_dir != NULL)
         execve(command_dir, command, env);
     wait(&pid);
-    signal(SIGQUIT, ctrl_slash);
     return (1);
 }
 
@@ -154,6 +161,7 @@ int main (int argc, char **argv, char **env)
 	{
         put_dirname();
         signal(SIGINT, ctrl_c);
+        signal(SIGQUIT, ctrl_slash);
         input = readline(" \033[0m\033[33me-bash>\033[0m$ ");
 
         // фиксит сегу от ctrl d
