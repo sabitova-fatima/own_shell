@@ -78,9 +78,38 @@ int my_pwd (char **command)
     return (1);
 }
 
+int my_export_output (char **command, char **env)
+{
+    printf("here will be my export\n");
+    return (1);
+}
+
+// если без аргументов - выводит в алфавитном порядке все переменные, 
+// сначала с большой буквы, а потом маленькой 
+// если один аргумент, создает переменную со значением ''
+// если два аргумента - создает переменную и присваивает ей значение
+
+// функция ниже ничего из этого не делает
 int my_export (char **command, char **env)
 {
-    printf("Here will be my own export\n");
+    if (command[0] && !command[1])
+		my_export_output(command, env);
+
+    else if (command[1] && !command[2])
+    {
+        ft_putstr("Too little arguments! Provide it like NAME VALUE\n");
+        return (1);
+    }
+    else if (command[1] && command[2]&& command[3])
+    {
+        ft_putstr("Too many arguments! Provide it like NAME VALUE\n");
+        return (1);
+    }
+    else if (command[1] && command[2])
+    {
+        printf("допустим, присвоение произошло\n");
+        return (1);
+    }
     return (1);
 }
 
@@ -89,25 +118,6 @@ int my_unset (char **command)
     printf("Here will be my own unset\n");
     return (1);
 }
-
-// int		setenv_builtin(char **args)
-// {
-// 	if (!args[0])
-// 	{
-// 		print_env();
-// 		return (1);
-// 	}
-// 	if (args[1])
-// 	{
-// 		if (args[2])
-// 		{
-// 			ft_putendl("setenv: Too many arguments.");
-// 			return (1);
-// 		}
-// 	}
-// 	set_env_var(args[0], args[1]);
-// 	return (1);
-// }
 
 int my_env_output (char **command, char **env)
 {
@@ -126,25 +136,9 @@ int my_env_output (char **command, char **env)
 int my_env(char **command, char **env)
 {
     if (!command[1])
-	{
 		my_env_output(command, env);
-		return (1);
-	}
-    else if (command[1] && !command[2])
-    {
-        ft_putstr("Too little arguments! Provide it like NAME VALUE\n");
-        return (1);
-    }
-    else if (command[3])
-    {
-        ft_putstr("Too many arguments! Provide it like NAME VALUE\n");
-        return (1);
-    }
-    else if (command[1] && command[2])
-    {
-	    // set_env(command[1], command[2]);
-        return (1);
-    }
+    else if (command[1])
+        ft_putstr("No arguments, please!\n");
     return (1);
 }
 
