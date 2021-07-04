@@ -46,8 +46,9 @@ int				my_echo (char **command, char *line);
 int				my_cd(char **command);
 int				my_pwd (char **command);
 int				my_unset (char **command);
-int				my_export (char **command);
+int				my_export (char **command, char **env);
 int				my_env (char **command, char **env);
+int 			my_env_output (char **command, char **env);
 int				my_exit (char **command);
 
 //GNL

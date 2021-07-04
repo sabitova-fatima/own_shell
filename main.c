@@ -22,12 +22,11 @@ int start_own_function (char **command, char **env, char *line)
     return (0);
 }
 
-char* find_path(char **env)
+char    *find_path(char **env)
 {
     int i;
 
     i = 0;
-
     while (env[i])
     {
         if (env[i][0] == 'P' && env[i][1] == 'A' 
@@ -73,7 +72,7 @@ void	ctrl_c(int signo)
 		ft_putstr("\n");
 		put_dirname();
         ft_putstr(" \033[0m\033[33me-bash>\033[0m$ ");
-		signal(SIGINT, ctrl_c);
+		// signal(SIGINT, ctrl_c);
 	}
 }
 
@@ -133,8 +132,9 @@ int start_builtin(char **command, char **dirs, char **env)
 
     command_dir = find_dir_path(command, dirs);
     signal(SIGINT, ctrl_c_kid);
-    pid = fork();
-    if (pid == 0 && command_dir)
+    if (command_dir != NULL)
+        pid = fork();
+    if (pid == 0 && command_dir != NULL)
         execve(command_dir, command, env);
     wait(&pid);
     signal(SIGQUIT, ctrl_slash);
@@ -146,20 +146,20 @@ int main (int argc, char **argv, char **env)
 	char    ****new;
     int     ****fd;
     char    **command;
-    char    **dirs;
-    char    *line;
+    char    *input;
     int     i;
     int     j;
-    char    *input;
 
-    dirs = ft_strsplit(find_path(env), ':');
     while (1)
 	{
-        signal(SIGINT, ctrl_c);
         put_dirname();
+        signal(SIGINT, ctrl_c);
         input = readline(" \033[0m\033[33me-bash>\033[0m$ ");
-        new = super_split(input, env, &fd);
 
+        // фиксит сегу от ctrl d
+        if (input == NULL)
+            exit(0);
+        new = super_split(input, env, &fd);
         i = 0;
         j = 0;
         while (new[j])
@@ -169,12 +169,12 @@ int main (int argc, char **argv, char **env)
             {
                 command = new[j][i];
                 if (!start_own_function(command, env, input))
-                    start_builtin(command, dirs, env);
+                    start_builtin(command, ft_strsplit(find_path(env), ':'), env);
                 i++;
             }
             j++;
         }
-        if (input && input[0])
+        if (!(input == NULL))
             add_history(input);
 	}
 }

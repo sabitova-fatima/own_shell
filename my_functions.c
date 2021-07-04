@@ -90,7 +90,26 @@ int my_unset (char **command)
     return (1);
 }
 
-int my_env (char **command, char **env)
+// int		setenv_builtin(char **args)
+// {
+// 	if (!args[0])
+// 	{
+// 		print_env();
+// 		return (1);
+// 	}
+// 	if (args[1])
+// 	{
+// 		if (args[2])
+// 		{
+// 			ft_putendl("setenv: Too many arguments.");
+// 			return (1);
+// 		}
+// 	}
+// 	set_env_var(args[0], args[1]);
+// 	return (1);
+// }
+
+int my_env_output (char **command, char **env)
 {
     int i;
 
@@ -100,6 +119,31 @@ int my_env (char **command, char **env)
         ft_putstr(env[i]);
         ft_putchar('\n');
         i++;
+    }
+    return (1);
+}
+
+int my_env(char **command, char **env)
+{
+    if (!command[1])
+	{
+		my_env_output(command, env);
+		return (1);
+	}
+    else if (command[1] && !command[2])
+    {
+        ft_putstr("Too little arguments! Provide it like NAME VALUE\n");
+        return (1);
+    }
+    else if (command[3])
+    {
+        ft_putstr("Too many arguments! Provide it like NAME VALUE\n");
+        return (1);
+    }
+    else if (command[1] && command[2])
+    {
+	    // set_env(command[1], command[2]);
+        return (1);
     }
     return (1);
 }
