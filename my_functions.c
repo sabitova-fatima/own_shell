@@ -71,7 +71,7 @@ int my_cd(char **command)
 int my_pwd (char **command)
 {
     char    dir_name[4096];
-    getcwd(dir_name, 4096);
+    getcwd (dir_name, 4096);
 
     ft_putstr(dir_name);
     ft_putchar('\n');
@@ -135,7 +135,7 @@ int my_env_output (char **command, char **env)
 
 int my_env(char **command, char **env)
 {
-    if (!command[1])
+    if (command[0] && !command[1])
 		my_env_output(command, env);
     else if (command[1])
         ft_putstr("No arguments, please!\n");
@@ -144,6 +144,5 @@ int my_env(char **command, char **env)
 
 int my_exit (char **command)
 {
-    // add free?
     exit(0);
 }

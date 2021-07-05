@@ -25,7 +25,7 @@ void	cleaning_3d(char ****all, char **env, int ****fd)
 		j = -1;
 		while ((*all)[i][++j])
 		{
-			printf("%i:d j:%d before clear [%s]\n", i,j,(*all)[i][j]);
+			// printf("%i:d j:%d before clear [%s]\n", i,j,(*all)[i][j]);
 		}
 	}
 
@@ -41,8 +41,8 @@ void	cleaning_3d(char ****all, char **env, int ****fd)
 		j = -1;
 		while ((*all)[i][++j])
 		{
-			printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][0], (*fd)[i][j][1]);
-			printf("%i:d j:%d after clear [%s]\n", i,j,(*all)[i][j]);
+			// printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][0], (*fd)[i][j][1]);
+			// printf("%i:d j:%d after clear [%s]\n", i,j,(*all)[i][j]);
 		}
 	}
 }

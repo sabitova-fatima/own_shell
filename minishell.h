@@ -19,6 +19,8 @@
 # include <string.h>
 #include <term.h>
 #include <termios.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 # define BUFFER_SIZE 10
 
@@ -54,9 +56,23 @@ int				my_echo (char **command, char *line);
 int				my_cd(char **command);
 int				my_pwd (char **command);
 int				my_unset (char **command);
-int				my_export (char **command);
+int				my_export (char **command, char **env);
 int				my_env (char **command, char **env);
 int				my_exit (char **command);
+
+// signals
+void			ctrl_c(int signo);
+void			ctrl_c_kid(int signo);
+void			ctrl_slash(int signo);
+void			ctrl_slash_kid(int signo);
+
+// command
+int 			start_own_function (char **command, char **env, char *line);
+char    		*find_path(char **env);
+void 			put_dirname(void);
+char 			*find_dir_path(char **command, char **dirs);
+char 			**cut_command(char ** command);
+int 			start_builtin(char **command, char **dirs, char **env);
 
 //GNL
 int				get_next_line(int fd, char **line);

@@ -16,13 +16,16 @@ SRCS 		= main.c \
 			split_pre.c \
 			split_semi.c \
 			utils.c \
-			utils2.c
+			utils2.c \
+			signals.c \
+			command.c
+			
 CFLAGS 		= -Wall -Wextra -Werror -I. 
 CC			= gcc
 RM			= rm -rf
 
 all:
-		$(CC) -ltermcap $(SRCS) -o $(NAME)
+		$(CC) -ltermcap -L/usr/include -lreadline $(SRCS) -o $(NAME)
 
 clean:
 		$(RM) $(OBJS)
@@ -33,5 +36,3 @@ fclean:	clean
 re:		fclean all
 
 .PHONY:	all clean fclean re bonus
-
-
