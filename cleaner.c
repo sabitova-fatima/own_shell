@@ -87,6 +87,8 @@ void	to_low(char *s)
 {
 	int i;
 
+	if (!s)
+		return ;
 	i = -1;
 	while(s[++i])
 	{

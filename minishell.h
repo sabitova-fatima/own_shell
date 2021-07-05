@@ -74,6 +74,9 @@ char 			*find_dir_path(char **command, char **dirs);
 char 			**cut_command(char ** command);
 int 			start_builtin(char **command, char **dirs, char **env);
 
+// env
+void print_sorted_env(char **env);
+
 //GNL
 int				get_next_line(int fd, char **line);
 int				clear(t_list **list, int fd, char *buf, int code);

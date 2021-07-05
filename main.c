@@ -1,6 +1,8 @@
 #include "minishell.h"
 
-char** copy_env(char **env)
+int error_status = 0;
+
+char    **copy_env(char **env)
 {
 	int	i;
     char **env_copy;
@@ -49,13 +51,15 @@ int main (int argc, char **argv, char **env)
 
         while (new[i])
         {
-            // command = new[i];
             if (!start_own_function(new[i], env_copy, input))
-                start_builtin(new[i] , ft_strsplit(find_path(env_copy), ':'), env_copy);
+                start_builtin(new[i] , ft_strsplit(find_path(env_copy), ':'), env_copy); // ПЕРЕПИСАТЬ
             i++;
         }
         if (!(input == NULL))
             add_history(input);
 	}
 }
+
+
+                         
 

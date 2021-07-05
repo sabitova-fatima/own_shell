@@ -80,7 +80,8 @@ int my_pwd (char **command)
 
 int my_export_output (char **command, char **env)
 {
-    printf("here will be my export\n");
+    // printf("here will be my export\n");
+    print_sorted_env(env);   
     return (1);
 }
 
@@ -93,7 +94,7 @@ int my_export_output (char **command, char **env)
 int my_export (char **command, char **env)
 {
     if (command[0] && !command[1])
-		my_export_output(command, env);
+		print_sorted_env(env);
 
     else if (command[1] && !command[2])
     {
