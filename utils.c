@@ -37,12 +37,6 @@ int	count_spaces_help(char *s, int i, int *w_count, char *c)
 	if (s[i] != c[0] && s[i] != c[1] && s[i] != '"' && s[i] != '\'' && \
 		(s[i + 1] == c[0] || s[i + 1] == c[1] || !s[i + 1]))
 		(*w_count)++;
-	else if (s[i] == '\\' && s[i + 1])
-	{
-		if (!s[i + 2] || s[i + 2] == c[0] || s[i + 2] == c[1])
-			(*w_count)++;
-		i++;
-	}
 	else if (s[i] == '"' || s[i] == '\'')
 	{
 		i = into_quotes(s, i);
@@ -52,3 +46,21 @@ int	count_spaces_help(char *s, int i, int *w_count, char *c)
 	}
 	return (i);
 }
+
+int	**create_2d(int help)
+{
+	int	**fd_dva_new;
+	int	i;
+
+	fd_dva_new = (int **)malloc(sizeof(int *) * help + 1);
+	i = -1;
+	while (++i < help)
+	{
+		fd_dva_new[i] = (int *) malloc(sizeof(int) * 2);
+		fd_dva_new[i][0] = 0;
+		fd_dva_new[i][1] = 1;
+	}
+	fd_dva_new[i] = NULL;
+	return (fd_dva_new);
+}
+

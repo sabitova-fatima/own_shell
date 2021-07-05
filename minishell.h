@@ -29,6 +29,14 @@ typedef struct s_list
 	struct s_list	*next;
 }				t_list;
 
+typedef struct s_data
+{
+	int 	fd_read;
+	int 	fd_write;
+	int 	was_redirect;
+	int 	type;
+}			t_data;
+
 // libft
 void			ft_bzero(void *s, int n);
 char			*ft_strnew(int size);
@@ -46,9 +54,8 @@ int				my_echo (char **command, char *line);
 int				my_cd(char **command);
 int				my_pwd (char **command);
 int				my_unset (char **command);
-int				my_export (char **command, char **env);
+int				my_export (char **command);
 int				my_env (char **command, char **env);
-int 			my_env_output (char **command, char **env);
 int				my_exit (char **command);
 
 //GNL
@@ -60,30 +67,23 @@ char			*ft_strdup(char *s, int len);
 char			*ft_strjoin(char *s1, char *s2);
 
 //BIG SPLIT
-char			****super_split(char *s, char **env, int *****fd);
-char			****split_4d(char ***new, int *****fd_four);
-void			cleaning_4d(char *****all, char **env, int *****fd);
-
-
+char			***super_split(char *s, char **env, int ****fd);
+char			***split_3d(char **new, int ****fd_three);
+void			cleaning_3d(char ****all, char **env, int ****fd);
 
 //SPLIT
-char			**ft_split(char *s, int *help2);
+char			**ft_split(char *s, int *help);
 int				count_spaces(char *s, char *c);
 int				count_letters(char *s, char *c);
 char			**ft_split2(char *s, int w_count, char *c, char **arr);
-char			***split_spaces(char **arr, int *help3, int **help2);
+char			***split_spaces(char **arr, int ****fd_three);
 
 //SPLITE PIPE
-char			**ft_split_pipe(char *s);
-char			**ft_split2_pipe(char *s, int p_count, char **arr);
+char			**ft_split_pipe(char *s, int p_count, char **arr);
 int				count_pipe(char *s);
 int				count_letters_pipe(char *s);
-char			***split_pipes(char **arr);
+char			**split_pipes(char *s);
 
-//SPLIT_SEMI
-int				into_semicolon(char *s, int i);
-char			**split_semicolon(char *s);
-int				w_count(char *s);
 
 //SPLIT_PRE
 //char		    **ft_split_pre(char *s, char *c, int *help2);
@@ -91,29 +91,30 @@ int				w_count(char *s);
 
 //CLEANER
 char			*cleaner_semicolon_pipe_space(char *s);
-int				into_quotes_cleaner(char *s, int *j, char **new, char **env);
+int				into_quotes_cleaner(char *s, int *j, char **new);
 int				cleaner_other(char *s, int j, char **new, char **env);
-void			cleaner(char **s, int *w_h, char **env, int *****fd);
-int				main_cleaning(char *s, char **new, char **env, int *help_var);
+void			cleaner(char **s, int help, char **env, int ****fd);
+int				main_cleaning(char *s, char **new, char **env, t_data **data);
+
 
 //REDIRECT
-void			next_redirect(char *s, char **env, int *help_var, char sign);
-int				current_redirect(char *s, int j, char **env, int *help_var);
-void			clean_filename(int i, int *help_var, char **new);
-void			set_helpvar(int *help_var, int *****fd, int i, int *w_h);
-void			open_close(int *help_var, char *filename);
+void			next_redirect(char *s, char **env, t_data **data, char sign);
+int				current_redirect(char *s, int j, char **env, t_data **data);
+void			clean_filename(int i, t_data **data, char **new);
+void			set_data(t_data **data, int ****fd, int i, int help);
+void			open_close(t_data **data, char *filename);
+void			heredoc(char *limiter);
 
 //PRE PARSER
 int				check_empty_redirect(char **arr);
-int				check_empty_commands(char **arr, int pipes);
+int				check_empty_commands(char **arr);
 int				check_opened_quotes(char **array);
-int				pre_parser(char **arr);
+int				pre_parser(char *s);
 int				into_check_empty_redirect(char *s, int j);
 
 //PRE_CLEANER
 int				pre_cleaner(char **s);
 int				into_pre_cleaner(char *s, int j, int *quotes);
-char			*ft_strjoin_char(char *s1, char c);
 char			*join_char(char *s, char c);
 
 //CLEANER_UTILS
@@ -134,10 +135,8 @@ int				into_quotes(char *s, int i);
 void			skip_spaces(char *line, int *i);
 int				ft_strlen(char *s);
 int				count_spaces_help(char *s, int i, int *w_count, char *c);
-
-//UTILS2
 int				**create_2d(int help);
-int				***create_3d(int help3, int *help2);
-void			freedom_4d_int(int ****arr);
+
+
 
 #endif

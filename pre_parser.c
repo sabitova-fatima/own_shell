@@ -2,16 +2,15 @@
 
 int	into_check_empty_redirect(char *s, int j)
 {
-	if (s[j] == '\\' && s[j + 1])
-		j++;
+	char q;
+
 	if (s[j] == '>' || s[j] == '<')
 	{
-		j++;
-		if (s[j] == '>')
+		q = s[j++];
+		if (s[j] == q)
 			j++;
 		skip_spaces(s, &j);
-		if (!s[j] || (s[j] == '\\' && !s[j + 1]) || \
-			s[j] == '>' || s[j] == '<')
+		if (!s[j] || s[j] == '>' || s[j] == '<')
 		{
 			printf("syntax error near > or <\n");
 			return (-1);
@@ -46,7 +45,7 @@ int	check_empty_redirect(char **arr)
 	return (0);
 }
 
-int	check_empty_commands(char **arr, int pipes)
+int	check_empty_commands(char **arr)
 {
 	int	i;
 	int	j;
@@ -56,19 +55,10 @@ int	check_empty_commands(char **arr, int pipes)
 	{
 		j = 0;
 		skip_spaces(arr[i], &j);
-		if (!pipes)
+		if (arr[i][j] == '|' || (!arr[i][j] && i > 0))
 		{
-			if (arr[i][j] == ';')
-				printf("syntax error near ; or |\n");
-			if (arr[i][j] == ';')
-				return (1);
-		}
-		else
-		{
-			if (arr[i][j] == '|' || arr[i][j] == ';' || (!arr[i][j] && i > 0))
-				printf("syntax error near ; or |\n");
-			if (arr[i][j] == '|' || arr[i][j] == ';' || (!arr[i][j] && i > 0))
-				return (1);
+			printf("syntax error near |\n");
+			return (1);
 		}
 	}
 	return (0);
@@ -78,47 +68,43 @@ int	check_opened_quotes(char **array)
 {
 	char	***new;
 	int		i;
-	int		*help2;
-	int		help3;
+	int 	***fd;
 
-	i = -1;
-	new = split_spaces(array, &help3, &help2);
+	i = 0;
+	while(new[i])
+		i++;
+	fd = (int ***)malloc(sizeof(int **) * i + 1);
+	new = split_spaces(array, &fd);
 	if (!new)
 		return (1);
+	i = -1;
 	while (new[++i])
 	{
 		if (pre_cleaner(new[i]))
 		{
 			printf("not closed quotes\n");
 			freedom_3d(new);
-			free(help2);
 			return (1);
 		}
 	}
 	freedom_3d(new);
-	free(help2);
+	freedom_3d_int(fd);
 	return (0);
 }
 
-int	pre_parser(char **arr)
+int	pre_parser(char *s)
 {
-	char	***new;
-	int		i;
+	char	**new;
 
-	new = split_pipes(arr);
+	new = split_pipes(s);
 	if (!new)
 		return (1);
-	i = -1;
-	while (new[++i])
+	if (check_opened_quotes(new) || check_empty_commands(new) || \
+        check_empty_redirect(new))
 	{
-		if (check_empty_redirect(new[i]) || check_empty_commands(new[i], 1) \
-		|| check_opened_quotes(new[i]) || check_empty_commands(arr, 0))
-		{
-			freedom_3d(new);
-			freedom_2d(arr);
-			return (1);
-		}
+		freedom_2d(new);
+		return (1);
 	}
-	freedom_3d(new);
+	freedom_2d(new);
 	return (0);
 }

@@ -24,8 +24,8 @@ char	*search_env(char *dollar, char **env)
 	int		j;
 	char	*env_print;
 
-	i = -1;
 	env_print = "";
+	i = -1;
 	while (env[++i])
 	{
 		j = 0;
@@ -38,20 +38,15 @@ char	*search_env(char *dollar, char **env)
 int	into_dollar2(char *s, int *j, char **new, char **env)
 {
 	char	*dollar;
-	char	*tmp;
 
-	if (s[*j] == '$' && s[(*j) + 1] != '\\' && s[(*j) + 1] && \
-		   s[(*j) + 1] != '$')
+	if (s[*j] == '$' && s[(*j) + 1] && s[(*j) + 1] != '$')
 	{
 		(*j)++;
 		dollar = (char *)malloc(1);
 		dollar[0] = '\0';
-		while (s[*j] != '$' && s[*j] != '\\' && s[*j] && s[*j] != '"'
-			   && s[*j] != '\'')
+		while (s[*j] != '$' && s[*j] && s[*j] != '"' && s[*j] != '\'')
 			dollar = join_char(dollar, s[(*j)++]);
-		tmp = *new;
 		*new = ft_strjoin(*new, search_env(dollar, env));
-		free(tmp);
 		free(dollar);
 	}
 	return (*j);
@@ -59,25 +54,15 @@ int	into_dollar2(char *s, int *j, char **new, char **env)
 
 int	into_dollar(char *s, char **new, int *j, char **env)
 {
-	if (*j > 0 && s[*j] == '$' && s[(*j) - 1] == '\\')
-	{
-		*new = join_char(*new, s[(*j)++]);
-		return (*j);
-	}
 	while (s[*j] == '$')
 	{
 		if (!s[(*j) + 1])
-		{
 			*new = join_char(*new, s[(*j)++]);
-			return (*j);
-		}
 		if (s[*j] == '$' && s[(*j) + 1] == '?')
 			*new = join_char(*new, s[(*j)++]);
 		if (s[*j] == '$' && s[(*j) + 1] == '$')
 			*new = join_char(*new, s[(*j)++]);
 		*j = into_dollar2(s, j, new, env);
-		if (s[*j] == '$' && s[(*j) + 1] == '\\')
-			*new = join_char(*new, s[(*j)++]);
 	}
 	return (*j);
 }

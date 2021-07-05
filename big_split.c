@@ -1,94 +1,64 @@
 #include "minishell.h"
 
-char	****split_4d(char ***new, int *****fd_four)
+char	***split_3d(char **new, int ****fd_three)
 {
-	char	****all;
+	char	***all;
 	int		i;
-	int		help3;
-	int		*help2;
 
 	i = 0;
 	while (new[i])
 		i++;
-	*fd_four = (int ****)malloc(sizeof(int ***) * (i + 1));
-	all = (char ****)malloc(sizeof(char ***) * (i + 1));
-	i = -1;
-	while (new[++i])
-	{
-		all[i] = split_spaces(new[i], &help3, &help2);
-		(*fd_four)[i] = create_3d(help3, help2);
-		free(help2);
-	}
-	all[i] = NULL;
-	(*fd_four)[i] = NULL;
+	*fd_three = (int ***)malloc(sizeof(int **) * i + 1);
+	all = split_spaces(new, fd_three);
 	return (all);
 }
 
-void	cleaning_4d(char *****all, char **env, int *****fd)
+void	cleaning_3d(char ****all, char **env, int ****fd)
 {
 	int	i;
 	int	j;
-	int	k;
-	int	help[2];
+	int	help;
 
-//	i = -1;
-//	while (all[++i])
-//	{
-//		j = -1;
-//		while (all[i][++j])
-//		{
-//			k = -1;
-//			while (all[i][j][++k])
-//			{
-//				 printf("%i:d j:%d k:%d before clear [%s]\n", i,j,k,
-//				 all[i][j][k]);
-//			}
-//		}
-//	}
 	i = -1;
 	while ((*all)[++i])
 	{
 		j = -1;
 		while ((*all)[i][++j])
 		{
-			help[0] = i;
-			help[1] = j;
-			cleaner((*all)[i][j], help, env, fd);
+			printf("%i:d j:%d before clear [%s]\n", i,j,(*all)[i][j]);
 		}
 	}
-//	i = -1;
-//	while (all[++i])
-//	{
-//		j = -1;
-//		while (all[i][++j])
-//		{
-//			k = -1;
-//			while (all[i][j][++k])
-//			{
-//				printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][k][0], (*fd)
-//				[i][j][k][1]);
-//				 printf("%i:d j:%d k:%d after clear [%s]\n", i,j,k,
-//					    all[i][j][k]);
-//			}
-//		}
-//	}
+
+	i = -1;
+	while ((*all)[++i])
+	{
+		help = i;
+		cleaner((*all)[i], help, env, fd);
+	}
+	i = -1;
+	while ((*all)[++i])
+	{
+		j = -1;
+		while ((*all)[i][++j])
+		{
+			printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][0], (*fd)[i][j][1]);
+			printf("%i:d j:%d after clear [%s]\n", i,j,(*all)[i][j]);
+		}
+	}
 }
 
-char	****super_split(char *s, char **env, int *****fd)
+char	***super_split(char *s, char **env, int ****fd)
 {
-	char	**array;
-	char	***new;
-	char	****all;
+	char	**new;
+	char	***all;
 
-	array = split_semicolon(s);
-	if (!array)
+	if (pre_parser(s))
 		return (NULL);
-	if (pre_parser(array))
+	new = split_pipes(s);
+	if (!new)
 		return (NULL);
-	new = split_pipes(array);
-	freedom_2d(array);
-	all = split_4d(new, fd);
-	freedom_3d(new);
-	cleaning_4d(&all, env, fd);
+	all = split_3d(new, fd);
+	freedom_2d(new);
+	cleaning_3d(&all, env, fd);
 	return (all);
 }

@@ -19,16 +19,15 @@ char	*cleaner_semicolon_pipe_space(char *s)
 	j = 0;
 	while (new[j])
 		j++;
-	if (j >= 2 && (new[j - 1] == ';' || new[j - 1] == '|') && \
-		new[j - 2] != '\\')
+	if (j >= 2 && new[j - 1] == '|' && new[j - 2] != '\\')
 		new[j - 1] = '\0';
-	if (j < 2 && (new[j - 1] == ';' || new[j - 1] == '|'))
-		new[j - 1] = 6;
+	if (j < 2 && new[j - 1] == '|')
+		new[j - 1] = 'E';
 	free(s);
 	return (new);
 }
 
-int	into_quotes_cleaner(char *s, int *j, char **new, char **env)
+int	into_quotes_cleaner(char *s, int *j, char **new)
 {
 	char	q;
 
@@ -40,10 +39,8 @@ int	into_quotes_cleaner(char *s, int *j, char **new, char **env)
 	}
 	while (s[*j] != q && s[*j])
 	{
-		if (q == '"')
-			*j = into_dollar(s, new, j, env);
-		if (s[*j] == '\\' && q == '"' && \
-			(s[(*j) + 1] == '\\' || s[(*j) + 1] == '"'))
+		if (s[*j] == '\\' && q == '"' && (s[(*j) + 1] == '\\' || \
+			s[(*j) + 1] == '"'))
 			(*j)++;
 		if (s[*j] == q && s[(*j) - 1] != '\\')
 			break ;
@@ -56,62 +53,76 @@ int	cleaner_other(char *s, int j, char **new, char **env)
 {
 	while (s[j] != '"' && s[j] != '\'' && s[j])
 	{
-		if (s[j] == '\\' && s[j + 1])
-			j++;
 		j = into_dollar(s, new, &j, env);
-		if (!s[j])
+		if (!s[j] || s[j] == '"' || s[j] == '\'')
 			break ;
-		if (s[j] == '\\' && s[j + 1])
-			j++;
-		if ((s[j] == '"' || s[j] == '\'') && s[j - 1] != '\\')
-			break ;
-		if (s[j] == '>' || s[j] == '<')
+		if (s[j] == '<' || s[j] == '>')
 			break ;
 		*new = join_char(*new, s[j++]);
 	}
 	if (s[j] == '"' || s[j] == '\'')
-		j = into_quotes_cleaner(s, &j, new, env);
+		j = into_quotes_cleaner(s, &j, new);
 	return (j);
 }
 
-int	main_cleaning(char *s, char **new, char **env, int *help_var)
+int	main_cleaning(char *s, char **new, char **env, t_data **data)
 {
 	int	j;
 
 	j = 0;
+	skip_spaces(s, &j);
+	if (((s[j] == '<' || s[j] == '>') && !s[j + 1]) || \
+		((s[j] == '<' || s[j] == '>') && (s[j + 1] == '<' || \
+		s[j + 1] == '>') && !s[j + 2]))
+		*new = join_char(*new, 'Q');
 	while (s[j] && s[j] != '>' && s[j] != '<')
 		j = cleaner_other(s, j, new, env);
-	if (((s[j] == '>' || s[j] == '<') && s[j + 1] && s[j + 1] != '>')
-		|| (s[j] == '>' && s[j + 1] == '>' && s[j + 2]))
-		j = current_redirect(s, j + 1, env, help_var);
+	if (((s[j] == '>' || s[j] == '<') && s[j + 1] && s[j + 1] != '>' && \
+		s[j + 1] != '<') || (s[j] == '>' && s[j + 1] == '>' && s[j + 2]) || \
+		(s[j] == '<' && s[j + 1] == '<' && s[j + 2]))
+		j = current_redirect(s, j + 1, env, data);
 	return (j);
 }
+void	to_low(char *s)
+{
+	int i;
 
-void	cleaner(char **s, int *w_h, char **env, int *****fd)
+	i = -1;
+	while(s[++i])
+	{
+		if (s[i] >= 'A' && s[i] <= 'Z')
+			s[i] += 32;
+	}
+}
+
+void	cleaner(char **s, int help, char **env, int ****fd)
 {
 	int		i;
 	int		j;
 	char	*new;
-	int		help_var[4];
+	t_data	*data;
 
+	data = (t_data *)malloc(sizeof(t_data));
 	i = -1;
-	set_helpvar(help_var, fd, i, w_h);
-	while (s[++i])
+	set_data(&data, fd, i, help);
+	to_low(s[0]);
+	while(s[++i] && data->fd_read != -1)
 	{
 		new = (char *)malloc(1);
 		new[0] = '\0';
-//		printf("[%s]", s[i]);
 		s[i] = cleaner_semicolon_pipe_space(s[i]);
-//		printf(" --- [%s]", s[i]);
-		j = main_cleaning(s[i], &new, env, help_var);
-		clean_filename(i, help_var, &new);
+		j = main_cleaning(s[i], &new, env, &data);
+		clean_filename(i, &data, &new);
 		if ((s[i][j] == '>' || s[i][j] == '<') && !s[i][j + 1])
-			next_redirect(s[i + 1], env, help_var, s[i][j]);
-		if (s[i][j] == '>' && s[i][j + 1] == '>' && !s[i][j + 2])
-			next_redirect(s[i + 1], env, help_var, 5);
+			next_redirect(s[i + 1], env, &data, s[i][j]);
+		else if ((s[i][j] == '>' || s[i][j] == '<') && (s[i][j + 1] == '>' \
+			|| s[i][j + 1] == '<') && !s[i][j + 2])
+			next_redirect(s[i + 1], env, &data, s[i][j + 1] + 1);
+		if (new[0] == '\0' && data->type > 0)
+			new = join_char(new, 'R');
 		free(s[i]);
 		s[i] = new;
-//		printf(" >>> [%s]\n", s[i]);
 	}
-	set_helpvar(help_var, fd, i, w_h);
+	set_data(&data, fd, i, help);
+	free(data);
 }
