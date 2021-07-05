@@ -105,6 +105,8 @@ int start_builtin(char **command, char **dirs, char **env)
 
     signal(SIGQUIT, ctrl_slash_kid);
     command_dir = find_dir_path(command, dirs);
+    if (command_dir == NULL)
+        return (0);
     signal(SIGINT, ctrl_c_kid);
     if (command_dir != NULL)
         pid = fork();

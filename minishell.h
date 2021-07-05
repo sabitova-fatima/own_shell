@@ -75,7 +75,7 @@ char 			**cut_command(char ** command);
 int 			start_builtin(char **command, char **dirs, char **env);
 
 // env
-void print_sorted_env(char **env);
+int 			print_sorted_env(char **env);
 
 //GNL
 int				get_next_line(int fd, char **line);

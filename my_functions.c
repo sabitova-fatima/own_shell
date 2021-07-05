@@ -94,7 +94,7 @@ int my_export_output (char **command, char **env)
 int my_export (char **command, char **env)
 {
     if (command[0] && !command[1])
-		print_sorted_env(env);
+		return(print_sorted_env(env));
 
     else if (command[1] && !command[2])
     {
