@@ -36,6 +36,10 @@ int main (int argc, char **argv, char **env)
     char    *input;
     char    **env_copy;
     int     i;
+    t_help  *help;
+
+    help = (t_help *)malloc(sizeof(t_help));
+	help->error = 0;
 
     env_copy = copy_env(env);
     while (1)
@@ -46,7 +50,7 @@ int main (int argc, char **argv, char **env)
         input = readline(" \033[0m\033[33me-bash>\033[0m$ ");
         if (input == NULL)
             exit(0);
-        new = super_split(input, env_copy, &fd);
+        new = super_split(input, env_copy, &fd, help);
         i = 0;
 
         while (new[i])
@@ -58,7 +62,10 @@ int main (int argc, char **argv, char **env)
         if (!(input == NULL))
             add_history(input);
 	}
+	free(help);
 }
+
+// int dup2(int oldfd, int newfd);
 
 
                          

@@ -18,31 +18,31 @@ void	cleaning_3d(char ****all, char **env, int ****fd, t_help *help)
 	int	i;
 	int	j;
 
-	i = -1;
-	while ((*all)[++i])
-	{
-		j = -1;
-		while ((*all)[i][++j])
-		{
-			printf("%i:d j:%d before clear [%s]\n", i,j,(*all)[i][j]);
-		}
-	}
+	// i = -1;
+	// while ((*all)[++i])
+	// {
+	// 	j = -1;
+	// 	while ((*all)[i][++j])
+	// 	{
+	// 		printf("%i:d j:%d before clear [%s]\n", i,j,(*all)[i][j]);
+	// 	}
+	// }
 	i = -1;
 	while ((*all)[++i])
 	{
 		help->help = i;
 		cleaner((*all)[i], help, env, fd);
 	}
-	i = -1;
-	while ((*all)[++i])
-	{
-		j = -1;
-		while ((*all)[i][++j])
-		{
-			printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][0], (*fd)[i][j][1]);
-			printf("%i:d j:%d after clear [%s]\n", i,j,(*all)[i][j]);
-		}
-	}
+	// i = -1;
+	// while ((*all)[++i])
+	// {
+	// 	j = -1;
+	// 	while ((*all)[i][++j])
+	// 	{
+	// 		printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][0], (*fd)[i][j][1]);
+	// 		printf("%i:d j:%d after clear [%s]\n", i,j,(*all)[i][j]);
+	// 	}
+	// }
 }
 
 char	***super_split(char *s, char **env, int ****fd, t_help *help)

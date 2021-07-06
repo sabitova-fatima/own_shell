@@ -7,7 +7,8 @@
 # include <string.h>
 #include <term.h>
 #include <termios.h>
-
+#include <readline/readline.h>
+#include <readline/history.h>
 # define BUFFER_SIZE 10
 
 typedef struct s_list
@@ -50,9 +51,35 @@ int				my_echo (char **command, char *line);
 int				my_cd(char **command);
 int				my_pwd (char **command);
 int				my_unset (char **command);
-int				my_export (char **command);
+int				my_export (char **command, char **env);
 int				my_env (char **command, char **env);
 int				my_exit (char **command);
+
+
+// signals
+void			ctrl_c(int signo);
+void			ctrl_c_kid(int signo);
+void			ctrl_slash(int signo);
+void			ctrl_slash_kid(int signo);
+
+// command
+int 			start_own_function (char **command, char **env, char *line);
+char    		*find_path(char **env);
+void 			put_dirname(void);
+char 			*find_dir_path(char **command, char **dirs);
+char 			**cut_command(char ** command);
+int 			start_builtin(char **command, char **dirs, char **env);
+
+// env
+char    		**copy_env(char **env);
+int 			print_sorted_env(char **env);
+int   			env_len(char **env);
+char			**realloc_env(int added, char **env_copy);
+int   			find_end_name(char *name);
+int				ft_strncmp(char *s1, char *s2, int size);
+int				where_to_put_env(char *name, char **env_copy);
+char 			**set_env(char **env_copy, char *value, char *key, int n_var);
+char			**export_name_val(char *key, char *value, char **env_copy);
 
 //GNL
 int				get_next_line(int fd, char **line);
