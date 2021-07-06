@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: khouten <khouten@student.21-school>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/03 16:19:45 by khouten           #+#    #+#             */
-/*   Updated: 2020/12/03 16:19:47 by khouten          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include <stdlib.h>
@@ -19,8 +7,6 @@
 # include <string.h>
 #include <term.h>
 #include <termios.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 # define BUFFER_SIZE 10
 
@@ -37,7 +23,15 @@ typedef struct s_data
 	int 	fd_write;
 	int 	was_redirect;
 	int 	type;
+	int 	error;
+	int 	j;
 }			t_data;
+
+typedef struct s_help
+{
+	int error;
+	int help;
+}	t_help;
 
 // libft
 void			ft_bzero(void *s, int n);
@@ -56,26 +50,9 @@ int				my_echo (char **command, char *line);
 int				my_cd(char **command);
 int				my_pwd (char **command);
 int				my_unset (char **command);
-int				my_export (char **command, char **env);
+int				my_export (char **command);
 int				my_env (char **command, char **env);
 int				my_exit (char **command);
-
-// signals
-void			ctrl_c(int signo);
-void			ctrl_c_kid(int signo);
-void			ctrl_slash(int signo);
-void			ctrl_slash_kid(int signo);
-
-// command
-int 			start_own_function (char **command, char **env, char *line);
-char    		*find_path(char **env);
-void 			put_dirname(void);
-char 			*find_dir_path(char **command, char **dirs);
-char 			**cut_command(char ** command);
-int 			start_builtin(char **command, char **dirs, char **env);
-
-// env
-int 			print_sorted_env(char **env);
 
 //GNL
 int				get_next_line(int fd, char **line);
@@ -86,9 +63,9 @@ char			*ft_strdup(char *s, int len);
 char			*ft_strjoin(char *s1, char *s2);
 
 //BIG SPLIT
-char			***super_split(char *s, char **env, int ****fd);
+char			***super_split(char *s, char **env, int ****fd, t_help *help);
 char			***split_3d(char **new, int ****fd_three);
-void			cleaning_3d(char ****all, char **env, int ****fd);
+void			cleaning_3d(char ****all, char **env, int ****fd, t_help *help);
 
 //SPLIT
 char			**ft_split(char *s, int *help);
@@ -110,26 +87,26 @@ char			**split_pipes(char *s);
 
 //CLEANER
 char			*cleaner_semicolon_pipe_space(char *s);
-int				into_quotes_cleaner(char *s, int *j, char **new);
-int				cleaner_other(char *s, int j, char **new, char **env);
-void			cleaner(char **s, int help, char **env, int ****fd);
-int				main_cleaning(char *s, char **new, char **env, t_data **data);
+int				into_quotes_cleaner(char *s, int j, char **new);
+int				cleaner_other(char *s, t_data *data, char **new, char **env);
+void			cleaner(char **s, t_help *help, char **env, int ****fd);
+int				main_cleaning(char *s, char **new, char **env, t_data *data);
 
 
 //REDIRECT
-void			next_redirect(char *s, char **env, t_data **data, char sign);
-int				current_redirect(char *s, int j, char **env, t_data **data);
-void			clean_filename(int i, t_data **data, char **new);
-void			set_data(t_data **data, int ****fd, int i, int help);
-void			open_close(t_data **data, char *filename);
+void			next_redirect(char *s, char **env, t_data *data, char sign);
+int				current_redirect(char *s, int j, char **env, t_data *data);
+void			clean_filename(int i, t_data *data, char **new);
+void			set_data(t_data *data, int ****fd, int i, t_help *help);
+void			open_close(t_data *data, char *filename);
 void			heredoc(char *limiter);
 
 //PRE PARSER
-int				check_empty_redirect(char **arr);
-int				check_empty_commands(char **arr);
-int				check_opened_quotes(char **array);
-int				pre_parser(char *s);
-int				into_check_empty_redirect(char *s, int j);
+int				check_empty_redirect(char **arr, t_help *help);
+int				check_empty_commands(char **arr, t_help *help);
+int				check_opened_quotes(char **array, t_help *help);
+int				pre_parser(char *s, t_help *help);
+int				into_check_empty_redirect(char *s, int j, t_help *help);
 
 //PRE_CLEANER
 int				pre_cleaner(char **s);
@@ -139,8 +116,8 @@ char			*join_char(char *s, char c);
 //CLEANER_UTILS
 char			*search_env(char *dollar, char **env);
 int				ft_strncmp_env(char *s1, char *s2, int *j);
-int				into_dollar(char *s, char **new, int *j, char **env);
-int				into_dollar2(char *s, int *j, char **new, char **env);
+int				into_dollar(char *s, char **new, t_data *data, char **env);
+int				into_dollar2(char *s, int j, char **new, char **env);
 
 //FREEDOMS
 void			freedom_2d(char **arr);

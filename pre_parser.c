@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	into_check_empty_redirect(char *s, int j)
+int	into_check_empty_redirect(char *s, int j, t_help *help)
 {
 	char q;
 
@@ -13,13 +13,14 @@ int	into_check_empty_redirect(char *s, int j)
 		if (!s[j] || s[j] == '>' || s[j] == '<')
 		{
 			printf("syntax error near > or <\n");
+			help->error = 1;
 			return (-1);
 		}
 	}
 	return (j);
 }
 
-int	check_empty_redirect(char **arr)
+int	check_empty_redirect(char **arr, t_help *help)
 {
 	int	i;
 	int	j;
@@ -32,7 +33,7 @@ int	check_empty_redirect(char **arr)
 		{
 			if (arr[i][j] != '"' && arr[i][j] != '\'')
 			{
-				j = into_check_empty_redirect(arr[i], j);
+				j = into_check_empty_redirect(arr[i], j, help);
 				if (j == -1)
 					return (1);
 			}
@@ -45,7 +46,7 @@ int	check_empty_redirect(char **arr)
 	return (0);
 }
 
-int	check_empty_commands(char **arr)
+int	check_empty_commands(char **arr, t_help *help)
 {
 	int	i;
 	int	j;
@@ -58,31 +59,34 @@ int	check_empty_commands(char **arr)
 		if (arr[i][j] == '|' || (!arr[i][j] && i > 0))
 		{
 			printf("syntax error near |\n");
+			help->error = 1;
 			return (1);
 		}
 	}
 	return (0);
 }
 
-int	check_opened_quotes(char **array)
+int	check_opened_quotes(char **array, t_help *help)
 {
 	char	***new;
 	int		i;
 	int 	***fd;
 
 	i = 0;
-	while(new[i])
+	while(array[i])
 		i++;
 	fd = (int ***)malloc(sizeof(int **) * i + 1);
 	new = split_spaces(array, &fd);
 	if (!new)
 		return (1);
+
 	i = -1;
 	while (new[++i])
 	{
 		if (pre_cleaner(new[i]))
 		{
 			printf("not closed quotes\n");
+			help->error = 1;
 			freedom_3d(new);
 			return (1);
 		}
@@ -92,15 +96,15 @@ int	check_opened_quotes(char **array)
 	return (0);
 }
 
-int	pre_parser(char *s)
+int	pre_parser(char *s, t_help *help)
 {
 	char	**new;
 
 	new = split_pipes(s);
 	if (!new)
 		return (1);
-	if (check_opened_quotes(new) || check_empty_commands(new) || \
-        check_empty_redirect(new))
+	if (check_opened_quotes(new, help) || check_empty_commands(new, help) || \
+        check_empty_redirect(new, help))
 	{
 		freedom_2d(new);
 		return (1);

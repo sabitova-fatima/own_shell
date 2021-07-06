@@ -13,11 +13,10 @@ char	***split_3d(char **new, int ****fd_three)
 	return (all);
 }
 
-void	cleaning_3d(char ****all, char **env, int ****fd)
+void	cleaning_3d(char ****all, char **env, int ****fd, t_help *help)
 {
 	int	i;
 	int	j;
-	int	help;
 
 	i = -1;
 	while ((*all)[++i])
@@ -25,14 +24,13 @@ void	cleaning_3d(char ****all, char **env, int ****fd)
 		j = -1;
 		while ((*all)[i][++j])
 		{
-			// printf("%i:d j:%d before clear [%s]\n", i,j,(*all)[i][j]);
+			printf("%i:d j:%d before clear [%s]\n", i,j,(*all)[i][j]);
 		}
 	}
-
 	i = -1;
 	while ((*all)[++i])
 	{
-		help = i;
+		help->help = i;
 		cleaner((*all)[i], help, env, fd);
 	}
 	i = -1;
@@ -41,24 +39,24 @@ void	cleaning_3d(char ****all, char **env, int ****fd)
 		j = -1;
 		while ((*all)[i][++j])
 		{
-			// printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][0], (*fd)[i][j][1]);
-			// printf("%i:d j:%d after clear [%s]\n", i,j,(*all)[i][j]);
+			printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][0], (*fd)[i][j][1]);
+			printf("%i:d j:%d after clear [%s]\n", i,j,(*all)[i][j]);
 		}
 	}
 }
 
-char	***super_split(char *s, char **env, int ****fd)
+char	***super_split(char *s, char **env, int ****fd, t_help *help)
 {
 	char	**new;
 	char	***all;
 
-	if (pre_parser(s))
+	if (pre_parser(s, help))
 		return (NULL);
 	new = split_pipes(s);
 	if (!new)
 		return (NULL);
 	all = split_3d(new, fd);
 	freedom_2d(new);
-	cleaning_3d(&all, env, fd);
+	cleaning_3d(&all, env, fd, help);
 	return (all);
 }
