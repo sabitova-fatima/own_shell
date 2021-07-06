@@ -4,8 +4,8 @@ int start_own_function (char **command, char **env, char *line)
 {
     if (command[0])
     {
-        if (ft_strcmp("echo", command[0]) == 0)
-            return(my_echo(command, line));
+//        if (ft_strcmp("echo", command[0]) == 0)
+//            return(my_echo(command, line));
         if (ft_strcmp("cd", command[0]) == 0)
             return(my_cd(command));
         if (ft_strcmp("pwd", command[0]) == 0)

@@ -13,7 +13,6 @@ int	into_check_empty_redirect(char *s, int j, t_help *help)
 		if (!s[j] || s[j] == '>' || s[j] == '<')
 		{
 			printf("syntax error near > or <\n");
-			help->error = 1;
 			return (-1);
 		}
 	}
@@ -59,7 +58,6 @@ int	check_empty_commands(char **arr, t_help *help)
 		if (arr[i][j] == '|' || (!arr[i][j] && i > 0))
 		{
 			printf("syntax error near |\n");
-			help->error = 1;
 			return (1);
 		}
 	}
@@ -86,7 +84,6 @@ int	check_opened_quotes(char **array, t_help *help)
 		if (pre_cleaner(new[i]))
 		{
 			printf("not closed quotes\n");
-			help->error = 1;
 			freedom_3d(new);
 			return (1);
 		}
