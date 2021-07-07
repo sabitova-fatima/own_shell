@@ -19,7 +19,8 @@ SRCS 		= main.c \
 			utils2.c \
 			signals.c \
 			command.c \
-			env.c
+			env.c \
+			pipes.c
 			
 CFLAGS 		= -Wall -Wextra -Werror -I. 
 CC			= gcc

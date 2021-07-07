@@ -28,6 +28,16 @@ typedef struct s_data
 	int 	j;
 }			t_data;
 
+typedef struct s_pipe
+{
+	int				fd[2];
+	char			**command;
+	char			*path;
+	pid_t			pid;
+	struct s_pipe	*prev;
+	struct s_pipe	*next;
+}	t_pipe;
+
 typedef struct s_help
 {
 	int error;
@@ -160,6 +170,8 @@ int				ft_strlen(char *s);
 int				count_spaces_help(char *s, int i, int *w_count, char *c);
 int				**create_2d(int help);
 
+//PIPES
+void 			parse_pipes(char ***new, char **env);
 
 
 #endif
