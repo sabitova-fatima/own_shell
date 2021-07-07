@@ -29,6 +29,36 @@ char    **copy_env(char **env)
     return(env_copy);
 }
 
+// NEW MAIN
+
+// int main (int argc, char **argv, char **env)
+// {
+// 	char    ***new;
+//     int     ***fd;
+//     char    *input;
+//     char    **env_copy;
+//     int     i;
+//     t_help  help;
+
+// 	help.error = 0;
+//     env_copy = copy_env(env);
+
+// 	while (1)
+// 	{
+//         put_dirname();
+//         signal(SIGINT, ctrl_c);
+//         signal(SIGQUIT, ctrl_slash);
+//         input = readline(" \033[0m\033[33me-bash>\033[0m$ ");
+//         if (input == NULL)
+//             exit(0);
+//         new = super_split(input, env_copy, &fd, &help);
+//         if (new[0][0])
+        	// parse_pipes(new, env);
+// 	}
+// }
+
+// OLD MAIN
+
 int main (int argc, char **argv, char **env)
 {
 	char    ***new;
@@ -40,8 +70,7 @@ int main (int argc, char **argv, char **env)
 
 	help.error = 0;
     env_copy = copy_env(env);
-
-	while (1)
+    while (1)
 	{
         put_dirname();
         signal(SIGINT, ctrl_c);
@@ -51,18 +80,21 @@ int main (int argc, char **argv, char **env)
             exit(0);
         new = super_split(input, env_copy, &fd, &help);
         if (new[0][0])
-        	parse_pipes(new, env);
-//        if (new)
-//		{
-//			i = -1;
-//			while (new[++i])
-//            if (!start_own_function(new[i], env_copy, input))
-//                start_builtin(new[i] , ft_strsplit(find_path(env_copy), ':'), env_copy); // ПЕРЕПИСАТЬ
-//			if (!(input == NULL))
-//            	add_history(input);
-//        	help.error = 0;
-//		}
-//        else
-//        	help.error = 1;
+		{
+			i = -1;
+			while (new[++i])
+            {
+                if (new[i][0] && ((ft_strcmp("export", new[i][0]) == 0) |\
+                            (ft_strcmp("unset", new[i][0]) == 0)))
+                    env_copy = start_env_funcs(new[i], env_copy, input);
+                else if (!start_own_function(new[i], env_copy, input))
+                    start_builtin(new[i], ft_strsplit(find_path(env_copy), ':'), env_copy); 
+            }
+			if (!(input == NULL))
+            	add_history(input);
+        	help.error = 0;
+		}
+        else
+        	help.error = 1;
 	}
 }
