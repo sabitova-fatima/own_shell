@@ -4,22 +4,28 @@ int start_own_function (char **command, char **env, char *line)
 {
     if (command[0])
     {
-//        if (ft_strcmp("echo", command[0]) == 0)
-//            return(my_echo(command, line));
         if (ft_strcmp("cd", command[0]) == 0)
             return(my_cd(command));
         if (ft_strcmp("pwd", command[0]) == 0)
             return(my_pwd(command));
-        if (ft_strcmp("export", command[0]) == 0)
-            return(my_export(command, env));
-        if (ft_strcmp("unset", command[0]) == 0)
-            return(my_unset(command));
-        if (ft_strcmp("env", command[0]) == 0)
-            return(my_env(command, env));
         if (ft_strcmp("exit", command[0]) == 0)
             return(my_exit(command));
+        if (ft_strcmp("env", command[0]) == 0)
+            return(my_env(command, env));
     }
     return (0);
+}
+
+char **start_env_funcs(char **command, char **env, char *line)
+{
+    if (command[0])
+    {
+        if (ft_strcmp("export", command[0]) == 0)
+            env = my_export(command, env);
+        if (ft_strcmp("unset", command[0]) == 0)
+            env = my_unset(env, command);
+    }
+    return (env);
 }
 
 char    *find_path(char **env)

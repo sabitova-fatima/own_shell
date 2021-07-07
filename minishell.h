@@ -60,8 +60,9 @@ char			*ft_substr(char const *s, unsigned int start, int len);
 int				my_echo (char **command, char *line);
 int				my_cd(char **command);
 int				my_pwd (char **command);
-int				my_unset (char **command);
-int				my_export (char **command, char **env);
+char			**my_unset (char **command, char **env);
+char 			**my_export (char **command, char **env);
+char 			**start_env_funcs(char **command, char **env, char *line);
 int				my_env (char **command, char **env);
 int				my_exit (char **command);
 
@@ -90,6 +91,8 @@ int				ft_strncmp(char *s1, char *s2, int size);
 int				where_to_put_env(char *name, char **env_copy);
 char 			**set_env(char **env_copy, char *value, char *key, int n_var);
 char			**export_name_val(char *key, char *value, char **env_copy);
+char 			**my_unset(char **env, char **command);
+char 			**unset_env(int i_key, char **env);
 
 //GNL
 int				get_next_line(int fd, char **line);
