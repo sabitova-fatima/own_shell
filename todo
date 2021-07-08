@@ -52,3 +52,11 @@ echo
 редиректы
 лики
 норма
+
+
+KHOUTEN:
+pwd < ac = error for object 0x3c00000001: pointer being freed was not allocated
+>a = segfault
+<c = same
+cat < b | grep fr = не открывается пайп и не срабатывает греп, а просто выводится
+файл в консоль

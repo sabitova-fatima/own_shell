@@ -33,16 +33,16 @@ void	cleaning_3d(char ****all, char **env, int ****fd, t_help *help)
 		help->help = i;
 		cleaner((*all)[i], help, env, fd);
 	}
-	// i = -1;
-	// while ((*all)[++i])
-	// {
-	// 	j = -1;
-	// 	while ((*all)[i][++j])
-	// 	{
-	// 		printf("BSPLIT read:%d write:%d\n", (*fd)[i][j][0], (*fd)[i][j][1]);
-	// 		printf("%i:d j:%d after clear [%s]\n", i,j,(*all)[i][j]);
-	// 	}
-	// }
+	 i = -1;
+	 while ((*all)[++i])
+	 {
+	 	j = -1;
+	 	while ((*all)[i][++j])
+	 	{
+	 		printf("%i:d j:%d after clear [%s] read:%d write:%d\n", i,j,
+					(*all)[i][j], (*fd)[i][j][0], (*fd)[i][j][1]);
+	 	}
+	 }
 }
 
 char	***super_split(char *s, char **env, int ****fd, t_help *help)

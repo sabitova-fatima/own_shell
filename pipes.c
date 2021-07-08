@@ -184,7 +184,7 @@ char	*absolut_path(char **env, char *command)
 	return (check_path(command, env));
 }
 
-void parse_argv(char **argv, t_pipe *new_pipe, char **env)
+void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 {
 	int i;
 	int j;
@@ -193,19 +193,26 @@ void parse_argv(char **argv, t_pipe *new_pipe, char **env)
 	i = -1;
 	while(argv[++i])
 	{
-		if (argv[i][0] != 'E')
+		if (argv[i][0] != 'E' && argv[i][0] != 'Q' && argv[i][0] != 'R')
 			len++;
 	}
+	new_pipe->fd_read = fd[i - 1][0];
+	new_pipe->fd_write = fd[i - 1][1];
+	printf("%d %d\n", new_pipe->fd_read, new_pipe->fd_write);
 	new_pipe->command = (char **)malloc(sizeof(char *) * len + 1);
 	j = -1;
 	while (++j < len)
 	{
-		if (argv[j][0] != 'E')
+		if (argv[j][0] != 'E' && argv[j][0] != 'Q' && argv[j][0] != 'R')
+		{
 			new_pipe->command[j] = ft_strdup2(argv[j]);
+			printf("[%d] %s\n", j, new_pipe->command[j]);
+		}
 	}
 	new_pipe->command[j] = NULL;
 	new_pipe->path = absolut_path(env, new_pipe->command[0]);
-	if (!new_pipe->path)
+	if ((!new_pipe->path || new_pipe->command[0][0] == '\0') && ft_strcmp
+	("exit", new_pipe->command[0]))
 		printf("command not found\n");
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;
@@ -213,18 +220,21 @@ void parse_argv(char **argv, t_pipe *new_pipe, char **env)
 
 void	exec_child(t_pipe *pipes, char **env)
 {
-	if (!pipes->prev && !pipes->next)
-		execve(pipes->path, pipes->command, env);
-	else if (!pipes->prev)
-		dup2(pipes->fd[1], 1);
-	else if (!pipes->next)
-		dup2(pipes->prev->fd[0], 0);
-	else
+	if (pipes->fd_read == 0 && pipes->fd_write == 1)
 	{
-		dup2(pipes->prev->fd[0], 0);
-		dup2(pipes->fd[1], 1);
-		close(pipes->prev->fd[1]);
-		close(pipes->fd[0]);
+		if (!pipes->prev && !pipes->next)
+			execve(pipes->path, pipes->command, env);
+		else if (!pipes->prev)
+			dup2(pipes->fd[1], 1);
+		else if (!pipes->next)
+			dup2(pipes->prev->fd[0], 0);
+		else
+		{
+			dup2(pipes->prev->fd[0], 0);
+			dup2(pipes->fd[1], 1);
+			close(pipes->prev->fd[1]);
+			close(pipes->fd[0]);
+		}
 	}
 	execve(pipes->path, pipes->command, env);
 	exit(1);
@@ -245,22 +255,75 @@ void	launch_process(t_pipe *tmp, char **env)
 	else
 	{
 		close(tmp->fd[1]);
-		if (tmp->prev)
+		if (tmp->prev && tmp->prev->fd[0] != 0)
 			close(tmp->prev->fd[0]);
 		if (!tmp->next)
 			close(tmp->fd[0]);
 	}
 }
+
+int	own_function(t_pipe *tmp, char **env)
+{
+	if (!ft_strcmp("pwd", tmp->command[0]))
+		return(my_pwd());
+	if (!ft_strcmp("env", tmp->command[0]))
+		return(my_env(tmp->command, env));
+	if (!ft_strcmp("cd", tmp->command[0]))
+		return(my_cd(tmp->command));
+	if (!ft_strcmp("exit", tmp->command[0]))
+		return(my_exit(tmp->command));
+
+//	if (!ft_strcmp("export", tmp->command[0]))
+//		return(my_export(tmp->command, env));
+//	if (!ft_strcmp("unset", tmp->command[0]))
+//		return(my_unset(tmp->command));
+	return (0);
+}
+
+int samopal(t_pipe *tmp, char **env)
+{
+	int own;
+
+	if (tmp->fd_read == 0 && tmp->fd_write == 1)
+	{
+		if (pipe(tmp->fd) == -1)
+			printf("wrong pipe\n");
+		if (tmp->next)
+			dup2(tmp->fd[1], 1);
+	}
+	own = own_function(tmp, env);
+	if (tmp->fd[1] != 0)
+		close(tmp->fd[1]);
+	if (own)
+		return (1);
+	return(0);
+}
+
 void	exec_cmds(t_pipe *pipes, char **env)
 {
 	t_pipe	*tmp;
 	int		status;
+	int old_fd_write;
+	int old_fd_read;
+
+	old_fd_write = dup(1);
+	old_fd_read = dup(0);
 
 	tmp = pipes;
 	while (tmp)
 	{
-//		printf("%s\n", pipes->path);
-		launch_process(tmp, env);
+		if (tmp->fd_write > 1)
+			dup2(tmp->fd_write, 1);
+		if (tmp->fd_read > 0)
+			dup2(tmp->fd_read, 0);
+		if (!samopal(tmp, env))
+			launch_process(tmp, env);
+		dup2(old_fd_write, 1);
+		dup2(old_fd_read, 0);
+		if (tmp->fd_write > 1)
+			close(tmp->fd_write);
+		if (tmp->fd_read > 0)
+			close(tmp->fd_read);
 		tmp = tmp->next;
 	}
 	tmp = pipes;
@@ -270,6 +333,7 @@ void	exec_cmds(t_pipe *pipes, char **env)
 		tmp = tmp->next;
 	}
 }
+
 void	free_pipes(t_pipe *pipes)
 {
 	int		i;
@@ -287,7 +351,8 @@ void	free_pipes(t_pipe *pipes)
 		pipes = tmp;
 	}
 }
-void parse_pipes(char ***new, char **env)
+
+void parse_pipes(char ***new, char **env, int ***fd)
 {
 	t_pipe *pipes;
 	t_pipe *new_pipe;
@@ -298,7 +363,7 @@ void parse_pipes(char ***new, char **env)
 	while(new[++i])
 	{
 		new_pipe = (t_pipe *)malloc(sizeof(t_pipe));
-		parse_argv(new[i], new_pipe, env);
+		parse_argv(new[i], new_pipe, env, fd[i]);
 		ft_lstadd_back(&pipes, new_pipe);
 	}
 	if (pipes)

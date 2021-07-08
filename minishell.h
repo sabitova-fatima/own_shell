@@ -30,6 +30,8 @@ typedef struct s_data
 
 typedef struct s_pipe
 {
+	int 			fd_read;
+	int 			fd_write;
 	int				fd[2];
 	char			**command;
 	char			*path;
@@ -59,7 +61,7 @@ char			*ft_substr(char const *s, unsigned int start, int len);
 // my_functions
 int				my_echo (char **command, char *line);
 int				my_cd(char **command);
-int				my_pwd (char **command);
+int				my_pwd (void);
 char			**my_unset (char **command, char **env);
 char 			**my_export (char **command, char **env);
 char 			**start_env_funcs(char **command, char **env, char *line);
@@ -174,7 +176,7 @@ int				count_spaces_help(char *s, int i, int *w_count, char *c);
 int				**create_2d(int help);
 
 //PIPES
-void 			parse_pipes(char ***new, char **env);
+void 			parse_pipes(char ***new, char **env, int ***fd);
 
 
 #endif

@@ -8,7 +8,7 @@ void	next_redirect(char *s, char **env, t_data *data, char sign)
 	if (data->fd_read != -1)
 	{
 		data->type = sign;
-		printf("NEXT TYPE %d\n", data->type);
+//		printf("NEXT TYPE %d\n", data->type);
 		j = 0;
 		skip_spaces(s, &j);
 		filename = (char *) malloc(1);
@@ -21,8 +21,8 @@ void	next_redirect(char *s, char **env, t_data *data, char sign)
 		open_close(data, filename);
 		if (data->fd_read == -1)
 			printf("No such file or directory\n");
-		printf("next redir [%s]\n", filename);
-		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
+//		printf("next redir [%s]\n", filename);
+//		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
 		free(filename);
 		data->was_redirect = 1;
 	}
