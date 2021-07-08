@@ -372,7 +372,7 @@ void	free_pipes(t_pipe *pipes)
 	}
 }
 
-char **parse_pipes(char ***new, char **env, int ***fd)
+char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 {
 	t_pipe *pipes;
 	t_pipe *new_pipe;
@@ -389,5 +389,7 @@ char **parse_pipes(char ***new, char **env, int ***fd)
 	if (pipes)
 		env = exec_cmds(pipes, env);
 	free_pipes(pipes);
+	if (!(input == NULL))
+            add_history(input);
 	return (env);
 }
