@@ -59,7 +59,7 @@ int				ft_strcmp(char *s1, char *s2);
 char			*ft_substr(char const *s, unsigned int start, int len);
 
 // my_functions
-int				my_echo (char **command, char *line);
+int				my_echo (char **command);
 int				my_cd(char **command);
 int				my_pwd (void);
 char			**my_unset (char **command, char **env);

@@ -1,32 +1,32 @@
 #include "minishell.h"
 
-int start_own_function (char **command, char **env, char *line)
-{
-    if (command[0])
-    {
+// int start_own_function (char **command, char **env, char *line)
+// {
+//     if (command[0])
+//     {
 //        if (ft_strcmp("cd", command[0]) == 0)
 //            return(my_cd(command));
 //        if (ft_strcmp("pwd", command[0]) == 0)
-//            return(my_pwd(command));
-        if (ft_strcmp("exit", command[0]) == 0)
-            return(my_exit(command));
-        if (ft_strcmp("env", command[0]) == 0)
-            return(my_env(command, env));
-    }
-    return (0);
-}
+//            return(my_pwd());
+//         if (ft_strcmp("exit", command[0]) == 0)
+//             return(my_exit(command));
+//         if (ft_strcmp("env", command[0]) == 0)
+//             return(my_env(command, env));
+//     }
+//     return (0);
+// }
 
-char **start_env_funcs(char **command, char **env, char *line)
-{
-    if (command[0])
-    {
-        if (ft_strcmp("export", command[0]) == 0)
-            env = my_export(command, env);
-        if (ft_strcmp("unset", command[0]) == 0)
-            env = my_unset(env, command);
-    }
-    return (env);
-}
+// char **start_env_funcs(char **command, char **env, char *line)
+// {
+//     if (command[0])
+//     {
+//         if (ft_strcmp("export", command[0]) == 0)
+//             env = my_export(command, env);
+//         if (ft_strcmp("unset", command[0]) == 0)
+//             env = my_unset(env, command);
+//     }
+//     return (env);
+// }
 
 char    *find_path(char **env)
 {
@@ -48,6 +48,7 @@ void put_dirname(void)
     char dir_name[4096 + 1];
     getcwd(dir_name, 4096);
     ft_putstr(dir_name);
+    printf(" \033[0m\033[33me-bash>\033[0m$ ");
 }
 
 char *find_dir_path(char **command, char **dirs)

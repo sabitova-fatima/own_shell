@@ -269,6 +269,9 @@ char **own_function(t_pipe *tmp, char **env)
 	int result;
 	result = 0;
 
+	if (!ft_strcmp("echo", tmp->command[0]))
+		result = my_echo(tmp->command);
+
 	if (!ft_strcmp("pwd", tmp->command[0]))
 		result = my_pwd();
 	if (!ft_strcmp("env", tmp->command[0]))
@@ -387,7 +390,13 @@ char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 		ft_lstadd_back(&pipes, new_pipe);
 	}
 	if (pipes)
+	{
 		env = exec_cmds(pipes, env);
+		if (new[0][0][0] == '.' && new[0][0][1] == '/')
+		{
+			printf("woooow\n");
+		}
+	}
 	free_pipes(pipes);
 	if (!(input == NULL))
             add_history(input);

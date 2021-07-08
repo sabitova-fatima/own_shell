@@ -1,16 +1,34 @@
 #include "minishell.h"
 
-int my_echo (char **command, char *line)
+int	my_echo(char **command)
 {
-    int i;
-    i = 1;
+	int	i;
+	int	count;
+    int len;
 
-    while (command[i])
-    {
-        printf("%s", command[i]);
-        i++;
-    }
-    return (1);
+    len = 0;
+	count = 0;
+    while (command[len])
+        len++;
+    i = 1;
+	if (len > 1)
+	{
+		while (command[i] && ft_strcmp(command[i], "-n") == 0)
+		{
+			count = 1;
+			i++;
+		}
+		while (command[i])
+		{
+			ft_putstr(command[i]);
+			if (command[i + 1] && command[i][0] != '\0')
+				ft_putstr(" ");
+			i++;
+		}
+	}
+	if (count == 0)
+		write(1, "\n", 1);
+	return (1);
 }
 
 int my_cd(char **command)

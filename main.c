@@ -19,7 +19,8 @@ int main (int argc, char **argv, char **env)
         put_dirname();
         signal(SIGINT, ctrl_c);
         signal(SIGQUIT, ctrl_slash);
-        input = readline(" \033[0m\033[33me-bash>\033[0m$ ");
+        // printf(" \033[0m\033[33me-bash>\033[0m$ ");
+        input = readline("");
         if (input == NULL)
 			exit(0);
         new = super_split(input, env_copy, &fd, &help);
