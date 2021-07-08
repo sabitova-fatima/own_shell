@@ -45,18 +45,24 @@ export name val +
 export в цикл +
 мердж сс пайпами от Ефима +
 протестировать и дописать сигналы +
-коды ошибок errno
-relative path cd
-echo
+relative path cd +
+echo +
+редиректы +
+абсолютные и относительные пути MY_CD +
+export измененный char *env сохранить +
+прикрутить историю
+коды ошибок errno (через глобальную переменную)
 запускать свои программы с корня
-редиректы
+ctrl c два раза печатает путь и называние минишелла
 лики
 норма
 
 
 KHOUTEN:
 pwd < ac = error for object 0x3c00000001: pointer being freed was not allocated
+echo > a valera pupkin
 >a = segfault
 <c = same
 cat < b | grep fr = не открывается пайп и не срабатывает греп, а просто выводится
 файл в консоль
+останавливаться на fd равном -1

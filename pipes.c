@@ -198,7 +198,7 @@ void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 	}
 	new_pipe->fd_read = fd[i - 1][0];
 	new_pipe->fd_write = fd[i - 1][1];
-	printf("%d %d\n", new_pipe->fd_read, new_pipe->fd_write);
+	// printf("%d %d\n", new_pipe->fd_read, new_pipe->fd_write);
 	new_pipe->command = (char **)malloc(sizeof(char *) * len + 1);
 	j = -1;
 	while (++j < len)
@@ -206,13 +206,15 @@ void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 		if (argv[j][0] != 'E' && argv[j][0] != 'Q' && argv[j][0] != 'R')
 		{
 			new_pipe->command[j] = ft_strdup2(argv[j]);
-			printf("[%d] %s\n", j, new_pipe->command[j]);
+			// printf("[%d] %s\n", j, new_pipe->command[j]);
 		}
 	}
 	new_pipe->command[j] = NULL;
 	new_pipe->path = absolut_path(env, new_pipe->command[0]);
 	if ((!new_pipe->path || new_pipe->command[0][0] == '\0') && ft_strcmp
-	("exit", new_pipe->command[0]))
+	("exit", new_pipe->command[0]) && ft_strcmp
+	("unset", new_pipe->command[0]) && ft_strcmp
+	("export", new_pipe->command[0]))
 		printf("command not found\n");
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;
@@ -262,27 +264,38 @@ void	launch_process(t_pipe *tmp, char **env)
 	}
 }
 
-int	own_function(t_pipe *tmp, char **env)
+char **own_function(t_pipe *tmp, char **env)
 {
-	if (!ft_strcmp("pwd", tmp->command[0]))
-		return(my_pwd());
-	if (!ft_strcmp("env", tmp->command[0]))
-		return(my_env(tmp->command, env));
-	if (!ft_strcmp("cd", tmp->command[0]))
-		return(my_cd(tmp->command));
-	if (!ft_strcmp("exit", tmp->command[0]))
-		return(my_exit(tmp->command));
+	int result;
+	result = 0;
 
-//	if (!ft_strcmp("export", tmp->command[0]))
-//		return(my_export(tmp->command, env));
-//	if (!ft_strcmp("unset", tmp->command[0]))
-//		return(my_unset(tmp->command));
-	return (0);
+	if (!ft_strcmp("pwd", tmp->command[0]))
+		result = my_pwd();
+	if (!ft_strcmp("env", tmp->command[0]))
+		result = my_env(tmp->command, env);
+	if (!ft_strcmp("cd", tmp->command[0]))
+		result = my_cd(tmp->command);
+	if (!ft_strcmp("exit", tmp->command[0]))
+		result = my_exit(tmp->command);
+	if (!ft_strcmp("export", tmp->command[0]))
+	{
+		env = my_export(tmp->command, env);
+		result = 1;
+	}
+	if (!ft_strcmp("unset", tmp->command[0]))
+	{
+		env = my_unset(env, tmp->command);
+		result = 1;
+	}
+	if (result != 1)
+		return (NULL);
+	else
+		return (env);
 }
 
-int samopal(t_pipe *tmp, char **env)
+char **samopal(t_pipe *tmp, char **env)
 {
-	int own;
+	char **own;
 
 	if (tmp->fd_read == 0 && tmp->fd_write == 1)
 	{
@@ -294,17 +307,19 @@ int samopal(t_pipe *tmp, char **env)
 	own = own_function(tmp, env);
 	if (tmp->fd[1] != 0)
 		close(tmp->fd[1]);
-	if (own)
-		return (1);
-	return(0);
+	return (own);
+	// if (own)
+	// 	return (1);
+	// return(0);
 }
 
-void	exec_cmds(t_pipe *pipes, char **env)
+char	**exec_cmds(t_pipe *pipes, char **env)
 {
 	t_pipe	*tmp;
 	int		status;
 	int old_fd_write;
 	int old_fd_read;
+	char **env2;
 
 	old_fd_write = dup(1);
 	old_fd_read = dup(0);
@@ -316,7 +331,8 @@ void	exec_cmds(t_pipe *pipes, char **env)
 			dup2(tmp->fd_write, 1);
 		if (tmp->fd_read > 0)
 			dup2(tmp->fd_read, 0);
-		if (!samopal(tmp, env))
+		env2 = samopal(tmp, env);
+		if (!env2)
 			launch_process(tmp, env);
 		dup2(old_fd_write, 1);
 		dup2(old_fd_read, 0);
@@ -332,6 +348,10 @@ void	exec_cmds(t_pipe *pipes, char **env)
 		waitpid(tmp->pid, &status, 0);
 		tmp = tmp->next;
 	}
+	if (env2)
+		return (env2);
+	else
+		return (env);
 }
 
 void	free_pipes(t_pipe *pipes)
@@ -352,7 +372,7 @@ void	free_pipes(t_pipe *pipes)
 	}
 }
 
-void parse_pipes(char ***new, char **env, int ***fd)
+char **parse_pipes(char ***new, char **env, int ***fd)
 {
 	t_pipe *pipes;
 	t_pipe *new_pipe;
@@ -367,7 +387,7 @@ void parse_pipes(char ***new, char **env, int ***fd)
 		ft_lstadd_back(&pipes, new_pipe);
 	}
 	if (pipes)
-		exec_cmds(pipes, env);
+		env = exec_cmds(pipes, env);
 	free_pipes(pipes);
-
+	return (env);
 }

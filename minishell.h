@@ -176,7 +176,7 @@ int				count_spaces_help(char *s, int i, int *w_count, char *c);
 int				**create_2d(int help);
 
 //PIPES
-void 			parse_pipes(char ***new, char **env, int ***fd);
+char			**parse_pipes(char ***new, char **env, int ***fd);
 
 
 #endif

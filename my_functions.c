@@ -2,32 +2,28 @@
 
 int my_echo (char **command, char *line)
 {
-    printf("hi\n");
-    return(1);
+    int i;
+    i = 1;
+
+    while (command[i])
+    {
+        printf("%s", command[i]);
+        i++;
+    }
+    return (1);
 }
 
 int my_cd(char **command)
 {
 	char *path;
 
-
 	if (!command[1])
 	{
 		ft_putstr("Provide a directory\n");
 		return (1);
 	}
-	else if (command[1][0] != '/')
-	{
-//		path = ft_strjoin("/", command[1]);
-//		path = "test";
-		path = command[1];
-//		printf("[] %s\n", path);
-	}
 	else
-	{
 		path = command[1];
-//		printf("[!!] %s\n", path);
-	}
 	if (chdir(path) == 0)
 		return (1);
 	else

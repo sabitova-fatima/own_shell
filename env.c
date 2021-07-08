@@ -1,5 +1,32 @@
 #include "minishell.h"
 
+char    **copy_env(char **env)
+{
+	int	i;
+    char **env_copy;
+    int len;
+    int total_len;
+
+    len = 0;
+    i = 0;
+    total_len = 0;
+    while (env[len])
+    {
+        i = 0;
+        while(env[len][i])
+        {
+            i++;
+            total_len++;
+        }
+        len++;
+    }
+	env_copy = (char **)malloc(sizeof(char *) * (total_len + 1));
+	i = -1;
+	while (env[++i])
+		env_copy[i] = ft_strdup(env[i], ft_strlen(env[i]));
+    return(env_copy);
+}
+
 int   env_len(char **env)
 {
 	int len;
@@ -129,12 +156,13 @@ char **my_unset(char **env, char **command)
 
 	i = 1;
 	if (!command[1])
-		printf("Too few arguments");
+		printf("Too few arguments\n");
 	else
 	{
 		while(command[i])
 		{
 			i_key = where_to_put_env(command[i], env);
+
 			if (env[i_key])
 				env = unset_env(i_key, env);
 			i++;
@@ -147,8 +175,6 @@ char **unset_env(int i_key, char **env)
 {
 	int i;
 	int count;
-
-	// free(env[i_key]);
 	env[i_key] = NULL;
 	i = i_key;
 	count = i_key + 1;
@@ -156,7 +182,6 @@ char **unset_env(int i_key, char **env)
 	while (env[i + 1])
 	{
 		env[i] = ft_strdup(env[i + 1], ft_strlen(env[i + 1]));
-		// free(env[i + 1]);
 		i++;
 		count++;
 	}
