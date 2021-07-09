@@ -11,6 +11,8 @@
 #include <readline/history.h>
 # define BUFFER_SIZE 10
 
+int error_status;
+
 typedef struct s_list
 {
 	int				fd;

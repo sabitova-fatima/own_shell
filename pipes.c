@@ -241,7 +241,10 @@ void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 	("exit", new_pipe->command[0]) && ft_strcmp
 	("unset", new_pipe->command[0]) && ft_strcmp
 	("export", new_pipe->command[0]))
+	{
 		printf("command notT found\n");
+		error_status = 127;
+	}
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;
 }
