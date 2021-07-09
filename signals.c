@@ -11,8 +11,8 @@ void	ctrl_c(int signo)
         ft_putstr(" \033[0m\033[33me-bash>\033[0m$ ");
 		signal(SIGINT, ctrl_c);
 	}
-		// printf("signal_status %d\n", signal_worked);
-
+	signal_worked = 0;
+	// printf("signal_status %d\n", signal_worked);
 }
 
 void	ctrl_c_kid(int signo)
@@ -25,8 +25,8 @@ void	ctrl_c_kid(int signo)
 		error_status = 130;
 		signal(SIGINT, ctrl_c_kid);
 	}
-		// printf("signal_status %d\n", signal_worked);
-
+	signal_worked = 0;
+	// printf("signal_status %d\n", signal_worked);
 }
 
 void	ctrl_slash(int signo)
@@ -37,8 +37,8 @@ void	ctrl_slash(int signo)
 		signal(SIGQUIT, ctrl_slash);
 
 	}
-		// printf("signal_status %d\n", signal_worked);
-
+	signal_worked = 0;
+	// printf("signal_status %d\n", signal_worked);
 }
 
 void	ctrl_slash_kid(int signo)
@@ -49,6 +49,6 @@ void	ctrl_slash_kid(int signo)
     	ft_putstr("\n");
 		signal(SIGQUIT, ctrl_slash_kid);
 	}
-		// printf("signal_status %d\n", signal_worked);
-
+	signal_worked = 0;
+	// printf("signal_status %d\n", signal_worked);
 }
