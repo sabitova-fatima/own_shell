@@ -19,8 +19,9 @@ void	next_redirect(char *s, char **env, t_data *data, char sign)
 			j = cleaner_other(s, data, &filename, env);
 		}
 		open_close(data, filename);
-		if (data->fd_read == -1)
-			printf("No such file or directory\n");
+
+//		if (data->fd_read == -1)
+//			printf("No such file or directory\n");
 //		printf("next redir [%s]\n", filename);
 //		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
 		free(filename);
@@ -42,6 +43,7 @@ int	current_redirect(char *s, int j, char **env, t_data *data)
 			data->type = (int)(s[j++] + 1);
 		if (!s[j])
 			break ;
+//		write(1, "aaa\n", 4);
 		filename = (char *)malloc(1);
 		filename[0] = '\0';
 		while (s[j] && s[j] != '>' && s[j] != '<')
@@ -50,12 +52,17 @@ int	current_redirect(char *s, int j, char **env, t_data *data)
 			j = cleaner_other(s, data, &filename, env);
 		}
 		open_close(data, filename);
+//		if (data->fd_read == -1)
+//			printf("No such file or directory\n");
+//		printf("type: %d\n", data->type);
+//		printf("redir [%s]\n", filename);
+//		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
 		if (data->fd_read == -1)
-			printf("No such file or directory\n");
-		printf("type: %d\n", data->type);
-		printf("redir [%s]\n", filename);
-		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
+			data->filename = ft_strdup1(filename);
+
 		free(filename);
+//		write(1, "bbb\n", 4);
+
 		if (!s[j++])
 			break ;
 	}

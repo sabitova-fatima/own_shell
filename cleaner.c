@@ -128,11 +128,22 @@ void	cleaner(char **s, t_help *help, char **env, int ****fd)
 		else if ((s[i][j] == '>' || s[i][j] == '<') && (s[i][j + 1] == '>' \
 			|| s[i][j + 1] == '<') && !s[i][j + 2])
 			next_redirect(s[i + 1], env, data, s[i][j + 1] + 1);
-		if (new[0] == '\0' && data->type > 0)
+		if (new[0] == '\0' && data->type > 0 && data->fd_read != -1)
 			new = join_char(new, 'R');
 		free(s[i]);
 		s[i] = new;
 	}
+	if (data->fd_read == -1 && !ft_strcmp(s[i-1], ""))
+		s[i - 1] = data->filename;
+	else if (data->fd_read == -1 && !s[i+1])
+		s[i] = cleaner_semicolon_pipe_space(s[i]);
+	else if (data->fd_read == -1 && i == 1)
+	{
+		s[0] = ft_strjoin(s[0], "0");
+		s[0] = ft_strjoin(s[0], data->filename);
+		printf("@%s\n", s[0]);
+	}
+
 	set_data(data, fd, i, help);
 	free(data);
 }

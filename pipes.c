@@ -171,6 +171,8 @@ char	*absolut_path(char **env, char *command)
 {
 	char	*new_path;
 
+	if (!command)
+		return (NULL);
 	if (command[0] == '/')
 	{
 		if (!access(command, F_OK))
@@ -187,35 +189,69 @@ char	*absolut_path(char **env, char *command)
 void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 {
 	int i;
-	int j;
 	int len;
+	int j;
 
 	i = -1;
+	len = 0;
 	while(argv[++i])
 	{
 		if (argv[i][0] != 'E' && argv[i][0] != 'Q' && argv[i][0] != 'R')
 			len++;
 	}
+//	printf("%d len\n", len);
 	new_pipe->fd_read = fd[i - 1][0];
 	new_pipe->fd_write = fd[i - 1][1];
-	// printf("%d %d\n", new_pipe->fd_read, new_pipe->fd_write);
+//	printf("%d %d\n", new_pipe->fd_read, new_pipe->fd_write);
 	new_pipe->command = (char **)malloc(sizeof(char *) * len + 1);
-	j = -1;
-	while (++j < len)
+	i = -1;
+	char len2 = len;
+	len = 0;
+	j = 0;
+
+	while (argv[++i])
 	{
-		if (argv[j][0] != 'E' && argv[j][0] != 'Q' && argv[j][0] != 'R')
+		if (argv[i][0] != 'E' && argv[i][0] != 'Q' && argv[i][0] != 'R')
 		{
-			new_pipe->command[j] = ft_strdup2(argv[j]);
-			// printf("[%d] %s\n", j, new_pipe->command[j]);
+			new_pipe->command[j] = ft_strdup2(argv[i]);
+			printf("[%d] %s\n", j, new_pipe->command[j]);
+			j++;
+			if (j + 1 == len)
+				break ;
 		}
+		if (i > 0 && fd[i - 1][0] == -1)
+			break ;
 	}
+
 	new_pipe->command[j] = NULL;
+
+//	if (!new_pipe->command[0])
+//		return ;
+
+//	printf("i %d\n", i);
+
+	if (len2 == 1 && i == 1 && fd[0][0] == -1)
+	{
+		new_pipe->command = (char **)malloc(sizeof(char *) * len + 2);
+		new_pipe->command = ft_split3(argv[0], '0');
+		printf("%s\n", new_pipe->command[0]);
+		printf("%s\n", new_pipe->command[1]);
+
+	}
+
 	new_pipe->path = absolut_path(env, new_pipe->command[0]);
-	if ((!new_pipe->path || new_pipe->command[0][0] == '\0') && ft_strcmp
+
+	printf("%s\n", new_pipe->path);
+
+	if ((!new_pipe->path || !new_pipe->command[0] || new_pipe->command[0][0]
+	== '\0') &&
+	ft_strcmp
 	("exit", new_pipe->command[0]) && ft_strcmp
 	("unset", new_pipe->command[0]) && ft_strcmp
 	("export", new_pipe->command[0]))
 		printf("command not found\n");
+//	printf("22222\n");
+
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;
 }
@@ -271,7 +307,6 @@ char **own_function(t_pipe *tmp, char **env)
 
 	if (!ft_strcmp("echo", tmp->command[0]))
 		result = my_echo(tmp->command);
-
 	if (!ft_strcmp("pwd", tmp->command[0]))
 		result = my_pwd();
 	if (!ft_strcmp("env", tmp->command[0]))
@@ -298,7 +333,7 @@ char **own_function(t_pipe *tmp, char **env)
 
 char **samopal(t_pipe *tmp, char **env)
 {
-	char **own;
+	char **env2;
 
 	if (tmp->fd_read == 0 && tmp->fd_write == 1)
 	{
@@ -307,13 +342,10 @@ char **samopal(t_pipe *tmp, char **env)
 		if (tmp->next)
 			dup2(tmp->fd[1], 1);
 	}
-	own = own_function(tmp, env);
+	env2 = own_function(tmp, env);
 	if (tmp->fd[1] != 0)
 		close(tmp->fd[1]);
-	return (own);
-	// if (own)
-	// 	return (1);
-	// return(0);
+	return (env2);
 }
 
 char	**exec_cmds(t_pipe *pipes, char **env)
@@ -375,6 +407,69 @@ void	free_pipes(t_pipe *pipes)
 	}
 }
 
+int is_one_command(t_pipe *pipes)
+{
+	int i;
+	t_pipe *tmp;
+
+	tmp = pipes;
+	i = 0;
+	while (tmp)
+	{
+		i++;
+		tmp = tmp->next;
+	}
+	if (i == 1)
+		return (1);
+	return (0);
+}
+
+void	 manage_fd(t_pipe *tmp, int *old_fd, int a)
+{
+	if (a == 0)
+	{
+		old_fd[1] = dup(1);
+		old_fd[0] = dup(0);
+		if (tmp->fd_write > 1)
+			dup2(tmp->fd_write, 1);
+		if (tmp->fd_read > 0)
+			dup2(tmp->fd_read, 0);
+	}
+	else
+	{
+		dup2(old_fd[1], 1);
+		dup2(old_fd[0], 0);
+		if (tmp->fd_write > 1)
+			close(tmp->fd_write);
+		if (tmp->fd_read > 0)
+			close(tmp->fd_read);
+	}
+}
+
+char  **exec_one_command(t_pipe *tmp, char **env)
+{
+	pid_t pid;
+	int status;
+	char **env2;
+	int old_fd[2];
+
+	manage_fd(tmp, old_fd, 0);
+	env2 = own_function(tmp, env);
+	if (!env2)
+	{
+		pid = fork();
+		if (pid == 0)
+			execve(tmp->path, tmp->command, env);
+		else if (pid > 0)
+			waitpid(pid, &status, 0);
+	}
+	manage_fd(tmp, old_fd, 1);
+	if (env2)
+		return (env2);
+	return (env);
+
+}
+
 char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 {
 	t_pipe *pipes;
@@ -389,13 +484,15 @@ char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 		parse_argv(new[i], new_pipe, env, fd[i]);
 		ft_lstadd_back(&pipes, new_pipe);
 	}
-	if (pipes)
+	if (!pipes)
+		return (env);
+	if (is_one_command(pipes))
+		env = exec_one_command(pipes, env);
+	else
 	{
 		env = exec_cmds(pipes, env);
 		if (new[0][0][0] == '.' && new[0][0][1] == '/')
-		{
 			printf("woooow\n");
-		}
 	}
 	free_pipes(pipes);
 	if (!(input == NULL))

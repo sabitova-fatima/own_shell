@@ -26,6 +26,7 @@ typedef struct s_data
 	int 	type;
 	int 	error;
 	int 	j;
+	char 	*filename;
 }			t_data;
 
 typedef struct s_pipe
