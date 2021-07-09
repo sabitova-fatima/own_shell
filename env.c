@@ -67,7 +67,7 @@ int		print_sorted_env(char **env)
 	}
 	i = 0;
 	while (env_copy[i])
-	printf("%s\n", env_copy[i++]);
+	printf("%s %s\n", "declare -x", env_copy[i++]);
 	return (1);
 }
 
