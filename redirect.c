@@ -43,7 +43,6 @@ int	current_redirect(char *s, int j, char **env, t_data *data)
 			data->type = (int)(s[j++] + 1);
 		if (!s[j])
 			break ;
-//		write(1, "aaa\n", 4);
 		filename = (char *)malloc(1);
 		filename[0] = '\0';
 		while (s[j] && s[j] != '>' && s[j] != '<')
@@ -59,10 +58,7 @@ int	current_redirect(char *s, int j, char **env, t_data *data)
 //		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
 		if (data->fd_read == -1)
 			data->filename = ft_strdup1(filename);
-
 		free(filename);
-//		write(1, "bbb\n", 4);
-
 		if (!s[j++])
 			break ;
 	}
@@ -101,11 +97,26 @@ void	set_data(t_data *data, int ****fd, int i, t_help *help)
 	}
 }
 
+void	to_up(char *s)
+{
+	int i;
+
+	if (!s)
+		return ;
+	i = -1;
+	while(s[++i])
+	{
+		if (s[i] >= 'a' && s[i] <= 'z')
+			s[i] -= 32;
+	}
+}
+
 void heredoc(char *limiter)
 {
 	int 	fd;
 	char	*line;
 
+	to_up(limiter);
 	fd = open(".temp.txt", O_TRUNC | O_CREAT | O_RDWR, 0666);
 	while (get_next_line(0, &line))
 	{

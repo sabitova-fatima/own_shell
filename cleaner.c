@@ -141,9 +141,7 @@ void	cleaner(char **s, t_help *help, char **env, int ****fd)
 	{
 		s[0] = ft_strjoin(s[0], "0");
 		s[0] = ft_strjoin(s[0], data->filename);
-		printf("@%s\n", s[0]);
 	}
-
 	set_data(data, fd, i, help);
 	free(data);
 }

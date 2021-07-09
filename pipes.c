@@ -199,22 +199,18 @@ void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 		if (argv[i][0] != 'E' && argv[i][0] != 'Q' && argv[i][0] != 'R')
 			len++;
 	}
-//	printf("%d len\n", len);
 	new_pipe->fd_read = fd[i - 1][0];
 	new_pipe->fd_write = fd[i - 1][1];
-//	printf("%d %d\n", new_pipe->fd_read, new_pipe->fd_write);
 	new_pipe->command = (char **)malloc(sizeof(char *) * len + 1);
 	i = -1;
 	char len2 = len;
 	len = 0;
 	j = 0;
-
 	while (argv[++i])
 	{
 		if (argv[i][0] != 'E' && argv[i][0] != 'Q' && argv[i][0] != 'R')
 		{
 			new_pipe->command[j] = ft_strdup2(argv[i]);
-			printf("[%d] %s\n", j, new_pipe->command[j]);
 			j++;
 			if (j + 1 == len)
 				break ;
@@ -222,35 +218,24 @@ void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 		if (i > 0 && fd[i - 1][0] == -1)
 			break ;
 	}
-
 	new_pipe->command[j] = NULL;
-
-//	if (!new_pipe->command[0])
-//		return ;
-
-//	printf("i %d\n", i);
-
 	if (len2 == 1 && i == 1 && fd[0][0] == -1)
 	{
 		new_pipe->command = (char **)malloc(sizeof(char *) * len + 2);
 		new_pipe->command = ft_split3(argv[0], '0');
-		printf("%s\n", new_pipe->command[0]);
-		printf("%s\n", new_pipe->command[1]);
-
+		if (!new_pipe->command[1])
+			new_pipe->command[0] = NULL;
 	}
-
+	if (!new_pipe->command[0] && fd[0][0] == -1)
+		printf("%s: No such file or directory\n", argv[0]);
+	if (!new_pipe->command[0])
+		return ;
 	new_pipe->path = absolut_path(env, new_pipe->command[0]);
-
-	printf("%s\n", new_pipe->path);
-
-	if ((!new_pipe->path || !new_pipe->command[0] || new_pipe->command[0][0]
-	== '\0') &&
-	ft_strcmp
+	if ((!new_pipe->path || new_pipe->command[0][0] == '\0') && ft_strcmp
 	("exit", new_pipe->command[0]) && ft_strcmp
 	("unset", new_pipe->command[0]) && ft_strcmp
 	("export", new_pipe->command[0]))
-		printf("command not found\n");
-//	printf("22222\n");
+		printf("command notT found\n");
 
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;
@@ -482,6 +467,8 @@ char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 	{
 		new_pipe = (t_pipe *)malloc(sizeof(t_pipe));
 		parse_argv(new[i], new_pipe, env, fd[i]);
+		if (!new_pipe->command[0])
+			new_pipe = NULL;
 		ft_lstadd_back(&pipes, new_pipe);
 	}
 	if (!pipes)
