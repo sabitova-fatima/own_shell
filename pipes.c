@@ -281,6 +281,9 @@ char **own_function(t_pipe *tmp, char **env)
 
 void	exec_child(t_pipe *pipes, char **env)
 {
+	signal(SIGINT, ctrl_c_kid);
+	// signal(SIGQUIT, ctrl_slash);
+
 	if (pipes->fd_read == 0 && pipes->fd_write == 1)
 	{
 		if (!pipes->prev)
@@ -432,6 +435,8 @@ char  **exec_one_command(t_pipe *tmp, char **env)
 	char **env2;
 	int old_fd[2];
 
+	signal(SIGINT, ctrl_c_kid);
+	signal(SIGQUIT, ctrl_slash);
 	manage_fd(tmp, old_fd, 0);
 	env2 = own_function(tmp, env);
 	if (!env2)
