@@ -171,8 +171,10 @@ char	*absolut_path(char **env, char *command)
 {
 	char	*new_path;
 
+
 	if (!command)
 		return (NULL);
+
 	if (command[0] == '/')
 	{
 		if (!access(command, F_OK))
@@ -183,6 +185,7 @@ char	*absolut_path(char **env, char *command)
 		else
 			return (NULL);
 	}
+
 	return (check_path(command, env));
 }
 
@@ -230,59 +233,17 @@ void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 		printf("%s: No such file or directory\n", argv[0]);
 	if (!new_pipe->command[0])
 		return ;
+
 	new_pipe->path = absolut_path(env, new_pipe->command[0]);
+
+
 	if ((!new_pipe->path || new_pipe->command[0][0] == '\0') && ft_strcmp
 	("exit", new_pipe->command[0]) && ft_strcmp
 	("unset", new_pipe->command[0]) && ft_strcmp
 	("export", new_pipe->command[0]))
 		printf("command notT found\n");
-
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;
-}
-
-void	exec_child(t_pipe *pipes, char **env)
-{
-	if (pipes->fd_read == 0 && pipes->fd_write == 1)
-	{
-		if (!pipes->prev && !pipes->next)
-			execve(pipes->path, pipes->command, env);
-		else if (!pipes->prev)
-			dup2(pipes->fd[1], 1);
-		else if (!pipes->next)
-			dup2(pipes->prev->fd[0], 0);
-		else
-		{
-			dup2(pipes->prev->fd[0], 0);
-			dup2(pipes->fd[1], 1);
-			close(pipes->prev->fd[1]);
-			close(pipes->fd[0]);
-		}
-	}
-	execve(pipes->path, pipes->command, env);
-	exit(1);
-}
-
-void	launch_process(t_pipe *tmp, char **env)
-{
-	pid_t	pid;
-
-	if (pipe(tmp->fd) == -1)
-		printf("wrong pipe\n");
-	pid = fork();
-	tmp->pid = pid;
-	if (pid == -1)
-		printf("pid error\n");
-	else if (pid == 0)
-		exec_child(tmp, env);
-	else
-	{
-		close(tmp->fd[1]);
-		if (tmp->prev && tmp->prev->fd[0] != 0)
-			close(tmp->prev->fd[0]);
-		if (!tmp->next)
-			close(tmp->fd[0]);
-	}
 }
 
 char **own_function(t_pipe *tmp, char **env)
@@ -310,11 +271,38 @@ char **own_function(t_pipe *tmp, char **env)
 		env = my_unset(env, tmp->command);
 		result = 1;
 	}
-	if (result != 1)
+	if (result == 0)
 		return (NULL);
-	else
-		return (env);
+	return (env);
 }
+
+void	exec_child(t_pipe *pipes, char **env)
+{
+	if (pipes->fd_read == 0 && pipes->fd_write == 1)
+	{
+		if (!pipes->prev)
+			dup2(pipes->fd[1], 1);
+		else if (!pipes->next)
+			dup2(pipes->prev->fd[0], 0);
+		else
+		{
+			dup2(pipes->prev->fd[0], 0);
+			dup2(pipes->fd[1], 1);
+			close(pipes->prev->fd[1]);
+			close(pipes->fd[0]);
+		}
+	}
+	else if (pipes->fd_read > 0)
+	{
+		if (!pipes->prev)
+			dup2(pipes->fd[1], 1);
+	}
+	if (own_function(pipes, env))
+		exit(1);
+	execve(pipes->path, pipes->command, env);
+	exit(1);
+}
+
 
 char **samopal(t_pipe *tmp, char **env)
 {
@@ -333,33 +321,61 @@ char **samopal(t_pipe *tmp, char **env)
 	return (env2);
 }
 
-char	**exec_cmds(t_pipe *pipes, char **env)
+void	launch_process(t_pipe *tmp, char **env)
 {
-	t_pipe	*tmp;
-	int		status;
-	int old_fd_write;
-	int old_fd_read;
-	char **env2;
+	pid_t	pid;
 
-	old_fd_write = dup(1);
-	old_fd_read = dup(0);
-
-	tmp = pipes;
-	while (tmp)
+	if (pipe(tmp->fd) == -1)
+		printf("wrong pipe\n");
+	pid = fork();
+	tmp->pid = pid;
+	if (pid == -1)
+		printf("pid error\n");
+	else if (pid == 0)
+		exec_child(tmp, env);
+	else
 	{
+		close(tmp->fd[1]);
+		if (tmp->prev && tmp->prev->fd[0] != 0)
+			close(tmp->prev->fd[0]);
+		if (!tmp->next)
+			close(tmp->fd[0]);
+	}
+}
+void	 manage_fd(t_pipe *tmp, int *old_fd, int a)
+{
+	if (a == 0)
+	{
+		old_fd[1] = dup(1);
+		old_fd[0] = dup(0);
 		if (tmp->fd_write > 1)
 			dup2(tmp->fd_write, 1);
 		if (tmp->fd_read > 0)
 			dup2(tmp->fd_read, 0);
-		env2 = samopal(tmp, env);
-		if (!env2)
-			launch_process(tmp, env);
-		dup2(old_fd_write, 1);
-		dup2(old_fd_read, 0);
+	}
+	else
+	{
+		dup2(old_fd[1], 1);
+		dup2(old_fd[0], 0);
 		if (tmp->fd_write > 1)
 			close(tmp->fd_write);
 		if (tmp->fd_read > 0)
 			close(tmp->fd_read);
+	}
+}
+
+void exec_cmds(t_pipe *pipes, char **env)
+{
+	t_pipe	*tmp;
+	int		status;
+	int old_fd[2];
+
+	tmp = pipes;
+	while (tmp)
+	{
+		manage_fd(tmp, old_fd, 0);
+		launch_process(tmp, env);
+		manage_fd(tmp, old_fd, 1);
 		tmp = tmp->next;
 	}
 	tmp = pipes;
@@ -368,10 +384,6 @@ char	**exec_cmds(t_pipe *pipes, char **env)
 		waitpid(tmp->pid, &status, 0);
 		tmp = tmp->next;
 	}
-	if (env2)
-		return (env2);
-	else
-		return (env);
 }
 
 void	free_pipes(t_pipe *pipes)
@@ -404,31 +416,10 @@ int is_one_command(t_pipe *pipes)
 		i++;
 		tmp = tmp->next;
 	}
+//	printf("i %d\n", i);
 	if (i == 1)
 		return (1);
 	return (0);
-}
-
-void	 manage_fd(t_pipe *tmp, int *old_fd, int a)
-{
-	if (a == 0)
-	{
-		old_fd[1] = dup(1);
-		old_fd[0] = dup(0);
-		if (tmp->fd_write > 1)
-			dup2(tmp->fd_write, 1);
-		if (tmp->fd_read > 0)
-			dup2(tmp->fd_read, 0);
-	}
-	else
-	{
-		dup2(old_fd[1], 1);
-		dup2(old_fd[0], 0);
-		if (tmp->fd_write > 1)
-			close(tmp->fd_write);
-		if (tmp->fd_read > 0)
-			close(tmp->fd_read);
-	}
 }
 
 char  **exec_one_command(t_pipe *tmp, char **env)
@@ -463,12 +454,14 @@ char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 
 	pipes = NULL;
 	i = -1;
+
 	while(new[++i])
 	{
 		new_pipe = (t_pipe *)malloc(sizeof(t_pipe));
 		parse_argv(new[i], new_pipe, env, fd[i]);
 		if (!new_pipe->command[0])
 			new_pipe = NULL;
+
 		ft_lstadd_back(&pipes, new_pipe);
 	}
 	if (!pipes)
@@ -477,12 +470,13 @@ char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 		env = exec_one_command(pipes, env);
 	else
 	{
-		env = exec_cmds(pipes, env);
+		exec_cmds(pipes, env);
 		if (new[0][0][0] == '.' && new[0][0][1] == '/')
 			printf("woooow\n");
 	}
 	free_pipes(pipes);
 	if (!(input == NULL))
             add_history(input);
+
 	return (env);
 }
