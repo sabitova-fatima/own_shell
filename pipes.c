@@ -419,12 +419,15 @@ char  **exec_one_command(t_pipe *tmp, char **env)
 	signal(SIGQUIT, ctrl_slash);
 	manage_fd(tmp, old_fd, 0);
 	env_new = own_function(tmp, env);
-	if (!env_new)
+	if (!env_new && tmp->path)
 	{
 		pid = fork();
 		if (pid == 0)
+		{
 			execve(tmp->path, tmp->command, env);
-		else if (pid > 0)
+			exit(1);
+		}
+			else if (pid > 0)
 			waitpid(pid, &status, 0);
 	}
 	manage_fd(tmp, old_fd, 1);
