@@ -73,7 +73,7 @@ char	**ft_split_pipe(char *s, int p_count, char **arr)
 char	**split_pipes(char *s)
 {
 	char	**new;
-	int p_count;
+	int		p_count;
 
 	p_count = count_pipe(s);
 	new = (char **)malloc(sizeof(char *) * p_count + 1);

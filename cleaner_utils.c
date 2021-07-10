@@ -65,12 +65,11 @@ void	ft_putnbr(int n, char **new)
 
 int	into_dollar(char *s, char **new, t_data *data, char **env)
 {
-	int j;
+	int	j;
 
 	j = data->j;
 	while (s[j] == '$')
 	{
-
 		if (!s[j + 1])
 			*new = join_char(*new, s[j++]);
 		if (s[j] == '$' && s[j + 1] == '?')

@@ -63,4 +63,3 @@ int	**create_2d(int help)
 	fd_dva_new[i] = NULL;
 	return (fd_dva_new);
 }
-

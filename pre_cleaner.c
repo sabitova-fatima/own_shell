@@ -48,7 +48,6 @@ int	into_pre_cleaner(char *s, int j, int *quotes)
 	return (j);
 }
 
-
 char	*join_char(char *s, char c)
 {
 	char	*new;

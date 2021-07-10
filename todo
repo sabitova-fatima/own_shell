@@ -3,6 +3,8 @@ cигналы после второго раза начинают печатат
 unset invalid argument
 echo -nnn
 
+изменять $? в сигналах и при ошибке команды экспорт
+
 bash-3.2$ export 1anton
 bash: export: `1anton': not a valid identifier
 
@@ -13,7 +15,7 @@ bash: export: `1anton': not a valid identifier
 KHOUTEN:
 
 <a | cat - зависает, если файл есть
-
+убрать 'Q' из массива
 
 
 

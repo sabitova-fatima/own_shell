@@ -56,7 +56,6 @@ int	current_redirect(char *s, int j, char **env, t_data *data)
 			j = cleaner_other(s, data, &filename, env);
 		}
 		open_close(data, filename);
-
 //		printf("type: %d\n", data->type);
 //		printf("redir [%s]\n", filename);
 //		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
@@ -105,44 +104,6 @@ void	set_data(t_data *data, int ****fd, int i, t_help *help)
 			(*fd)[help->help][i - 1][1] = data->fd_write;
 		help->error = data->error;
 	}
-}
-
-void	to_up(char *s)
-{
-	int i;
-
-	if (!s)
-		return ;
-	i = -1;
-	while(s[++i])
-	{
-		if (s[i] >= 'a' && s[i] <= 'z')
-			s[i] -= 32;
-	}
-}
-
-void heredoc(char *limiter)
-{
-	int 	fd;
-	char	*line;
-
-	to_up(limiter);
-	fd = open(".temp.txt", O_TRUNC | O_CREAT | O_RDWR, 0666);
-	while (get_next_line(0, &line))
-	{
-		if (strcmp(line, limiter))
-		{
-			write(fd, line, ft_strlen(line));
-			write(fd, "\n", 1);
-		}
-		else
-		{
-			free(line);
-			break ;
-		}
-		free(line);
-	}
-	close(fd);
 }
 
 void	open_close(t_data *data, char *filename)

@@ -51,7 +51,7 @@ int	into_quotes_cleaner(char *s, int j, char **new)
 
 int	cleaner_other(char *s, t_data *data, char **new, char **env)
 {
-	int j;
+	int	j;
 
 	j = data->j;
 	while (s[j] != '"' && s[j] != '\'' && s[j])
@@ -90,19 +90,6 @@ int	main_cleaning(char *s, char **new, char **env, t_data *data)
 		j = current_redirect(s, j + 1, env, data);
 	return (j);
 }
-void	to_low(char *s)
-{
-	int i;
-
-	if (!s)
-		return ;
-	i = -1;
-	while(s[++i])
-	{
-		if (s[i] >= 'A' && s[i] <= 'Z')
-			s[i] += 32;
-	}
-}
 
 void	cleaner(char **s, t_help *help, char **env, int ****fd)
 {
@@ -116,10 +103,9 @@ void	cleaner(char **s, t_help *help, char **env, int ****fd)
 	set_data(data, fd, i, help);
 	if (s[0] && s[0][0] != '"' && s[0][0] != '\'' && s[0][0] != '$')
 		to_low(s[0]);
-	while(s[++i] && data->fd_read != -1)
+	while (s[++i] && data->fd_read != -1)
 	{
-		new = (char *)malloc(1);
-		new[0] = '\0';
+		new = init_empty();
 		s[i] = cleaner_semicolon_pipe_space(s[i]);
 		j = main_cleaning(s[i], &new, env, data);
 		clean_filename(i, data, &new);
@@ -128,10 +114,7 @@ void	cleaner(char **s, t_help *help, char **env, int ****fd)
 		else if ((s[i][j] == '>' || s[i][j] == '<') && (s[i][j + 1] == '>' \
 			|| s[i][j + 1] == '<') && !s[i][j + 2])
 			next_redirect(s[i + 1], env, data, s[i][j + 1] + 1);
-		if (new[0] == '\0' && data->type > 0 && data->fd_read != -1)
-			new = join_char(new, 'Q');
-		free(s[i]);
-		s[i] = new;
+		s[i] = cleaner_help(new, data, s[i]);
 	}
 	set_data(data, fd, i, help);
 	free(data);

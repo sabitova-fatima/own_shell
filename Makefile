@@ -1,7 +1,9 @@
 NAME 		= minishell
 SRCS 		= main.c \
 			libft.c \
+			libft2.c \
 			my_functions.c  \
+			my_functions2.c  \
 			big_split.c \
 			cleaner.c \
 			cleaner_utils.c \
@@ -13,13 +15,17 @@ SRCS 		= main.c \
 			redirect.c \
 			split.c \
 			split_pipe.c \
-			split_pre.c \
 			split_semi.c \
 			utils.c \
 			utils2.c \
+			utils3.c \
+			utils4.c \
 			signals.c \
 			env.c \
-			pipes.c
+			env_utils.c \
+			pipes.c \
+			pipe_argv.c \
+			pipe_exec.c
 			
 CFLAGS 		= -Wall -Wextra -Werror -I. 
 CC			= gcc

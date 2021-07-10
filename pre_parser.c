@@ -2,7 +2,7 @@
 
 int	into_check_empty_redirect(char *s, int j, t_help *help)
 {
-	char q;
+	char	q;
 
 	if (s[j] == '>' || s[j] == '<')
 	{
@@ -68,16 +68,15 @@ int	check_opened_quotes(char **array, t_help *help)
 {
 	char	***new;
 	int		i;
-	int 	***fd;
+	int		***fd;
 
 	i = 0;
-	while(array[i])
+	while (array[i])
 		i++;
 	fd = (int ***)malloc(sizeof(int **) * i + 1);
 	new = split_spaces(array, &fd);
 	if (!new)
 		return (1);
-
 	i = -1;
 	while (new[++i])
 	{
@@ -101,7 +100,7 @@ int	pre_parser(char *s, t_help *help)
 	if (!new)
 		return (1);
 	if (check_opened_quotes(new, help) || check_empty_commands(new, help) || \
-        check_empty_redirect(new, help))
+		check_empty_redirect(new, help))
 	{
 		freedom_2d(new);
 		return (1);
