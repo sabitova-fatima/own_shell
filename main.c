@@ -22,5 +22,7 @@ int main (int argc, char **argv, char **env)
 			continue ;
 		if (new[0][0])
 			env_copy = parse_pipes(new, env_copy, fd, input);
+		free(input);
 	}
+	free(env_copy);
 }
