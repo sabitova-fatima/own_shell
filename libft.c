@@ -133,7 +133,7 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-char	*ft_substr(char const *s, unsigned int start, int len)
+char	*ft_substr(char *s, unsigned int start, int len)
 {
 	int	i;
 	int	j;
@@ -153,6 +153,7 @@ char	*ft_substr(char const *s, unsigned int start, int len)
 		}
 		i++;
 	}
+	// free(s);
 	str[j] = 0;
 	return (str);
 }

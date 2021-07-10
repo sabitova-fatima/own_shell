@@ -65,7 +65,8 @@ static int		ft_ln(const char *str, char c);
 char			**ft_strsplit(char const *s, char c);
 char			*ft_strdup1(char *s1);
 int				ft_strcmp(char *s1, char *s2);
-char			*ft_substr(char const *s, unsigned int start, int len);
+// char			*ft_substr(char const *s, unsigned int start, int len);
+char	*ft_substr(char *s, unsigned int start, int len);
 
 // my_functions
 int				my_echo (char **command);
@@ -84,14 +85,6 @@ void			ctrl_c_kid(int signo);
 void			ctrl_slash(int signo);
 void			ctrl_slash_kid(int signo);
 
-// command
-int 			start_own_function (char **command, char **env, char *line);
-char    		*find_path(char **env);
-void 			put_dirname(void);
-char 			*find_dir_path(char **command, char **dirs);
-char 			**cut_command(char ** command);
-int 			start_builtin(char **command, char **dirs, char **env);
-
 // env
 char    		**copy_env(char **env);
 int 			print_sorted_env(char **env);
@@ -104,6 +97,7 @@ char 			**set_env(char **env_copy, char *value, char *key, int n_var);
 char			**export_name_val(char *key, char *value, char **env_copy);
 char 			**my_unset(char **env, char **command, int *result);
 char 			**unset_env(int i_key, char **env);
+void 			free_env(char **env_copy);
 
 //GNL
 int				get_next_line(int fd, char **line);

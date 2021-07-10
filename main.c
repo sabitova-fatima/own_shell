@@ -24,5 +24,5 @@ int main (int argc, char **argv, char **env)
 			env_copy = parse_pipes(new, env_copy, fd, input);
 		free(input);
 	}
-	free(env_copy);
+	// free(env_copy);
 }
