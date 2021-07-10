@@ -3,12 +3,16 @@ cигналы после второго раза начинают печатат
 unset invalid argument
 echo -nnn
 
+bash-3.2$ export 1anton
+bash: export: `1anton': not a valid identifier
+
+
 лики
 норма
 
-KHOUTEN:  _________________________________
+KHOUTEN:
 
-ls<ac | pwd
+<a | cat - зависает, если файл есть
 
 
 

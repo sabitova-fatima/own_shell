@@ -15,6 +15,7 @@ typedef struct s_global
 	int signal_worked;
 	int error_status;
 	int read_trouble;
+	int was_command;
 }		t_global;
 
 t_global global;

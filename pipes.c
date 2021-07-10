@@ -216,10 +216,7 @@ void simple_init(char **argv, t_pipe *new_pipe, int **fd)
 	while (argv[++i])
 	{
 		if (argv[i][0] != 'Q' && ++j < len)
-		{
 			new_pipe->command[j] = ft_strdup2(argv[i]);
-//			printf("%d [%s]\n", j, new_pipe->command[j]);
-		}
 	}
 	new_pipe->command[++j] = NULL;
 }
@@ -276,6 +273,7 @@ char **own_function(t_pipe *tmp, char **env)
 void	exec_child(t_pipe *pipes, char **env)
 {
 	signal(SIGINT, ctrl_c_kid);
+	// signal(SIGQUIT, ctrl_slash);
 
 	if (pipes->fd_read == 0 && pipes->fd_write == 1)
 	{
@@ -302,22 +300,6 @@ void	exec_child(t_pipe *pipes, char **env)
 	exit(1);
 }
 
-char **samopal(t_pipe *tmp, char **env)
-{
-	char **env2;
-
-	if (tmp->fd_read == 0 && tmp->fd_write == 1)
-	{
-		if (pipe(tmp->fd) == -1)
-			printf("wrong pipe\n");
-		if (tmp->next)
-			dup2(tmp->fd[1], 1);
-	}
-	env2 = own_function(tmp, env);
-	if (tmp->fd[1] != 0)
-		close(tmp->fd[1]);
-	return (env2);
-}
 
 void	launch_process(t_pipe *tmp, char **env)
 {
@@ -334,7 +316,7 @@ void	launch_process(t_pipe *tmp, char **env)
 	else
 	{
 		close(tmp->fd[1]);
-		if (tmp->prev && tmp->prev->fd[0] != 0)
+		if (tmp->prev)
 			close(tmp->prev->fd[0]);
 		if (!tmp->next)
 			close(tmp->fd[0]);
@@ -439,7 +421,8 @@ char  **exec_one_command(t_pipe *tmp, char **env)
 		pid = fork();
 		if (pid == 0)
 		{
-			execve(tmp->path, tmp->command, env);
+			if (!global.was_command)
+				execve(tmp->path, tmp->command, env);
 			exit(1);
 		}
 			else if (pid > 0)
@@ -460,7 +443,10 @@ int if_bad_read(char **argv, int **fd)
 	while(argv[++i])
 	{
 		if (fd[i][0] == -1)
+		{
+			global.was_command = 1;
 			return (1);
+		}
 	}
 	return (0);
 }
@@ -490,5 +476,6 @@ char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 	free_pipes(pipes);
 	if (!(input == NULL))
             add_history(input);
+	global.was_command = 0;
 	return (env);
 }
