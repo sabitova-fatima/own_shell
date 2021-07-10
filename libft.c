@@ -24,16 +24,6 @@ char	*ft_strnew(int size)
 	return (str);
 }
 
-// int		ft_strlen(char const *s)
-// {
-// 	int		i;
-
-// 	i = -1;
-// 	while (*(s + ++i))
-// 		;
-// 	return (i);
-// }
-
 void	ft_putchar(char c)
 {
 	write(1, &c, 1);
@@ -132,32 +122,6 @@ char	*ft_strdup1(char *s1)
 	*str = '\0';
 	return (tmp);
 }
-
-// char	*ft_strjoin(char const *s1, char const *s2)
-// {
-// 	char	*new_str;
-// 	int	i;
-// 	int	j;
-// 	int	s1_len;
-// 	int	s2_len;
-
-// 	if (!s1)
-// 		return (NULL);
-// 	if (!s2)
-// 		return (ft_strdup1(s1));
-// 	s1_len = ft_strlen(s1);
-// 	s2_len = ft_strlen(s2);
-// 	new_str = ft_strnew(s1_len + s2_len + 1);
-// 	if (!new_str)
-// 		return (NULL);
-// 	i = -1;
-// 	j = -1;
-// 	while (++i < s1_len)
-// 		*(new_str + i) = *(s1 + i);
-// 	while (++j < s2_len)
-// 		*(new_str + i++) = *(s2 + j);
-// 	return (new_str);
-// }
 
 int	ft_strcmp(char *s1, char *s2)
 {

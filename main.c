@@ -12,11 +12,9 @@ int main (int argc, char **argv, char **env)
     global.error_status = 0;
 	while (1)
 	{
-        put_dirname();
         signal(SIGINT, ctrl_c);
         signal(SIGQUIT, ctrl_slash);
-//         printf(" \033[0m\033[33me-bash>\033[0m$ ");
-		input = readline("");
+		input = readline("e-bash> ");
 		if (input == NULL)
 			exit(0);
         new = super_split(input, env_copy, &fd, &help);

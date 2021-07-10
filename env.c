@@ -81,9 +81,9 @@ char	**realloc_env(int added, char **env_copy)
 	while (env_copy[++i] && i < added)
 	{
 		new_env[i] = ft_strdup(env_copy[i], ft_strlen(env_copy[i]));
-		// free(env_copy[i]);
+		free(env_copy[i]);
 	}
-	// free(env_copy);
+	free(env_copy);
 	return (new_env);
 }
 

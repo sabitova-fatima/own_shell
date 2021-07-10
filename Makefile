@@ -18,7 +18,6 @@ SRCS 		= main.c \
 			utils.c \
 			utils2.c \
 			signals.c \
-			command.c \
 			env.c \
 			pipes.c
 			

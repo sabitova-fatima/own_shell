@@ -6,14 +6,9 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <string.h>
-#include <term.h>
-#include <termios.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 # define BUFFER_SIZE 10
-
-int error_status; // delete
-int signal_worked;
 
 typedef struct s_global
 {

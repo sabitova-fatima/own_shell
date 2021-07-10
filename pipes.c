@@ -276,7 +276,6 @@ char **own_function(t_pipe *tmp, char **env)
 void	exec_child(t_pipe *pipes, char **env)
 {
 	signal(SIGINT, ctrl_c_kid);
-	// signal(SIGQUIT, ctrl_slash);
 
 	if (pipes->fd_read == 0 && pipes->fd_write == 1)
 	{
