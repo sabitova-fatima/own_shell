@@ -23,9 +23,6 @@ int main (int argc, char **argv, char **env)
 		if (!new)
 			continue ;
 		if (new[0][0])
-		{
 			env_copy = parse_pipes(new, env_copy, fd, input);
-			global.error_status = 0;
-		}
 	}
 }

@@ -110,6 +110,11 @@ void	ft_lstadd_back(t_pipe **pipes, t_pipe *new_pipe)
 {
 	t_pipe	*temp;
 
+	if (!new_pipe)
+	{
+		*pipes = NULL;
+		return ;
+	}
 	if (!(*pipes))
 		*pipes = new_pipe;
 	else
@@ -222,6 +227,14 @@ void simple_init(char **argv, t_pipe *new_pipe, int **fd)
 
 void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 {
+	int i;
+
+	i = -1;
+	while(argv[++i])
+	{
+		if (fd[i][0] == -1)
+			return ;
+	}
 	simple_init(argv, new_pipe, fd);
 	new_pipe->path = absolut_path(env, new_pipe->command[0]);
 	if (!new_pipe->path && new_pipe->command[0] &&
@@ -396,6 +409,9 @@ int is_one_command(t_pipe *pipes)
 	int i;
 	t_pipe *tmp;
 
+
+	if(!pipes)
+		return (0);
 	tmp = pipes;
 	i = 0;
 	while (tmp)
@@ -437,6 +453,19 @@ char  **exec_one_command(t_pipe *tmp, char **env)
 
 }
 
+int if_bad_read(char **argv, int **fd)
+{
+	int i;
+
+	i = -1;
+	while(argv[++i])
+	{
+		if (fd[i][0] == -1)
+			return (1);
+	}
+	return (0);
+}
+
 char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 {
 	t_pipe *pipes;
@@ -449,7 +478,7 @@ char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 	{
 		new_pipe = (t_pipe *)malloc(sizeof(t_pipe));
 		parse_argv(new[i], new_pipe, env, fd[i]);
-		if (!new_pipe->command[0])
+		if(if_bad_read(new[i], fd[i]) || (new_pipe && !new_pipe->command[0]))
 			new_pipe = NULL;
 		ft_lstadd_back(&pipes, new_pipe);
 	}

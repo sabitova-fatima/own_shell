@@ -65,7 +65,6 @@ char	***super_split(char *s, char **env, int ****fd, t_help *help)
 	{
 		global.error_status = 1;
 		global.read_trouble = 0;
-		return (NULL);
 	}
 	return (all);
 }
