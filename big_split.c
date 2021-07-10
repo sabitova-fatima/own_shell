@@ -51,12 +51,21 @@ char	***super_split(char *s, char **env, int ****fd, t_help *help)
 	char	***all;
 
 	if (pre_parser(s, help))
+	{
+		global.error_status = 258;
 		return (NULL);
+	}
 	new = split_pipes(s);
 	if (!new)
 		return (NULL);
 	all = split_3d(new, fd);
 	freedom_2d(new);
 	cleaning_3d(&all, env, fd, help);
+	if (global.read_trouble == 1)
+	{
+		global.error_status = 1;
+		global.read_trouble = 0;
+		return (NULL);
+	}
 	return (all);
 }

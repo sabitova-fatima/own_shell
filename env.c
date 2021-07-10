@@ -149,7 +149,7 @@ char	**export_name_val(char *key, char *value, char **env_copy)
 	return (env_copy);
 }
 
-char **my_unset(char **env, char **command)
+char **my_unset(char **env, char **command, int *result)
 {
 	int i ;
 	int i_key;
@@ -168,6 +168,7 @@ char **my_unset(char **env, char **command)
 			i++;
 		}
 	}
+	*result = 1;
 	return (env);
 }
 

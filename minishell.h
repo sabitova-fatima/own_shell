@@ -1,5 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
+# include <errno.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -13,6 +14,15 @@
 
 int error_status; // delete
 int signal_worked;
+
+typedef struct s_global
+{
+	int signal_worked;
+	int error_status;
+	int read_trouble;
+}		t_global;
+
+t_global global;
 
 typedef struct s_list
 {
@@ -66,8 +76,8 @@ char			*ft_substr(char const *s, unsigned int start, int len);
 int				my_echo (char **command);
 int				my_cd(char **command);
 int				my_pwd (void);
-char			**my_unset (char **command, char **env);
-char 			**my_export (char **command, char **env);
+char			**my_unset (char **command, char **env, int *result);
+char 			**my_export (char **command, char **env, int *result);
 char 			**start_env_funcs(char **command, char **env, char *line);
 int				my_env (char **command, char **env);
 int				my_exit (char **command);
@@ -97,7 +107,7 @@ int				ft_strncmp(char *s1, char *s2, int size);
 int				where_to_put_env(char *name, char **env_copy);
 char 			**set_env(char **env_copy, char *value, char *key, int n_var);
 char			**export_name_val(char *key, char *value, char **env_copy);
-char 			**my_unset(char **env, char **command);
+char 			**my_unset(char **env, char **command, int *result);
 char 			**unset_env(int i_key, char **env);
 
 //GNL

@@ -19,9 +19,14 @@ void	next_redirect(char *s, char **env, t_data *data, char sign)
 			j = cleaner_other(s, data, &filename, env);
 		}
 		open_close(data, filename);
-
-//		if (data->fd_read == -1)
-//			printf("No such file or directory\n");
+		if (data->fd_read == -1)
+		{
+			write(2, "e-bash: ", ft_strlen("e-bash: "));
+			write(2, filename, ft_strlen(filename));
+			write(2, ": ", 2);
+			perror("");
+			global.read_trouble = 1;
+		}
 //		printf("next redir [%s]\n", filename);
 //		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
 		free(filename);
@@ -51,13 +56,18 @@ int	current_redirect(char *s, int j, char **env, t_data *data)
 			j = cleaner_other(s, data, &filename, env);
 		}
 		open_close(data, filename);
-//		if (data->fd_read == -1)
-//			printf("No such file or directory\n");
+
 //		printf("type: %d\n", data->type);
 //		printf("redir [%s]\n", filename);
 //		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
 		if (data->fd_read == -1)
-			data->filename = ft_strdup1(filename);
+		{
+			write(2, "e-bash: ", ft_strlen("e-bash: "));
+			write(2, filename, ft_strlen(filename));
+			write(2, ": ", 2);
+			perror("");
+			global.read_trouble = 1;
+		}
 		free(filename);
 		if (!s[j++])
 			break ;

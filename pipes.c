@@ -125,18 +125,19 @@ void	ft_lstadd_back(t_pipe **pipes, t_pipe *new_pipe)
 char	*check_path2(char **tmp, char *command)
 {
 	int		j;
-	int		acc;
 	char	*tmp2;
 	char	*path;
+	int 	fd;
 
 	j = -1;
 	while (tmp[++j])
 	{
 		tmp2 = ft_strjoin(tmp[j], "/");
 		path = ft_strjoin(tmp2, command);
-		acc = access(path, F_OK);
+		fd = open(path, O_RDONLY);
+		close(fd);
 		free(tmp2);
-		if (!acc)
+		if (fd != -1)
 			return (path);
 		free(path);
 	}
@@ -169,81 +170,67 @@ char	*check_path(char *command, char **env)
 
 char	*absolut_path(char **env, char *command)
 {
-	char	*new_path;
+	int 	i;
+	int 	fd;
 
-
-	if (!command)
+	if (!command || command[0] == '\0')
 		return (NULL);
-
-	if (command[0] == '/')
+	i = -1;
+	while(command[++i])
 	{
-		if (!access(command, F_OK))
+		if (command[i] == '/')
 		{
-			new_path = ft_strdup2(command);
-			return (new_path);
-		}
-		else
+			fd = open(command, O_RDONLY);
+			close(fd);
+			if (fd != -1)
+				return (ft_strdup2(command));
 			return (NULL);
+		}
 	}
-
 	return (check_path(command, env));
 }
 
-void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
+void simple_init(char **argv, t_pipe *new_pipe, int **fd)
 {
 	int i;
-	int len;
 	int j;
+	int len;
 
 	i = -1;
 	len = 0;
 	while(argv[++i])
 	{
-		if (argv[i][0] != 'E' && argv[i][0] != 'Q' && argv[i][0] != 'R')
+		if (argv[i][0] != 'Q')
 			len++;
 	}
 	new_pipe->fd_read = fd[i - 1][0];
 	new_pipe->fd_write = fd[i - 1][1];
 	new_pipe->command = (char **)malloc(sizeof(char *) * len + 1);
 	i = -1;
-	char len2 = len;
-	len = 0;
-	j = 0;
+	j = -1;
 	while (argv[++i])
 	{
-		if (argv[i][0] != 'E' && argv[i][0] != 'Q' && argv[i][0] != 'R')
+		if (argv[i][0] != 'Q' && ++j < len)
 		{
 			new_pipe->command[j] = ft_strdup2(argv[i]);
-			j++;
-			if (j + 1 == len)
-				break ;
+//			printf("%d [%s]\n", j, new_pipe->command[j]);
 		}
-		if (i > 0 && fd[i - 1][0] == -1)
-			break ;
 	}
-	new_pipe->command[j] = NULL;
-	if (len2 == 1 && i == 1 && fd[0][0] == -1)
-	{
-		new_pipe->command = (char **)malloc(sizeof(char *) * len + 2);
-		new_pipe->command = ft_split3(argv[0], '0');
-		if (!new_pipe->command[1])
-			new_pipe->command[0] = NULL;
-	}
-	if (!new_pipe->command[0] && fd[0][0] == -1)
-		printf("%s: No such file or directory\n", argv[0]);
-	if (!new_pipe->command[0])
-		return ;
+	new_pipe->command[++j] = NULL;
+}
 
+
+void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
+{
+	simple_init(argv, new_pipe, fd);
 	new_pipe->path = absolut_path(env, new_pipe->command[0]);
-
-
-	if ((!new_pipe->path || new_pipe->command[0][0] == '\0') && ft_strcmp
-	("exit", new_pipe->command[0]) && ft_strcmp
-	("unset", new_pipe->command[0]) && ft_strcmp
-	("export", new_pipe->command[0]))
+	if (!new_pipe->path && new_pipe->command[0] &&
+	ft_strcmp ("exit", new_pipe->command[0])
+	&& ft_strcmp("unset", new_pipe->command[0])
+	&& ft_strcmp("export", new_pipe->command[0]))
 	{
-		printf("command notT found\n");
-		error_status = 127;
+		printf("e-bash: %s: command not found\n", new_pipe->command[0]);
+		global.error_status = 127;
 	}
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;
@@ -252,8 +239,8 @@ void parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 char **own_function(t_pipe *tmp, char **env)
 {
 	int result;
-	result = 0;
 
+	result = 0;
 	if (!ft_strcmp("echo", tmp->command[0]))
 		result = my_echo(tmp->command);
 	if (!ft_strcmp("pwd", tmp->command[0]))
@@ -265,15 +252,9 @@ char **own_function(t_pipe *tmp, char **env)
 	if (!ft_strcmp("exit", tmp->command[0]))
 		result = my_exit(tmp->command);
 	if (!ft_strcmp("export", tmp->command[0]))
-	{
-		env = my_export(tmp->command, env);
-		result = 1;
-	}
+		env = my_export(tmp->command, env, &result);
 	if (!ft_strcmp("unset", tmp->command[0]))
-	{
-		env = my_unset(env, tmp->command);
-		result = 1;
-	}
+		env = my_unset(env, tmp->command, &result);
 	if (result == 0)
 		return (NULL);
 	return (env);
@@ -308,7 +289,6 @@ void	exec_child(t_pipe *pipes, char **env)
 	execve(pipes->path, pipes->command, env);
 	exit(1);
 }
-
 
 char **samopal(t_pipe *tmp, char **env)
 {
@@ -348,6 +328,7 @@ void	launch_process(t_pipe *tmp, char **env)
 			close(tmp->fd[0]);
 	}
 }
+
 void	 manage_fd(t_pipe *tmp, int *old_fd, int a)
 {
 	if (a == 0)
@@ -422,7 +403,6 @@ int is_one_command(t_pipe *pipes)
 		i++;
 		tmp = tmp->next;
 	}
-//	printf("i %d\n", i);
 	if (i == 1)
 		return (1);
 	return (0);
@@ -432,14 +412,14 @@ char  **exec_one_command(t_pipe *tmp, char **env)
 {
 	pid_t pid;
 	int status;
-	char **env2;
+	char **env_new;
 	int old_fd[2];
 
 	signal(SIGINT, ctrl_c_kid);
 	signal(SIGQUIT, ctrl_slash);
 	manage_fd(tmp, old_fd, 0);
-	env2 = own_function(tmp, env);
-	if (!env2)
+	env_new = own_function(tmp, env);
+	if (!env_new)
 	{
 		pid = fork();
 		if (pid == 0)
@@ -448,8 +428,8 @@ char  **exec_one_command(t_pipe *tmp, char **env)
 			waitpid(pid, &status, 0);
 	}
 	manage_fd(tmp, old_fd, 1);
-	if (env2)
-		return (env2);
+	if (env_new)
+		return (env_new);
 	return (env);
 
 }
@@ -462,14 +442,12 @@ char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 
 	pipes = NULL;
 	i = -1;
-
 	while(new[++i])
 	{
 		new_pipe = (t_pipe *)malloc(sizeof(t_pipe));
 		parse_argv(new[i], new_pipe, env, fd[i]);
 		if (!new_pipe->command[0])
 			new_pipe = NULL;
-
 		ft_lstadd_back(&pipes, new_pipe);
 	}
 	if (!pipes)
@@ -477,14 +455,9 @@ char **parse_pipes(char ***new, char **env, int ***fd, char *input)
 	if (is_one_command(pipes))
 		env = exec_one_command(pipes, env);
 	else
-	{
 		exec_cmds(pipes, env);
-		if (new[0][0][0] == '.' && new[0][0][1] == '/')
-			printf("woooow\n");
-	}
 	free_pipes(pipes);
 	if (!(input == NULL))
             add_history(input);
-
 	return (env);
 }

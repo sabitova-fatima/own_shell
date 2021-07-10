@@ -57,23 +57,11 @@ export измененный char *env сохранить +
 
 TO FATIMA_KREDITOVA:
 если несколько раз нажать ctrl+c а потом ентер, то столько раз выведется "e-bash"
-if (new[0][0][0] == '.' && new[0][0][1] == '/')
-		{
-			printf("woooow\n");
-		}
-		ТЫ ОХРЕНЕЛА?
 история работает очень плохо +
 в баше команда экспорт отображает declare +
 
-
-KHOUTEN:
-cat < b | grep fr = не открывается пайп и не срабатывает греп, а просто выводится
-файл в консоль
-< ac - Q: No such file or directory
-
 после сигналов ломается история +
 выключать сигналы по глобальной переменной +
-
 
 signal_worked
 1 - ctrl c worked
@@ -84,4 +72,11 @@ signal_worked
 22 - ctrl slash kid worked
 0 - nothing worked
 
-access убрать, озапрещенка!
+
+
+
+KHOUTEN:
+
+
+
+

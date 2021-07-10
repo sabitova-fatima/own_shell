@@ -61,13 +61,14 @@ int my_pwd (void)
 	return (1);
 }
 
-char **my_export (char **command, char **env)
+char **my_export (char **command, char **env, int *result)
 {
     char    *key;
     char    *value;
     int     end_name;
     int     i = 1;
 
+    *result = 1;
     if (command[0] && !command[1])
 		print_sorted_env(env);
     else
