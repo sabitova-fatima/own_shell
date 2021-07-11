@@ -18,7 +18,7 @@ void	parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 		&& ft_strcmp("export", new_pipe->command[0]))
 	{
 		printf("e-bash: %s: command not found\n", new_pipe->command[0]);
-		global.error_status = 127;
+		g_global.error_status = 127;
 	}
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;

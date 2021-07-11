@@ -97,14 +97,14 @@ int	pre_parser(char *s, t_help *help)
 	char	**new;
 
 	new = split_pipes(s);
-	if (!new)
-		return (1);
-	if (check_opened_quotes(new, help) || check_empty_commands(new, help) || \
-		check_empty_redirect(new, help))
-	{
-		freedom_2d(new);
-		return (1);
-	}
-	freedom_2d(new);
+	// if (!new)
+	// 	return (1);
+	// if (check_opened_quotes(new, help) || check_empty_commands(new, help) || \
+	// 	check_empty_redirect(new, help))
+	// {
+	// 	freedom_2d(new);
+	// 	return (1);
+	// }
+	// freedom_2d(new);
 	return (0);
 }

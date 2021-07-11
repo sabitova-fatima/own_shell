@@ -25,7 +25,7 @@ void	next_redirect(char *s, char **env, t_data *data, char sign)
 			write(2, filename, ft_strlen(filename));
 			write(2, ": ", 2);
 			perror("");
-			global.read_trouble = 1;
+			g_global.read_trouble = 1;
 		}
 //		printf("next redir [%s]\n", filename);
 //		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
@@ -65,7 +65,7 @@ int	current_redirect(char *s, int j, char **env, t_data *data)
 			write(2, filename, ft_strlen(filename));
 			write(2, ": ", 2);
 			perror("");
-			global.read_trouble = 1;
+			g_global.read_trouble = 1;
 		}
 		free(filename);
 		if (!s[j++])

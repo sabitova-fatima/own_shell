@@ -1,13 +1,18 @@
 HDAMION  _________________________________
 cигналы после второго раза начинают печататься (ну и что?)
-unset invalid argument
-echo -nnn
 
-изменять $? в сигналах и при ошибке команды экспорт
+изменять $? в сигналах и при ошибке команды экспорт +
 
-bash-3.2$ export 1anton
-bash: export: `1anton': not a valid identifier
+bash-3.2$ export 1anton +
+bash: export: `1anton': not a valid identifier +
+export: `a = 10': not a valid identifier (ERROR 1) +
+export "a" = 10 +
+export ""=10 +
+export ""   = 11 +
+cd перед сообщением об ошибке должен быть путь 
+cd другая ошибка если открывают файл как папку
 
+export \t в родном баше отрабатывает как t (как убрать экранирование? надо ли?) 
 
 лики
 норма
@@ -34,5 +39,4 @@ LEAKS  _________________________________
 cd without directory (Provide a directory)
 cat + ctrl c
 echo/ls... 2 times
-ls > file
 export / export t

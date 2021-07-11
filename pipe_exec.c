@@ -16,7 +16,7 @@ char	**exec_one_command(t_pipe *tmp, char **env)
 		pid = fork();
 		if (pid == 0)
 		{
-			if (!global.was_command)
+			if (!g_global.was_command)
 				execve(tmp->path, tmp->command, env);
 			exit(1);
 		}

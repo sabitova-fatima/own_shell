@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int my_env(char **command, char **env)
+int	my_env(char **command, char **env)
 {
 	if (command[0] && !command[1])
 		my_env_output(command, env);
@@ -9,7 +9,7 @@ int my_env(char **command, char **env)
 	return (1);
 }
 
-int my_exit (char **command)
+int	my_exit (char **command)
 {
 	exit(0);
 }

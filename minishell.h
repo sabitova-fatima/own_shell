@@ -18,7 +18,7 @@ typedef struct s_global
 	int	was_command;
 }	t_global;
 
-t_global	global;
+t_global	g_global;
 
 typedef struct s_list
 {

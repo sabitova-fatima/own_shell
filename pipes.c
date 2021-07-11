@@ -46,7 +46,7 @@ int	if_bad_read(char **argv, int **fd)
 	{
 		if (fd[i][0] == -1)
 		{
-			global.was_command = 1;
+			g_global.was_command = 1;
 			return (1);
 		}
 	}
@@ -78,6 +78,6 @@ char	**parse_pipes(char ***new, char **env, int ***fd, char *input)
 	free_pipes(pipes);
 	if (!(input == NULL))
 		add_history(input);
-	global.was_command = 0;
+	g_global.was_command = 0;
 	return (env);
 }
