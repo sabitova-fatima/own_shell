@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	where_to_put_env(char *name, char **env_copy)
+int		where_to_put_env(char *name, char **env_copy)
 {
 	int		i;
 	int		end_name;
@@ -17,50 +17,36 @@ int	where_to_put_env(char *name, char **env_copy)
 
 char	**export_name_val(char *key, char *value, char **env_copy)
 {
-	int		n_var;
+	int   	n_var;
 	char	*right_side;
 
-	right_side = "";
-	if (key[0] >= 'A' && key[0] <= 'Z' | key[0] >= 'a' && key[0] <= 'z')
-	{
-		if (value[0])
-		{
-			right_side = ft_strjoin("=\"", value);
-			right_side = ft_strjoin(right_side, "\"");
-		}
-		n_var = where_to_put_env(key, env_copy);
-		if (env_copy[n_var]) /* если переменная уже есть */
-			free(env_copy[n_var]);
-		else /* если переменной еще нет */
-			env_copy = realloc_env(n_var + 1, env_copy);
-		env_copy[n_var] = ft_strjoin(key, right_side);
-	}
+	if (value[0])
+		right_side = ft_strjoin("=", value);
 	else
-	{
-		printf("export: not an identifier: %s\n", key);
-		g_global.error_status = 1;
-	}
+		right_side = "=\"\"";
+	n_var = where_to_put_env(key, env_copy);
+	if (env_copy[n_var]) /* если переменная уже есть */
+		free(env_copy[n_var]);
+	else  /* если переменной еще нет */
+		env_copy = realloc_env(n_var + 1, env_copy);
+	env_copy[n_var] = ft_strjoin(key, right_side);
 	return (env_copy);
 }
 
-// int key_checker(char **key)
-// {
-// 	if (key[0] >= 'A' && key[0] <= 'Z' | key[0] >= 'a' && key[0] <= 'z')
-// }
-
-char	**my_unset(char **env, char **command, int *result)
+char **my_unset(char **env, char **command, int *result)
 {
-	int		i;
-	int		i_key;
+	int i ;
+	int i_key;
 
 	i = 1;
 	if (!command[1])
 		printf("Too few arguments\n");
 	else
 	{
-		while (command[i])
+		while(command[i])
 		{
 			i_key = where_to_put_env(command[i], env);
+
 			if (env[i_key])
 				env = unset_env(i_key, env);
 			i++;
@@ -70,14 +56,14 @@ char	**my_unset(char **env, char **command, int *result)
 	return (env);
 }
 
-char	**unset_env(int i_key, char **env)
+char **unset_env(int i_key, char **env)
 {
-	int		i;
-	int		count;
-
+	int i;
+	int count;
 	env[i_key] = NULL;
 	i = i_key;
 	count = i_key + 1;
+
 	while (env[i + 1])
 	{
 		env[i] = ft_strdup(env[i + 1], ft_strlen(env[i + 1]));
@@ -90,8 +76,7 @@ char	**unset_env(int i_key, char **env)
 
 void free_env(char **env_copy)
 {
-	int		i;
-
+	int i;
 	i = 0;
 	while (i < env_len(env_copy))
 		free(env_copy[i]);

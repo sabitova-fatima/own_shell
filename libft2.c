@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-int		ft_ln(const char *str, char c)
+ int		ft_ln(const char *str, char c)
 {
-	int	count;
+	int count;
 
 	count = 0;
 	while (*str != c && *str)

@@ -58,7 +58,7 @@ char	*join_char(char *s, char c)
 	i = 0;
 	while (s[i])
 		i++;
-	new = (char *)malloc((i + 1) + 1);
+	new = (char *)malloc(i + 2);
 	if (!new)
 		return (NULL);
 	i = -1;

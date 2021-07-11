@@ -41,7 +41,7 @@ void	heredoc(char *limiter)
 char	*cleaner_help(char *new, t_data *data, char *s)
 {
 	if (new[0] == '\0' && data->type > 0 && data->fd_read != -1)
-		new = join_char(new, 'Q');
+		new = join_char(new, 5);
 	free(s);
 	s = new;
 	return (s);

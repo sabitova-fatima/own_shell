@@ -8,7 +8,7 @@ char	***split_3d(char **new, int ****fd_three)
 	i = 0;
 	while (new[i])
 		i++;
-	*fd_three = (int ***)malloc(sizeof(int **) * i + 1);
+	*fd_three = (int ***)malloc(sizeof(int **) * (i + 1));
 	all = split_spaces(new, fd_three);
 	return (all);
 }
@@ -17,24 +17,22 @@ void	cleaning_3d(char ****all, char **env, int ****fd, t_help *help)
 {
 	int	i;
 	int	j;
-/*
-	 i = -1;
-	 while ((*all)[++i])
-	 {
-	 	j = -1;
-	 	while ((*all)[i][++j])
-	 	{
-	 		printf("%i:d j:%d before clear [%s]\n", i,j,(*all)[i][j]);
-	 	}
-	 }
-*/
+
+//	 i = -1;
+//	 while ((*all)[++i])
+//	 {
+//	 	j = -1;
+//	 	while ((*all)[i][++j])
+//	 	{
+//	 		printf("%i:d j:%d before clear [%s]\n", i,j,(*all)[i][j]);
+//	 	}
+//	 }
 	i = -1;
 	while ((*all)[++i])
 	{
 		help->help = i;
 		cleaner((*all)[i], help, env, fd);
 	}
-/*
 	 i = -1;
 	 while ((*all)[++i])
 	 {
@@ -54,7 +52,7 @@ char	***super_split(char *s, char **env, int ****fd, t_help *help)
 
 	if (pre_parser(s, help))
 	{
-		g_global.error_status = 258;
+		global.error_status = 258;
 		return (NULL);
 	}
 	new = split_pipes(s);
@@ -63,11 +61,10 @@ char	***super_split(char *s, char **env, int ****fd, t_help *help)
 	all = split_3d(new, fd);
 	freedom_2d(new);
 	cleaning_3d(&all, env, fd, help);
-	if (g_global.read_trouble == 1)
+	if (global.read_trouble == 1)
 	{
-		g_global.error_status = 1;
-		g_global.read_trouble = 0;
+		global.error_status = 1;
+		global.read_trouble = 0;
 	}
 	return (all);
 }
-*/

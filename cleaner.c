@@ -22,7 +22,7 @@ char	*cleaner_semicolon_pipe_space(char *s)
 	if (j >= 2 && new[j - 1] == '|' && new[j - 2] != '\\')
 		new[j - 1] = '\0';
 	if (j < 2 && new[j - 1] == '|')
-		new[j - 1] = 'Q';
+		new[j - 1] = 5;
 	free(s);
 	return (new);
 }
@@ -78,7 +78,7 @@ int	main_cleaning(char *s, char **new, char **env, t_data *data)
 	if (((s[j] == '<' || s[j] == '>') && !s[j + 1]) || \
 		((s[j] == '<' || s[j] == '>') && (s[j + 1] == '<' || \
 		s[j + 1] == '>') && !s[j + 2]))
-		*new = join_char(*new, 'Q');
+		*new = join_char(*new, 5);
 	while (s[j] && s[j] != '>' && s[j] != '<')
 	{
 		data->j = j;

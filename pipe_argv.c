@@ -8,7 +8,10 @@ void	parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 	while (argv[++i])
 	{
 		if (fd[i][0] == -1)
+		{
+			new_pipe->command = NULL;
 			return ;
+		}
 	}
 	simple_init(argv, new_pipe, fd);
 	new_pipe->path = absolut_path(env, new_pipe->command[0]);
@@ -18,7 +21,7 @@ void	parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 		&& ft_strcmp("export", new_pipe->command[0]))
 	{
 		printf("e-bash: %s: command not found\n", new_pipe->command[0]);
-		g_global.error_status = 127;
+		global.error_status = 127;
 	}
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;
@@ -34,17 +37,17 @@ void	simple_init(char **argv, t_pipe *new_pipe, int **fd)
 	len = 0;
 	while (argv[++i])
 	{
-		if (argv[i][0] != 'Q')
+		if (argv[i][0] != 5)
 			len++;
 	}
 	new_pipe->fd_read = fd[i - 1][0];
 	new_pipe->fd_write = fd[i - 1][1];
-	new_pipe->command = (char **)malloc(sizeof(char *) * len + 1);
+	new_pipe->command = (char **)malloc(sizeof(char *) * (len + 1));
 	i = -1;
 	j = -1;
 	while (argv[++i])
 	{
-		if (argv[i][0] != 'Q' && ++j < len)
+		if (argv[i][0] != 5 && ++j < len)
 			new_pipe->command[j] = ft_strdup2(argv[i]);
 	}
 	new_pipe->command[++j] = NULL;
@@ -63,9 +66,11 @@ char	*absolut_path(char **env, char *command)
 		if (command[i] == '/')
 		{
 			fd = open(command, O_RDONLY);
-			close(fd);
 			if (fd != -1)
+			{
+				close(fd);
 				return (ft_strdup2(command));
+			}
 			return (NULL);
 		}
 	}
@@ -109,10 +114,12 @@ char	*check_path2(char **tmp, char *command)
 		tmp2 = ft_strjoin(tmp[j], "/");
 		path = ft_strjoin(tmp2, command);
 		fd = open(path, O_RDONLY);
-		close(fd);
 		free(tmp2);
 		if (fd != -1)
+		{
+			close(fd);
 			return (path);
+		}
 		free(path);
 	}
 	return (NULL);

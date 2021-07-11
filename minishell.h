@@ -6,8 +6,9 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <string.h>
-# include <readline/readline.h>
-# include <readline/history.h>
+# include <sys/wait.h>
+//# include <readline/readline.h>
+//# include <readline/history.h>
 # define BUFFER_SIZE 10
 
 typedef struct s_global
@@ -18,7 +19,7 @@ typedef struct s_global
 	int	was_command;
 }	t_global;
 
-t_global	g_global;
+t_global	global;
 
 typedef struct s_list
 {
@@ -185,6 +186,7 @@ char		**iphone_pro(char const *s, int w_count, char c, char **johny);
 
 //UTILS3
 char		**ft_split3(char *s, char c);
+void		ft_lstadd_back(t_pipe **pipes, t_pipe *new_pipe);
 void		ft_lstadd_back(t_pipe **pipes, t_pipe *new_pipe);
 char		**own_function(t_pipe *tmp, char **env);
 void		to_low(char *s);
