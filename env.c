@@ -37,6 +37,15 @@ int	env_len(char **env)
 	return (len - 1);
 }
 
+void print_str(char **env_copy)
+{
+	int i;
+
+	i = 0;
+	while (env_copy[i])
+		printf("%s %s\n", "declare -x", env_copy[i++]);
+}
+
 int	print_sorted_env(char **env)
 {
 	int		i;
@@ -46,13 +55,12 @@ int	print_sorted_env(char **env)
 	char	**env_copy;
 
 	env_copy = copy_env(env);
-	temp = (char*) malloc (1000);
 	len = env_len(env_copy);
-	i = 0;
-	while (i < len)
+	i = -1;
+	while (++i < len)
 	{
-		j = i + 1;
-		while (j < len)
+		j = i;
+		while (++j < len)
 		{
 			if (strcmp(env_copy[i], env_copy[j]) > 0)
 			{
@@ -60,27 +68,13 @@ int	print_sorted_env(char **env)
 				env_copy[i] = env_copy[j];
 				env_copy[j] = temp;
 			}
-			j++;
 		}
-		i++;
 	}
-	i = 0;
-	
-	while (env_copy[i])
-		printf("%s %s\n", "declare -x", env_copy[i++]);
-
-	i = 0;
-	while (i < env_len(env_copy) - 1)
-	{
-		if (env_copy[i])
-			free(env_copy[i]);
-		i++;
-	}
-	if (env_copy)
-		free(env_copy);
-	free(temp);
+	print_str(env_copy);
+	freedom_2d(env_copy);
 	return (1);
 }
+
 
 char	**realloc_env(int added, char **env_copy)
 {
@@ -92,9 +86,9 @@ char	**realloc_env(int added, char **env_copy)
 	while (env_copy[++i] && i < added)
 	{
 		new_env[i] = ft_strdup(env_copy[i], ft_strlen(env_copy[i]));
-		// free(env_copy[i]);
+		free(env_copy[i]);
 	}
-	// free(env_copy);
+	free(env_copy);
 	return (new_env);
 }
 

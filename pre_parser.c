@@ -73,7 +73,7 @@ int	check_opened_quotes(char **array, t_help *help)
 	i = 0;
 	while (array[i])
 		i++;
-	fd = (int ***)malloc(sizeof(int **) * i + 1);
+	fd = (int ***)malloc(sizeof(int **) * (i + 1));
 	new = split_spaces(array, &fd);
 	if (!new)
 		return (1);
@@ -84,6 +84,7 @@ int	check_opened_quotes(char **array, t_help *help)
 		{
 			printf("not closed quotes\n");
 			freedom_3d(new);
+			freedom_3d_int(fd);
 			return (1);
 		}
 	}
@@ -97,14 +98,14 @@ int	pre_parser(char *s, t_help *help)
 	char	**new;
 
 	new = split_pipes(s);
-	// if (!new)
-	// 	return (1);
-	// if (check_opened_quotes(new, help) || check_empty_commands(new, help) || \
-	// 	check_empty_redirect(new, help))
-	// {
-	// 	freedom_2d(new);
-	// 	return (1);
-	// }
-	// freedom_2d(new);
+	if (!new)
+		return (1);
+	if (check_opened_quotes(new, help) || check_empty_commands(new, help) || \
+		check_empty_redirect(new, help))
+	{
+		freedom_2d(new);
+		return (1);
+	}
+	freedom_2d(new);
 	return (0);
 }

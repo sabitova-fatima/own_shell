@@ -14,18 +14,21 @@ char	**exec_one_command(t_pipe *tmp, char **env)
 	if (!env_new && tmp->path)
 	{
 		pid = fork();
-		if (pid == 0)
-		{
-			if (!g_global.was_command)
-				execve(tmp->path, tmp->command, env);
+		if (pid == -1)
 			exit(1);
-		}
-		else if (pid > 0)
-			waitpid(pid, &status, 0);
+		if (pid == 0 && !g_global.was_command)
+			execve(tmp->path, tmp->command, env);
+		if (pid == 0 && g_global.was_command)
+			exit(1);
+		waitpid(pid, &status, 0);
 	}
 	manage_fd(tmp, old_fd, 1);
 	if (env_new)
+	{
+//		if (env)
+//			freedom_2d(env);
 		return (env_new);
+	}
 	return (env);
 }
 
@@ -56,11 +59,11 @@ void	launch_process(t_pipe *tmp, char **env)
 	pid_t	pid;
 
 	if (pipe(tmp->fd) == -1)
-		printf("wrong pipe\n");
+		exit(1);
 	pid = fork();
 	tmp->pid = pid;
 	if (pid == -1)
-		printf("pid error\n");
+		exit(1);
 	else if (pid == 0)
 		exec_child(tmp, env);
 	else

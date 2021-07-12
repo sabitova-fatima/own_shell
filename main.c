@@ -19,16 +19,17 @@ int		main(int argc, char **argv, char **env)
 			exit(0);
 		new = super_split(input, env_copy, &fd, &help);
 		if (!new)
+		{
+			free(input);
 			continue ;
+		}
 		if (new[0][0])
 			env_copy = parse_pipes(new, env_copy, fd, input);
 		free(input);
-		if (new)
-		{
-			freedom_3d(new);
-			freedom_3d_int(fd);
-		}
+		freedom_3d(new);
+		freedom_3d_int(fd);
 	}
 	// free(help);
 	// free(env_copy);
 }
+

@@ -28,10 +28,7 @@ void	ft_lstadd_back(t_pipe **pipes, t_pipe *new_pipe)
 	t_pipe	*temp;
 
 	if (!new_pipe)
-	{
-		*pipes = NULL;
 		return ;
-	}
 	if (!(*pipes))
 		*pipes = new_pipe;
 	else

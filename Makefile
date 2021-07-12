@@ -32,7 +32,7 @@ CC			= gcc
 RM			= rm -rf
 
 all:
-		$(CC) -ltermcap -L/usr/include -lreadline $(SRCS) -o $(NAME)
+		$(CC) -ltermcap -L/usr/include -lreadline $(SRCS) -g -o $(NAME)
 
 clean:
 		$(RM) $(OBJS)

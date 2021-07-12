@@ -76,8 +76,6 @@ int			my_cd(char **command);
 int			my_pwd(void);
 char		**my_export (char **command, char **env, int *result);
 int			my_env_output(char **command, char **env);
-//char			**my_unset (char **command, char **env, int *result);
-//char 			**start_env_funcs(char **command, char **env, char *line);
 
 //MY_FUNCTIONS2
 int			my_env(char **command, char **env);
@@ -165,7 +163,6 @@ int			into_dollar2(char *s, int j, char **new, char **env);
 //FREEDOMS
 void		freedom_2d(char **arr);
 void		freedom_3d(char ***arr);
-void		freedom_4d(char ****arr);
 void		freedom_2d_int(int **arr);
 void		freedom_3d_int(int ***arr);
 

@@ -52,7 +52,7 @@ int	**create_2d(int help)
 	int	**fd_dva_new;
 	int	i;
 
-	fd_dva_new = (int **)malloc(sizeof(int *) * help + 1);
+	fd_dva_new = (int **)malloc(sizeof(int *) * (help + 1));
 	i = -1;
 	while (++i < help)
 	{

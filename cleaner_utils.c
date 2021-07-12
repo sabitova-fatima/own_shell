@@ -38,7 +38,9 @@ char	*search_env(char *dollar, char **env)
 int	into_dollar2(char *s, int j, char **new, char **env)
 {
 	char	*dollar;
+	char 	*old_new;
 
+	old_new = *new;
 	if (s[j] == '$' && s[j + 1] && s[j + 1] != '$')
 	{
 		j++;
@@ -47,21 +49,46 @@ int	into_dollar2(char *s, int j, char **new, char **env)
 		while (s[j] != '$' && s[j] && s[j] != '"' && s[j] != '\'')
 			dollar = join_char(dollar, s[j++]);
 		*new = ft_strjoin(*new, search_env(dollar, env));
+		free(old_new);
 		free(dollar);
 	}
 	return (j);
 }
 
-void	ft_putnbr(int n, char **new)
+int	ft_znak(int r)
 {
-	if (n >= 10)
-	{
-		ft_putnbr(n / 10, new);
-		ft_putnbr(n % 10, new);
-	}
-	else
-		*new = join_char(*new, '0' + n);
+	if (r < 0)
+		return (-r);
+	return(r);
 }
+
+char		*ft_itoa(int n)
+{
+	char	a[11];
+	char	*itog;
+	int		i;
+	int		j;
+
+	i = 0;
+	if (n == 0)
+		a[i++] = '0';
+	j = (n < 0);
+	while (n != 0)
+	{
+		a[i++] = '0' + (char)(ft_znak(n % 10));
+		n /= 10;
+	}
+	itog = (char *)malloc(sizeof(char) * (i + j + 1));
+	if (!itog)
+		return (NULL);
+	if (j == 1)
+		itog[0] = '-';
+	while (i > 0)
+		itog[j++] = a[--i];
+	itog[j] = '\0';
+	return (itog);
+}
+
 
 int	into_dollar(char *s, char **new, t_data *data, char **env)
 {
@@ -74,7 +101,8 @@ int	into_dollar(char *s, char **new, t_data *data, char **env)
 			*new = join_char(*new, s[j++]);
 		if (s[j] == '$' && s[j + 1] == '?')
 		{
-			ft_putnbr(g_global.error_status, new);
+			free(*new);
+			*new = ft_itoa(g_global.error_status);
 			g_global.error_status = 0;
 		}
 		if (s[j] == '$' && s[j + 1] == '$')

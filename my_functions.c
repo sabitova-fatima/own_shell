@@ -67,11 +67,12 @@ char	**my_export (char **command, char **env, int *result)
 	char	*value;
 	int		end_name;
 	int		i;
-	
+
 	i = 1;
 	*result = 1;
 	if (command[0] && !command[1])
 		print_sorted_env(env);
+
 	else
 		while (command[i])
 		{
