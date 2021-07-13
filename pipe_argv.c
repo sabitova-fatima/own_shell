@@ -62,7 +62,8 @@ char	*absolut_path(char **env, char *command)
 
 	if (!command || command[0] == '\0')
 		return (NULL);
-	if (command[0] == '.' || (command[0] == '.' && command[1] == '.'))
+	if ((command[0] == '.' && !command[1]) || (command[0] == '.' && \
+		command[1] =='.' && !command[2]))
 		return (NULL);
 	i = -1;
 	while (command[++i])

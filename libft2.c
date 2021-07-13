@@ -48,3 +48,17 @@ int	is_in_list(char *command)
 		return (1);
 	return (0);
 }
+
+int	find_end_name(char *name)
+{
+	int		i;
+
+	i = 0;
+	while (name[i])
+	{
+		if (name[i] == '=')
+			return (i);
+		i++;
+	}
+	return (i);
+}

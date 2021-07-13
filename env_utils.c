@@ -15,23 +15,10 @@ int	where_to_put_env(char *name, char **env_copy)
 	return (i);
 }
 
-char	*key_value(char *value)
+void	help_export(char *key)
 {
-	char	*right_side;
-	char	*right_side2;
-	char	*temp;
-
-	right_side2 = (char *)malloc(1);
-	if (value)
-	{
-		right_side = ft_strjoin("=\"", value);
-		temp = right_side2;
-		right_side2 = ft_strjoin(right_side, "\"");
-		free(temp);
-		if (right_side)
-			free(right_side);
-	}
-	return (right_side2);
+	printf("export: not an identifier: %s\n", key);
+	g_global.error_status = 1;
 }
 
 char	**export_name_val(char *key, char *value, char **env_copy)
@@ -41,21 +28,22 @@ char	**export_name_val(char *key, char *value, char **env_copy)
 
 	if ((key[0] >= 'A' && key[0] <= 'Z') || (key[0] >= 'a' && key[0] <= 'z'))
 	{
-		right_side = key_value(value);
 		n_var = where_to_put_env(key, env_copy);
 		if (env_copy[n_var])
 			free(env_copy[n_var]);
 		else
 			env_copy = realloc_env(n_var + 1, env_copy);
-		env_copy[n_var] = ft_strjoin(key, right_side);
-		if (right_side)
+		if (value)
+		{
+			right_side = ft_strjoin("=", value);
+			env_copy[n_var] = ft_strjoin(key, right_side);
 			free(right_side);
+		}
+		else
+			env_copy[n_var] = ft_strjoin(key, "=");
 	}
 	else
-	{
-		printf("export: not an identifier: %s\n", key);
-		g_global.error_status = 1;
-	}
+		help_export(key);
 	free(key);
 	if (value)
 		free(value);

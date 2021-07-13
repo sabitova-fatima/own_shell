@@ -38,10 +38,12 @@ RM			= rm -rf
 all: $(NAME)
 $(NAME): $(OBJ)
 		$(CC) $(CFLAGS) -L/Users/khouten/.brew/opt/readline/lib -I/Users/khouten/.brew/opt/readline/include -lreadline $(SRC) -o $(NAME)
+val:
+		$(CC) -L/Users/khouten/.brew/opt/readline/lib -I/Users/khouten/.brew/opt/readline/include -lreadline $(SRC) -g -o $(NAME) && valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME)
 clean:
 		$(RM) $(OBJ)
 fclean:	clean
 		$(RM) $(NAME)
 re:		fclean all
 
-.PHONY:	all clean fclean re bonus
+.PHONY:	all clean fclean re bonus val

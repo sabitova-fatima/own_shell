@@ -7,6 +7,7 @@ char	**exec_one_command(t_pipe *tmp, char **env)
 	char	**env_new;
 	int		old_fd[2];
 
+	env_new = NULL;
 	signal(SIGINT, ctrl_c_kid);
 	signal(SIGQUIT, ctrl_slash);
 	manage_fd(tmp, old_fd, 0);

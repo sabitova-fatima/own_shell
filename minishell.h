@@ -62,6 +62,7 @@ int			ft_strcmp(char *s1, char *s2);
 char		*ft_substr(char *s, int start, int len);
 int			my_exit (void);
 int			is_in_list(char *command);
+int			find_end_name(char *name);
 
 // my_functions
 int			my_echo (char **command);
