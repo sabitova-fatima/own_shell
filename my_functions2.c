@@ -1,16 +1,32 @@
 #include "minishell.h"
 
+int with_value(char *env)
+{
+	int i;
+	i = 0;
+
+	while (env[i])
+	{
+		if(env[i] == '=')
+			return(42);
+		i++;
+	}
+	return(0);
+}
+
 int	my_env(char **command, char **env)
 {
 	int	i;
 
 	if (command[0] && !command[1])
 	{
-		i = -1;
-		while (env[++i])
+		i = 0;
+		while (i < env_len(env))
 		{
-			ft_putstr(env[i]);
+			if (with_value(env[i]) == 42)
+				ft_putstr(env[i]);
 			ft_putchar('\n');
+			i++;
 		}
 	}
 	else if (command[1])
