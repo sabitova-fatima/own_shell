@@ -38,3 +38,13 @@ int	my_exit (void)
 {
 	exit(0);
 }
+
+int	is_in_list(char *command)
+{
+	if (!ft_strcmp ("echo", command) || !ft_strcmp("pwd", command) || \
+	!ft_strcmp("env", command) || !ft_strcmp("cd", command) || \
+	!ft_strcmp("exit", command) || !ft_strcmp("export", command) || \
+	!ft_strcmp("unset", command))
+		return (1);
+	return (0);
+}

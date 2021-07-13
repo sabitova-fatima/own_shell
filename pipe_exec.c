@@ -120,5 +120,7 @@ void	manage_fd(t_pipe *tmp, int *old_fd, int a)
 			close(tmp->fd_write);
 		if (tmp->fd_read > 0)
 			close(tmp->fd_read);
+		close(old_fd[0]);
+		close(old_fd[1]);
 	}
 }

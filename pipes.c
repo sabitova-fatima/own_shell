@@ -91,6 +91,10 @@ char	**parse_pipes(char ***new, char **env, int ***fd, char *input)
 		parse_argv(new[i], new_pipe, env, fd[i]);
 		if (if_bad_read(new[i], fd[i]) || (new_pipe && !new_pipe->command[0]))
 		{
+			if (new_pipe->fd_read > 0)
+				close(new_pipe->fd_read);
+			if (new_pipe->fd_write > 1)
+				close(new_pipe->fd_write);
 			free(new_pipe->command);
 			free(new_pipe);
 			new_pipe = NULL;

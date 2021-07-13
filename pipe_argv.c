@@ -13,9 +13,8 @@ void	parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 			return ;
 	}
 	simple_init(argv, new_pipe, fd, env);
-	if (!new_pipe->path && new_pipe->command[0] && ft_strcmp ("exit", \
-	new_pipe->command[0]) && ft_strcmp("unset", new_pipe->command[0]) \
-	&& ft_strcmp("export", new_pipe->command[0]))
+	if (!new_pipe->path && new_pipe->command[0] && \
+		!is_in_list(new_pipe->command[0]))
 	{
 		printf("e-bash: %s: command not found\n", new_pipe->command[0]);
 		g_global.bad_command = 1;
@@ -62,6 +61,8 @@ char	*absolut_path(char **env, char *command)
 	int		fd;
 
 	if (!command || command[0] == '\0')
+		return (NULL);
+	if (command[0] == '.' || (command[0] == '.' && command[1] == '.'))
 		return (NULL);
 	i = -1;
 	while (command[++i])
