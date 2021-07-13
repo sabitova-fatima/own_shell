@@ -1,5 +1,4 @@
-NAME 		= minishell
-SRCS 		= main.c \
+SRC 		= main.c \
 			libft.c \
 			libft2.c \
 			my_functions.c  \
@@ -26,23 +25,23 @@ SRCS 		= main.c \
 			pipes.c \
 			pipe_argv.c \
 			pipe_exec.c
-			
-CFLAGS 		= -Wall -Wextra -Werror -I. 
+
+OBJ = 		$(SRC:.c=.o)
+NAME 		= minishell
+CFLAGS 		= -Wall -Wextra -Werror -I.
 CC			= gcc
 RM			= rm -rf
 
-all:
-		$(CC) -lreadline $(SRCS) -o $(NAME)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
 
-val:
-		$(CC) -ltermcap -L/usr/include -lreadline $(SRCS) -g -o $(NAME) && valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME)
-
+all: $(NAME)
+$(NAME): $(OBJ)
+		$(CC) $(CFLAGS) -L/Users/khouten/.brew/opt/readline/lib -I/Users/khouten/.brew/opt/readline/include -lreadline $(SRC) -o $(NAME)
 clean:
-		$(RM) $(OBJS)
-
+		$(RM) $(OBJ)
 fclean:	clean
 		$(RM) $(NAME)
-
 re:		fclean all
 
-.PHONY:	all clean fclean re bonus val
+.PHONY:	all clean fclean re bonus

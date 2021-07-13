@@ -1,17 +1,17 @@
 #include "minishell.h"
 
-int with_value(char *env)
+int	with_value(char *env)
 {
-	int i;
-	i = 0;
+	int	i;
 
+	i = 0;
 	while (env[i])
 	{
-		if(env[i] == '=')
-			return(42);
+		if (env[i] == '=')
+			return (42);
 		i++;
 	}
-	return(0);
+	return (0);
 }
 
 int	my_env(char **command, char **env)
@@ -21,22 +21,19 @@ int	my_env(char **command, char **env)
 	if (command[0] && !command[1])
 	{
 		i = 0;
-		while (i < env_len(env))
+		while (i <= env_len(env))
 		{
 			if (with_value(env[i]) == 42)
+			{
 				ft_putstr(env[i]);
-			ft_putchar('\n');
+				ft_putchar('\n');
+			}
 			i++;
 		}
 	}
 	else if (command[1])
 		ft_putstr("No arguments, please!\n");
 	return (1);
-}
-
-int	my_exit (void)
-{
-	exit(0);
 }
 
 void	write_error(t_data *data, char *filename)

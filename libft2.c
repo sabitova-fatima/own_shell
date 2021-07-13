@@ -33,3 +33,8 @@ char	*ft_substr(char *s, int start, int len)
 	str[j] = 0;
 	return (str);
 }
+
+int	my_exit (void)
+{
+	exit(0);
+}

@@ -60,6 +60,7 @@ int			int_len(const char *str, char c);
 //LIBFT2
 int			ft_strcmp(char *s1, char *s2);
 char		*ft_substr(char *s, int start, int len);
+int			my_exit (void);
 
 // my_functions
 int			my_echo (char **command);
@@ -70,7 +71,6 @@ int			print_sorted_env(char **env);
 
 //MY_FUNCTIONS2
 int			my_env(char **command, char **env);
-int			my_exit (void);
 void		write_error(t_data *data, char *filename);
 char		*ft_empty(void);
 void		total_free(char *input, char ***new, int ***fd);
@@ -208,6 +208,6 @@ char		*absolut_path(char **env, char *command);
 char		*check_path(char *command, char **env);
 char		*check_path2(char **tmp, char *command);
 
-void rl_replace_line(const char *c, int i);
+void		rl_replace_line(const char *c, int i);
 
 #endif

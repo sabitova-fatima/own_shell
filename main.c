@@ -27,12 +27,12 @@ int	ft_atoi(const char *str)
 	return (res * negativ);
 }
 
-char **env_with_shlvl(char **env)
+char	**env_with_shlvl(char **env)
 {
-	int 	shlvl;
+	int		shlvl;
 	char	*shlvl_char;
-	char 	*s;
-	char 	**env_copy;
+	char	*s;
+	char	**env_copy;
 	int		pos;
 
 	env_copy = copy_env(env);
@@ -57,7 +57,6 @@ int	main(int argc, char **argv, char **env)
 
 	(void)argc;
 	(void)argv;
-
 	g_global.error_status = 0;
 	env_copy = env_with_shlvl(env);
 	while (1)
