@@ -59,7 +59,6 @@ char	**ft_split2(char *s, int w_count, char *c, char **arr)
 		while (j < letter)
 			arr[i][j++] = *s++;
 		arr[i][j] = '\0';
-//		printf("word [%s]\n", arr[i]);
 	}
 	arr[i] = NULL;
 	return (arr);
@@ -74,7 +73,6 @@ char	**ft_split(char *s, int *help)
 	c[0] = ' ';
 	c[1] = '	';
 	w_count = count_spaces(s, c);
-//	printf("words in pipe: %d\n", w_count);
 	*help = w_count;
 	arr = (char **)malloc(sizeof(char *) * (w_count + 1));
 	if (!arr)
@@ -83,7 +81,7 @@ char	**ft_split(char *s, int *help)
 	return (arr);
 }
 
-char	***split_spaces(char **arr, int ****fd_three)
+char	***split_spaces(char **arr, int ***fd_three)
 {
 	char	***new;
 	int		i;
@@ -98,16 +96,15 @@ char	***split_spaces(char **arr, int ****fd_three)
 	i = -1;
 	while (arr[++i])
 	{
-//		printf("before split spaces [%s]\n", arr[i]);
 		new[i] = ft_split(arr[i], &help);
 		if (!new[i])
 		{
 			freedom_3d(new);
 			return (NULL);
 		}
-		(*fd_three)[i] = create_2d(help);
+		fd_three[i] = create_2d(help);
 	}
-	(*fd_three)[i] = NULL;
+	fd_three[i] = NULL;
 	new[i] = NULL;
 	return (new);
 }

@@ -3,7 +3,7 @@
 void	ft_bzero(void *s, int n)
 {
 	char	*ptr;
-	int	i;
+	int		i;
 
 	if (!n)
 		return ;
@@ -31,10 +31,10 @@ void	ft_putchar(char c)
 
 void	ft_putstr(char const *s)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	while(s[i] != '\0')
+	while (s[i] != '\0')
 	{	
 		ft_putchar(s[i]);
 		i++;
@@ -43,7 +43,7 @@ void	ft_putstr(char const *s)
 
 int	int_len(const char *str, char c)
 {
-	int word;
+	int	word;
 
 	word = 0;
 	if (*str != c && *str)
@@ -63,5 +63,3 @@ int	int_len(const char *str, char c)
 	}
 	return (word);
 }
-
-

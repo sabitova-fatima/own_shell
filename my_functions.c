@@ -10,14 +10,11 @@ int	my_echo(char **command)
 	count = 0;
 	while (command[len])
 		len++;
-	i = 1;
+	i = 0;
 	if (len > 1)
 	{
-		while (command[i] && ft_strncmp(command[i], "-n", 2) == 0)
-		{
+		while (command[++i] && ft_strncmp(command[i], "-n", 2) == 0)
 			count = 1;
-			i++;
-		}
 		while (command[i])
 		{
 			ft_putstr(command[i]);
@@ -68,36 +65,51 @@ char	**my_export (char **command, char **env, int *result)
 	int		end_name;
 	int		i;
 
-	i = 1;
+	i = 0;
 	*result = 1;
 	if (command[0] && !command[1])
 		print_sorted_env(env);
-
 	else
-		while (command[i])
+	{
+		while (command[++i])
 		{
 			end_name = find_end_name(command[i]);
-			if (end_name != -1)
-			{
-				key = ft_substr(command[i], 0, end_name);
-				value = ft_substr(command[i], end_name + 1, ft_strlen(command[i]));
-			}
+			value = NULL;
+			key = ft_substr(command[i], 0, end_name);
+			if (command[i][end_name] == '=')
+				value = ft_substr(command[i], end_name + 1, \
+					ft_strlen(command[i]));
 			env = export_name_val(key, value, env);
-			i++;
 		}
+	}
 	return (env);
 }
 
-int	my_env_output (char **command, char **env)
+int	print_sorted_env(char **env)
 {
-	int	i;
+	int		i;
+	int		j;
+	int		len;
+	char	*temp;
+	char	**env_copy;
 
-	i = 0;
-	while (env[i])
+	env_copy = copy_env(env);
+	len = env_len(env_copy);
+	i = -1;
+	while (++i < len + 1)
 	{
-		ft_putstr(env[i]);
-		ft_putchar('\n');
-		i++;
+		j = i;
+		while (++j < len + 1)
+		{
+			if (strcmp(env_copy[i], env_copy[j]) > 0)
+			{
+				temp = env_copy[i];
+				env_copy[i] = env_copy[j];
+				env_copy[j] = temp;
+			}
+		}
 	}
+	print_str(env_copy);
+	freedom_2d(env_copy);
 	return (1);
 }

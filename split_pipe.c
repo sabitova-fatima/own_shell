@@ -64,7 +64,6 @@ char	**ft_split_pipe(char *s, int p_count, char **arr)
 		while (j < letter)
 			arr[i][j++] = *s++;
 		arr[i][j] = '\0';
-//		printf("word [%s]  letters %d\n", arr[i], letter);
 	}
 	arr[i] = NULL;
 	return (arr);

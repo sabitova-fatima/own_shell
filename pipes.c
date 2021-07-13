@@ -57,7 +57,7 @@ int	if_bad_read(char **argv, int **fd)
 	return (0);
 }
 
-char **exec_pipes(t_pipe *pipes, char **env, char *input)
+char	**exec_pipes(t_pipe *pipes, char **env, char *input)
 {
 	if (!pipes)
 		return (env);
@@ -69,7 +69,7 @@ char **exec_pipes(t_pipe *pipes, char **env, char *input)
 	if (!(input == NULL))
 		add_history(input);
 	g_global.was_command = 0;
-	return(env);
+	return (env);
 }
 
 char	**parse_pipes(char ***new, char **env, int ***fd, char *input)

@@ -73,7 +73,7 @@ char	*ft_strchr(char *s, char c)
 char	*ft_strdup(char *s, int len)
 {
 	int		i;
-	int 	j;
+	int		j;
 	char	*b;
 
 	if (!s)
@@ -115,4 +115,3 @@ char	*ft_strjoin(char *s1, char *s2)
 	new[i] = '\0';
 	return (new);
 }
-

@@ -32,7 +32,10 @@ CC			= gcc
 RM			= rm -rf
 
 all:
-		$(CC) -ltermcap -L/usr/include -lreadline $(SRCS) -g -o $(NAME)
+		$(CC) $(CFLAGS) -ltermcap -L/usr/include -lreadline $(SRCS) -o $(NAME)
+
+val:
+		$(CC) -ltermcap -L/usr/include -lreadline $(SRCS) -g -o $(NAME) && valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME)
 
 clean:
 		$(RM) $(OBJS)
@@ -42,4 +45,4 @@ fclean:	clean
 
 re:		fclean all
 
-.PHONY:	all clean fclean re bonus
+.PHONY:	all clean fclean re bonus val

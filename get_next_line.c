@@ -1,16 +1,5 @@
 #include "minishell.h"
 
-char	*ft_empty(void)
-{
-	char	*empty;
-
-	empty = (char *)malloc(sizeof(char));
-	if (!empty)
-		return (NULL);
-	empty[0] = '\0';
-	return (empty);
-}
-
 t_list	*find_ptr(t_list **all_data, int fd)
 {
 	t_list	*tmp;
@@ -62,8 +51,8 @@ static int	boss_reader(char *buf, t_list *fd_data, char **line)
 	{
 		*this_line++ = '\0';
 		fd_data->ostatok = ft_strdup(this_line, -1);
-//		if (!fd_data->ostatok)
-//			return (0);
+		if (!fd_data->ostatok)
+			return (0);
 	}
 	tmp = *line;
 	*line = ft_strjoin(*line, buf);
@@ -76,7 +65,7 @@ static int	boss_reader(char *buf, t_list *fd_data, char **line)
 
 static int	read_buf(t_list **all_data, char **line, int fd, t_list *fd_data)
 {
-	const long long buff_size = BUFFER_SIZE;
+	const long long	buff_size = BUFFER_SIZE;
 	char			*buf;
 	long long		bytes;
 
@@ -105,19 +94,15 @@ int	get_next_line(int fd, char **line)
 {
 	static t_list	*all_data;
 	t_list			*fd_data;
-	const long long buff_size = BUFFER_SIZE;
+	const long long	buff_size = BUFFER_SIZE;
 	char			test[1];
-	int a;
 
+	fd_data = find_ptr(&all_data, fd);
 	if (fd < 0 || buff_size <= 0 || !line || read(fd, test, 0) < 0
-		|| !(fd_data = find_ptr(&all_data, fd)))
+		|| !fd_data)
 		return (-1);
 	*line = do_ostatok(fd_data, line);
 	if (!(*line))
 		return (clear(&(all_data), fd, NULL, -1));
-	a = read_buf(&(all_data), line, fd, fd_data);
-//	free(fd_data->ostatok);
-	return(a);
+	return (read_buf(&(all_data), line, fd, fd_data));
 }
-
-

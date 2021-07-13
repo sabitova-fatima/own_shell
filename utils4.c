@@ -55,3 +55,30 @@ char	*init_empty(void)
 	new[0] = '\0';
 	return (new);
 }
+
+char	*ft_itoa(int n)
+{
+	char	a[11];
+	char	*itog;
+	int		i;
+	int		j;
+
+	i = 0;
+	if (n == 0)
+		a[i++] = '0';
+	j = (n < 0);
+	while (n != 0)
+	{
+		a[i++] = '0' + (char)(ft_znak(n % 10));
+		n /= 10;
+	}
+	itog = (char *)malloc(sizeof(char) * (i + j + 1));
+	if (!itog)
+		return (NULL);
+	if (j == 1)
+		itog[0] = '-';
+	while (i > 0)
+		itog[j++] = a[--i];
+	itog[j] = '\0';
+	return (itog);
+}

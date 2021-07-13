@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	into_check_empty_redirect(char *s, int j, t_help *help)
+int	into_check_empty_redirect(char *s, int j)
 {
 	char	q;
 
@@ -19,7 +19,7 @@ int	into_check_empty_redirect(char *s, int j, t_help *help)
 	return (j);
 }
 
-int	check_empty_redirect(char **arr, t_help *help)
+int	check_empty_redirect(char **arr)
 {
 	int	i;
 	int	j;
@@ -32,7 +32,7 @@ int	check_empty_redirect(char **arr, t_help *help)
 		{
 			if (arr[i][j] != '"' && arr[i][j] != '\'')
 			{
-				j = into_check_empty_redirect(arr[i], j, help);
+				j = into_check_empty_redirect(arr[i], j);
 				if (j == -1)
 					return (1);
 			}
@@ -45,7 +45,7 @@ int	check_empty_redirect(char **arr, t_help *help)
 	return (0);
 }
 
-int	check_empty_commands(char **arr, t_help *help)
+int	check_empty_commands(char **arr)
 {
 	int	i;
 	int	j;
@@ -64,7 +64,7 @@ int	check_empty_commands(char **arr, t_help *help)
 	return (0);
 }
 
-int	check_opened_quotes(char **array, t_help *help)
+int	check_opened_quotes(char **array)
 {
 	char	***new;
 	int		i;
@@ -74,7 +74,7 @@ int	check_opened_quotes(char **array, t_help *help)
 	while (array[i])
 		i++;
 	fd = (int ***)malloc(sizeof(int **) * (i + 1));
-	new = split_spaces(array, &fd);
+	new = split_spaces(array, fd);
 	if (!new)
 		return (1);
 	i = -1;
@@ -93,15 +93,15 @@ int	check_opened_quotes(char **array, t_help *help)
 	return (0);
 }
 
-int	pre_parser(char *s, t_help *help)
+int	pre_parser(char *s)
 {
 	char	**new;
 
 	new = split_pipes(s);
 	if (!new)
 		return (1);
-	if (check_opened_quotes(new, help) || check_empty_commands(new, help) || \
-		check_empty_redirect(new, help))
+	if (check_opened_quotes(new) || check_empty_commands(new) || \
+		check_empty_redirect(new))
 	{
 		freedom_2d(new);
 		return (1);

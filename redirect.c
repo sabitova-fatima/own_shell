@@ -8,16 +8,12 @@ void	next_redirect(char *s, char **env, t_data *data, char sign)
 	if (data->fd_read != -1)
 	{
 		data->type = sign;
-//		printf("NEXT TYPE %d\n", data->type);
 		j = 0;
 		skip_spaces(s, &j);
 		filename = (char *) malloc(1);
 		filename[0] = '\0';
 		while (s[j] && s[j] != '>' && s[j] != '<')
-		{
-			data->j = j;
-			j = cleaner_other(s, data, &filename, env);
-		}
+			j = cleaner_other(s, &filename, env, j);
 		open_close(data, filename);
 		if (data->fd_read == -1)
 		{
@@ -27,8 +23,6 @@ void	next_redirect(char *s, char **env, t_data *data, char sign)
 			perror("");
 			g_global.read_trouble = 1;
 		}
-//		printf("next redir [%s]\n", filename);
-//		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
 		free(filename);
 		data->was_redirect = 1;
 	}
@@ -51,22 +45,9 @@ int	current_redirect(char *s, int j, char **env, t_data *data)
 		filename = (char *)malloc(1);
 		filename[0] = '\0';
 		while (s[j] && s[j] != '>' && s[j] != '<')
-		{
-			data->j = j;
-			j = cleaner_other(s, data, &filename, env);
-		}
+			j = cleaner_other(s, &filename, env, j);
 		open_close(data, filename);
-//		printf("type: %d\n", data->type);
-//		printf("redir [%s]\n", filename);
-//		printf("read: %d write:%d\n", data->fd_read, data->fd_write);
-		if (data->fd_read == -1)
-		{
-			write(2, "e-bash: ", ft_strlen("e-bash: "));
-			write(2, filename, ft_strlen(filename));
-			write(2, ": ", 2);
-			perror("");
-			g_global.read_trouble = 1;
-		}
+		write_error(data, filename);
 		free(filename);
 		if (!s[j++])
 			break ;
@@ -86,7 +67,7 @@ void	clean_filename(int i, t_data *data, char **new)
 	data->was_redirect = 0;
 }
 
-void	set_data(t_data *data, int ****fd, int i, t_help *help)
+void	set_data(t_data *data, int ***fd, int i)
 {
 	if (i == -1)
 	{
@@ -94,15 +75,13 @@ void	set_data(t_data *data, int ****fd, int i, t_help *help)
 		data->fd_write = -5;
 		data->was_redirect = 0;
 		data->type = 0;
-		data->error = help->error;
 	}
 	else
 	{
 		if (data->fd_read != -5)
-			(*fd)[help->help][i - 1][0] = data->fd_read;
+			fd[g_global.i][i - 1][0] = data->fd_read;
 		if (data->fd_write != -5)
-			(*fd)[help->help][i - 1][1] = data->fd_write;
-		help->error = data->error;
+			fd[g_global.i][i - 1][1] = data->fd_write;
 	}
 }
 
@@ -120,13 +99,13 @@ void	open_close(t_data *data, char *filename)
 			close(data->fd_read);
 		data->fd_read = open(filename, O_RDONLY, 0666);
 	}
-	if (data->type == (int)('>' + 1)) // >>
+	if (data->type == (int)('>' + 1))
 	{
 		if (data->fd_write != -5)
 			close(data->fd_write);
 		data->fd_write = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	}
-	if (data->type == (int)('<' + 1)) // <<
+	if (data->type == (int)('<' + 1))
 	{
 		heredoc(filename);
 		if (data->fd_read != -5)

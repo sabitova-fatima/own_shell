@@ -1,13 +1,14 @@
 #include "minishell.h"
 
-int		main(int argc, char **argv, char **env)
+int	main(int argc, char **argv, char **env)
 {
 	char	***new;
 	int		***fd;
 	char	*input;
 	char	**env_copy;
-	t_help	help;
 
+	(void)argc;
+	(void)argv;
 	env_copy = copy_env(env);
 	g_global.error_status = 0;
 	while (1)
@@ -17,19 +18,13 @@ int		main(int argc, char **argv, char **env)
 		input = readline("e-bash> ");
 		if (input == NULL)
 			exit(0);
-		new = super_split(input, env_copy, &fd, &help);
+		new = super_split(input, env_copy, &fd);
 		if (!new)
-		{
 			free(input);
+		if (!new)
 			continue ;
-		}
 		if (new[0][0])
 			env_copy = parse_pipes(new, env_copy, fd, input);
-		free(input);
-		freedom_3d(new);
-		freedom_3d_int(fd);
+		total_free(input, new, fd);
 	}
-	// free(help);
-	// free(env_copy);
 }
-

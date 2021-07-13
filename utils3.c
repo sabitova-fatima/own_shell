@@ -55,7 +55,7 @@ char	**own_function(t_pipe *tmp, char **env)
 	if (!ft_strcmp("cd", tmp->command[0]))
 		result = my_cd(tmp->command);
 	if (!ft_strcmp("exit", tmp->command[0]))
-		result = my_exit(tmp->command);
+		result = my_exit();
 	if (!ft_strcmp("export", tmp->command[0]))
 		env = my_export(tmp->command, env, &result);
 	if (!ft_strcmp("unset", tmp->command[0]))
@@ -81,7 +81,7 @@ void	to_low(char *s)
 
 int	ft_strncmp(char *s1, char *s2, int size)
 {
-	unsigned int	i;
+	int	i;
 
 	if (size == 0)
 		return (0);

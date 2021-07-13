@@ -24,11 +24,7 @@ char	**exec_one_command(t_pipe *tmp, char **env)
 	}
 	manage_fd(tmp, old_fd, 1);
 	if (env_new)
-	{
-//		if (env)
-//			freedom_2d(env);
 		return (env_new);
-	}
 	return (env);
 }
 
@@ -79,7 +75,7 @@ void	launch_process(t_pipe *tmp, char **env)
 void	exec_child(t_pipe *pipes, char **env)
 {
 	signal(SIGINT, ctrl_c_kid);
-	// signal(SIGQUIT, ctrl_slash);
+	signal(SIGQUIT, ctrl_slash);
 	if (pipes->fd_read == 0 && pipes->fd_write == 1)
 	{
 		if (!pipes->prev)
