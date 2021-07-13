@@ -3,7 +3,7 @@
 int	where_to_put_env(char *name, char **env_copy)
 {
 	int		i;
-	int 	end_name;
+	int		end_name;
 
 	i = -1;
 	while (env_copy[++i])

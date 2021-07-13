@@ -78,7 +78,6 @@ int	into_dollar(char *s, char **new, char **env, int j)
 			*new = ft_strjoin(*new, error);
 			free(error);
 			free(old_new);
-			g_global.error_status = 0;
 		}
 		if (s[j] == '$' && s[j + 1] == '$')
 			*new = join_char(*new, s[j++]);

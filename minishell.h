@@ -14,6 +14,7 @@ typedef struct s_global
 {
 	int	signal_worked;
 	int	error_status;
+	int	bad_command;
 	int	read_trouble;
 	int	was_command;
 	int	i;
@@ -202,7 +203,7 @@ void		manage_fd(t_pipe *tmp, int *old_fd, int a);
 
 //PIPE ARGV
 void		parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd);
-void		simple_init(char **argv, t_pipe *new_pipe, int **fd);
+void		simple_init(char **argv, t_pipe *new_pipe, int **fd, char **env);
 char		*absolut_path(char **env, char *command);
 char		*check_path(char *command, char **env);
 char		*check_path2(char **tmp, char *command);

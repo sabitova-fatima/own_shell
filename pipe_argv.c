@@ -8,26 +8,28 @@ void	parse_argv(char **argv, t_pipe *new_pipe, char **env, int **fd)
 	while (argv[++i])
 	{
 		if (fd[i][0] == -1)
-		{
 			new_pipe->command = NULL;
+		if (fd[i][0] == -1)
 			return ;
-		}
 	}
-	simple_init(argv, new_pipe, fd);
-	new_pipe->path = absolut_path(env, new_pipe->command[0]);
-	if (!new_pipe->path && new_pipe->command[0] && \
-		ft_strcmp ("exit", new_pipe->command[0])
-		&& ft_strcmp("unset", new_pipe->command[0])
-		&& ft_strcmp("export", new_pipe->command[0]))
+	simple_init(argv, new_pipe, fd, env);
+	if (!new_pipe->path && new_pipe->command[0] && ft_strcmp ("exit", \
+	new_pipe->command[0]) && ft_strcmp("unset", new_pipe->command[0]) \
+	&& ft_strcmp("export", new_pipe->command[0]))
 	{
 		printf("e-bash: %s: command not found\n", new_pipe->command[0]);
-		g_global.error_status = 127;
+		g_global.bad_command = 1;
+	}
+	else
+	{
+		g_global.bad_command = 0;
+		g_global.error_status = 0;
 	}
 	new_pipe->prev = NULL;
 	new_pipe->next = NULL;
 }
 
-void	simple_init(char **argv, t_pipe *new_pipe, int **fd)
+void	simple_init(char **argv, t_pipe *new_pipe, int **fd, char **env)
 {
 	int	i;
 	int	j;
@@ -51,6 +53,7 @@ void	simple_init(char **argv, t_pipe *new_pipe, int **fd)
 			new_pipe->command[j] = ft_strdup2(argv[i]);
 	}
 	new_pipe->command[++j] = NULL;
+	new_pipe->path = absolut_path(env, new_pipe->command[0]);
 }
 
 char	*absolut_path(char **env, char *command)

@@ -46,5 +46,6 @@ char	***super_split(char *s, char **env, int ****fd)
 		g_global.error_status = 1;
 		g_global.read_trouble = 0;
 	}
+	g_global.bad_command = 0;
 	return (all);
 }

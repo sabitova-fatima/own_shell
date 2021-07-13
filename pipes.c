@@ -69,6 +69,11 @@ char	**exec_pipes(t_pipe *pipes, char **env, char *input)
 	if (!(input == NULL))
 		add_history(input);
 	g_global.was_command = 0;
+	if (g_global.bad_command)
+	{
+		g_global.error_status = 127;
+		g_global.bad_command = 0;
+	}
 	return (env);
 }
 
