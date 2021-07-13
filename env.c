@@ -35,7 +35,6 @@ void	print_str(char **env_copy)
 
 	i = 0;
 	j = 0;
-	
 	while (env_copy[i])
 	{
 		end_name = find_end_name(env_copy[i]);

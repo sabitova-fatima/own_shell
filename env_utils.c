@@ -40,13 +40,12 @@ char	**export_name_val(char *key, char *value, char **env_copy)
 			free(right_side);
 		}
 		else
-			env_copy[n_var] = key;
+			env_copy[n_var] = ft_strjoin(key, "");
 	}
 	else
 		help_export(key);
-	// free(key);
-	if (value)
-		free(value);
+	free(key);
+	free(value);
 	return (env_copy);
 }
 
