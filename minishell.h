@@ -207,4 +207,7 @@ void		simple_init(char **argv, t_pipe *new_pipe, int **fd, char **env);
 char		*absolut_path(char **env, char *command);
 char		*check_path(char *command, char **env);
 char		*check_path2(char **tmp, char *command);
+
+void rl_replace_line(const char *c, int i);
+
 #endif

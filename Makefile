@@ -32,7 +32,7 @@ CC			= gcc
 RM			= rm -rf
 
 all:
-		$(CC) $(CFLAGS) -ltermcap -L/usr/include -lreadline $(SRCS) -o $(NAME)
+		$(CC) $(CFLAGS) -L/Users/khouten/.brew/opt/readline/lib -I/Users/khouten/.brew/opt/readline/include -lreadline $(SRCS) -o $(NAME)
 
 val:
 		$(CC) -ltermcap -L/usr/include -lreadline $(SRCS) -g -o $(NAME) && valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME)
