@@ -35,6 +35,7 @@ void	print_str(char **env_copy)
 
 	i = 0;
 	j = 0;
+	
 	while (env_copy[i])
 	{
 		end_name = find_end_name(env_copy[i]);
@@ -42,10 +43,13 @@ void	print_str(char **env_copy)
 		printf("declare -x ");
 		while (j <= end_name)
 			printf("%c", env_copy[i][j++]);
-		printf("\"");
-		while (env_copy[i][j])
-			printf("%c", env_copy[i][j++]);
-		printf("\"");
+		if (with_value(env_copy[i]) == 42)
+		{
+			printf("\"");
+			while (env_copy[i][j])
+				printf("%c", env_copy[i][j++]);
+			printf("\"");
+		}
 		printf("\n");
 		i++;
 	}

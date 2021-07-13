@@ -76,6 +76,7 @@ int			my_env(char **command, char **env);
 void		write_error(t_data *data, char *filename);
 char		*ft_empty(void);
 void		total_free(char *input, char ***new, int ***fd);
+int			with_value(char *env);
 
 // signals
 void		ctrl_c(int signo);

@@ -34,17 +34,17 @@ char	**export_name_val(char *key, char *value, char **env_copy)
 		else
 			env_copy = realloc_env(n_var + 1, env_copy);
 		if (value)
-		{
+		{	
 			right_side = ft_strjoin("=", value);
 			env_copy[n_var] = ft_strjoin(key, right_side);
 			free(right_side);
 		}
 		else
-			env_copy[n_var] = ft_strjoin(key, "=");
+			env_copy[n_var] = key;
 	}
 	else
 		help_export(key);
-	free(key);
+	// free(key);
 	if (value)
 		free(value);
 	return (env_copy);
