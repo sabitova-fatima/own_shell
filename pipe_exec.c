@@ -87,15 +87,12 @@ void	exec_child(t_pipe *pipes, char **env)
 		{
 			dup2(pipes->prev->fd[0], 0);
 			dup2(pipes->fd[1], 1);
-			close(pipes->prev->fd[1]);
-			close(pipes->fd[0]);
 		}
 	}
-	else if (pipes->fd_read > 0)
-	{
-		if (!pipes->prev)
-			dup2(pipes->fd[1], 1);
-	}
+	else if (pipes->fd_read > 0 && pipes->fd_write == 1)
+		dup2(pipes->fd[1], 1);
+	else if (pipes->fd_read == 0 && pipes->fd_write > 1)
+		dup2(pipes->prev->fd[0], 0);
 	if (own_function(pipes, env))
 		exit(1);
 	execve(pipes->path, pipes->command, env);
